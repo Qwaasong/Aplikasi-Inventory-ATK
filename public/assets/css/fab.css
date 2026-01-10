@@ -1,0 +1,8 @@
+/* animasi rotasi untuk ikon */
+.icon-rotate {
+    transition: transform 0.35s ease;
+}
+
+.rotate-45 {
+    transform: rotate(45deg);
+}
