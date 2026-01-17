@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -8,20 +9,41 @@ use Illuminate\Http\Request;
 
 class BarangApiController extends Controller
 {
-    public function index()
+    /**
+     * Tampilkan daftar barang dengan fitur pencarian dan paginasi.
+     */
+    public function index(Request $request)
     {
-        // Mengambil semua barang beserta data kategorinya
-        $barang = Barang::with('kategori')->get();
+        // 1. Ambil parameter dari request
+        $perPage = $request->get('per_page', 10); // Default 10 data per halaman
+        $search = $request->get('search', '');
+
+        // 2. Query data barang dengan relasi kategori
+        $barang = Barang::with('kategori')
+            // Logika Pencarian
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    // Cari berdasarkan nama barang
+                    $q->where('nama_barang', 'like', '%' . $search . '%')
+                    // ATAU cari berdasarkan nama kategori (relasi)
+                      ->orWhereHas('kategori', function ($qKategori) use ($search) {
+                          $qKategori->where('nama_kategori', 'like', '%' . $search . '%');
+                      });
+                });
+            })
+            ->latest() // Urutkan dari yang terbaru
+            ->paginate($perPage); // Gunakan paginate, bukan get()
+
+        // 3. Kembalikan respon JSON
         return response()->json([
             'success' => true,
             'data'    => $barang
         ]);
     }
 
-    // Method baru untuk ambil 1 data (digunakan saat klik tombol Edit di modal)
     public function show($id)
     {
-        $barang = Barang::find($id);
+        $barang = Barang::with('kategori')->find($id);
         if ($barang) {
             return response()->json(['success' => true, 'data' => $barang]);
         }
