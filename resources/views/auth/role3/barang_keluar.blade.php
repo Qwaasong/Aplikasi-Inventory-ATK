@@ -1,0 +1,1 @@
+ini adalah barang_keluar role 3

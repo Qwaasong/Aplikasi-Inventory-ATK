@@ -2,31 +2,59 @@
 
 use Illuminate\Support\Facades\Route;
 // Perhatikan Namespace ini harus sesuai dengan lokasi file controller Anda
-use App\Http\Controllers\Api\BarangApiController; 
-use App\Http\Controllers\TransaksiController;
-use App\Http\Controllers\UserController;
+// use App\Http\Controllers\Api\BarangApiController; 
+// use App\Http\Controllers\TransaksiController;
+// use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Web Routes Admin
 |--------------------------------------------------------------------------
 */
 
+// Halaman login sebagai halaman utama
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
-//--- ROUTE BARANG (CRUD) ---
-//Menggunakan BarangApiController sesuai keinginan Anda
-//Akses URL:
-//GET  /barang        -> Masih return JSON (sesuai kode index Anda)
-//GET  /barang/create -> Menampilkan View (Form Tambah)
-//POST /barang        -> Proses Simpan & Redirect
-Route::resource('barang', BarangApiController::class);
+// Route untuk dashboard admin
+Route::get('admin/dashboard', function(){
+    return view('auth.admin.dashboard');
+});
 
-// --- ROUTE TRANSAKSI ---
-Route::post('/barang/{id}/masuk', [TransaksiController::class, 'barangMasuk'])->name('barang.masuk');
-Route::post('/barang/{id}/keluar', [TransaksiController::class, 'barangKeluar'])->name('barang.keluar');
+// Route untuk halaman user admin
+Route::get('admin/user', function(){
+    return view('auth.admin.user');
+});
 
-// --- ROUTE USER ---
-Route::resource('user', UserController::class)->except(['show']);
+/*
+|--------------------------------------------------------------------------
+| Web Routes Role 2
+|--------------------------------------------------------------------------
+*/
+
+// Route untuk dashboard role 2
+Route::get('role2/dashboard', function(){
+    return view('auth.role2.dashboard');
+});
+
+// Route untuk halaman barang masuk role 2
+Route::get('role2/barang_masuk', function(){
+    return view('auth.role2.barang_masuk');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes Role 3
+|--------------------------------------------------------------------------
+*/
+
+// Route untuk dashboard role 3
+Route::get('role3/dashboard', function(){
+    return view('auth.role3.dashboard');
+});
+
+// Route untuk halaman barang keluar role 3
+Route::get('role3/barang_keluar', function(){   
+    return view('auth.role3.barang_keluar');
+});
