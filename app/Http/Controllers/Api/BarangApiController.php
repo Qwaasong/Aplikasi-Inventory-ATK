@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -19,19 +18,14 @@ class BarangApiController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    // Method baru untuk ambil 1 data (digunakan saat klik tombol Edit di modal)
+    public function show($id)
     {
         $barang = Barang::find($id);
         if ($barang) {
-            $barang->delete();
-            return response()->json(['success' => true, 'message' => 'Data berhasil dihapus']);
+            return response()->json(['success' => true, 'data' => $barang]);
         }
         return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
-    }
-        public function create()
-    {
-        $kategori = Kategori::all();
-        return view('barang.create', compact('kategori'));
     }
 
     public function store(Request $request)
@@ -43,22 +37,33 @@ class BarangApiController extends Controller
             'jumlah_pcs'  => 'required|numeric',
         ]);
 
-        Barang::create($request->all());
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambah');
-    }
-
-    public function edit($id)
-    {
-        $barang = Barang::findOrFail($id);
-        $kategori = Kategori::all();
-        return view('barang.edit', compact('barang', 'kategori'));
+        $barang = Barang::create($request->all());
+        
+        return response()->json([
+            'success' => true, 
+            'message' => 'Barang berhasil ditambah',
+            'data'    => $barang
+        ]);
     }
 
     public function update(Request $request, $id)
     {
         $barang = Barang::findOrFail($id);
         $barang->update($request->all());
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil diupdate');
+
+        return response()->json([
+            'success' => true, 
+            'message' => 'Barang berhasil diupdate'
+        ]);
     }
 
+    public function destroy($id)
+    {
+        $barang = Barang::find($id);
+        if ($barang) {
+            $barang->delete();
+            return response()->json(['success' => true, 'message' => 'Data berhasil dihapus']);
+        }
+        return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
 }
