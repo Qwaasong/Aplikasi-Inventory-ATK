@@ -20,12 +20,17 @@ Route::get('/', function () {
 // Route untuk dashboard admin
 Route::get('admin/dashboard', function(){
     return view('auth.admin.dashboard');
-});
+})->name('admin.dashboard');
+
+// Route untuk barang admin
+Route::get('admin/barang', function(){
+    return view('auth.admin.barang');
+})->name('admin.barang');
 
 // Route untuk halaman user admin
 Route::get('admin/user', function(){
     return view('auth.admin.user');
-});
+})->name('admin.user');
 
 /*
 |--------------------------------------------------------------------------
@@ -36,12 +41,12 @@ Route::get('admin/user', function(){
 // Route untuk dashboard role 2
 Route::get('role2/dashboard', function(){
     return view('auth.role2.dashboard');
-});
+})->name('role2.dashboard');
 
 // Route untuk halaman barang masuk role 2
 Route::get('role2/barang_masuk', function(){
     return view('auth.role2.barang_masuk');
-});
+})->name('role2.barang_masuk');
 
 /*
 |--------------------------------------------------------------------------
@@ -52,9 +57,9 @@ Route::get('role2/barang_masuk', function(){
 // Route untuk dashboard role 3
 Route::get('role3/dashboard', function(){
     return view('auth.role3.dashboard');
-});
+})->name('role3.dashboard');
 
 // Route untuk halaman barang keluar role 3
 Route::get('role3/barang_keluar', function(){   
     return view('auth.role3.barang_keluar');
-});
+})->name('role3.barang_keluar');

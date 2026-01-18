@@ -25,10 +25,10 @@ class BarangApiController extends Controller
                 $query->where(function ($q) use ($search) {
                     // Cari berdasarkan nama barang
                     $q->where('nama_barang', 'like', '%' . $search . '%')
-                    // ATAU cari berdasarkan nama kategori (relasi)
-                      ->orWhereHas('kategori', function ($qKategori) use ($search) {
-                          $qKategori->where('nama_kategori', 'like', '%' . $search . '%');
-                      });
+                        // ATAU cari berdasarkan nama kategori (relasi)
+                        ->orWhereHas('kategori', function ($qKategori) use ($search) {
+                            $qKategori->where('nama_kategori', 'like', '%' . $search . '%');
+                        });
                 });
             })
             ->latest() // Urutkan dari yang terbaru
@@ -60,9 +60,9 @@ class BarangApiController extends Controller
         ]);
 
         $barang = Barang::create($request->all());
-        
+
         return response()->json([
-            'success' => true, 
+            'success' => true,
             'message' => 'Barang berhasil ditambah',
             'data'    => $barang
         ]);
@@ -74,7 +74,7 @@ class BarangApiController extends Controller
         $barang->update($request->all());
 
         return response()->json([
-            'success' => true, 
+            'success' => true,
             'message' => 'Barang berhasil diupdate'
         ]);
     }
@@ -87,5 +87,39 @@ class BarangApiController extends Controller
             return response()->json(['success' => true, 'message' => 'Data berhasil dihapus']);
         }
         return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
+
+    /**
+     * Kurangi stok barang (Barang Keluar)
+     */
+    public function keluar(Request $request)
+    {
+        $request->validate([
+            'id_barang' => 'required|exists:barang,id_barang', // Pastikan ID valid
+            'jumlah_pcs' => 'required|numeric|min:1',
+        ]);
+
+        $barang = Barang::find($request->id_barang);
+
+        // Cek stok
+        if ($barang->jumlah_pcs < $request->jumlah_pcs) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stok tidak mencukupi! Sisa stok: ' . $barang->jumlah_pcs
+            ], 400);
+        }
+
+        // Kurangi stok
+        $barang->jumlah_pcs -= $request->jumlah_pcs;
+        // Opsional: Sesuaikan jumlah_pack jika perlu, atau biarkan null/tidak berubah
+        // $barang->jumlah_pack = floor($barang->jumlah_pcs / $barang->isi_per_pack); 
+
+        $barang->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Stok berhasil dikurangi',
+            'data'    => $barang
+        ]);
     }
 }

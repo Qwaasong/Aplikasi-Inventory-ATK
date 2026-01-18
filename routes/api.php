@@ -1,5 +1,6 @@
 <?php
 // Tambahkan Use Statement di bagian atas file
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BarangApiController;
 use App\Http\Controllers\Api\UserApiController;
 use App\Http\Controllers\Api\KategoriApiController; // Jika ada controller kategori
@@ -11,6 +12,7 @@ Route::get('/barang', [BarangApiController::class, 'index'])->name('api.barang.i
 Route::get('/barang/{id}', [BarangApiController::class, 'show'])->name('api.barang.show');
 Route::post('/barang', [BarangApiController::class, 'store'])->name('api.barang.store');
 Route::put('/barang/{id}', [BarangApiController::class, 'update'])->name('api.barang.update');
+Route::post('/barang/keluar', [BarangApiController::class, 'keluar'])->name('api.barang.keluar');
 Route::delete('/barang/{id}', [BarangApiController::class, 'destroy'])->name('api.barang.destroy');
 
 // Pengguna (User) API Routes
@@ -22,4 +24,4 @@ Route::put('/user/{id}', [UserApiController::class, 'update'])->name('api.user.u
 Route::delete('/user/{id}', [UserApiController::class, 'destroy'])->name('api.user.destroy');
 
 // Kategori API Routes (Opsional - Untuk mengisi dropdown di modal)
-//Route::get('/kategori', [KategoriApiController::class, 'index'])->name('api.kategori.index');
+Route::get('/kategori', [KategoriApiController::class, 'index'])->name('api.kategori.index');
