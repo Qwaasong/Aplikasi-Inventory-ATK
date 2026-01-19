@@ -63,7 +63,7 @@
             <h2 class="text-3xl font-bold text-gray-900 m-0">Daftar User</h2>
             <div class="hidden md:flex gap-2">
                 <button onclick="openModal('modalTambahUser')" class="bg-[#1e5bb5] hover:bg-blue-800 text-white px-4 py-2 rounded text-sm font-semibold transition shadow-sm">
-                    Tambah User
+                    Tambah User <i class="fa-solid fa-user-plus"></i>
                 </button>
             </div>
         </div>

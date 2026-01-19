@@ -91,10 +91,11 @@
             <h2 class="text-3xl font-bold text-gray-900 m-0">Daftar Barang</h2>
             <div class="hidden md:flex gap-2">
                 <button onclick="openModal('modalMasuk')" class="bg-[#1e5bb5] hover:bg-blue-800 text-white px-4 py-2 rounded text-sm font-semibold transition shadow-sm">
-                    Barang Masuk
+                    
+                    Barang Masuk <i class="fa-solid fa-arrow-turn-down"></i>
                 </button>
                 <button onclick="openModal('modalKeluar')" class="bg-[#d32f2f] hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-semibold transition shadow-sm">
-                    Barang Keluar
+                    Barang Keluar <i class="fa-solid fa-arrow-turn-up"></i>
                 </button>
             </div>
         </div>
@@ -175,7 +176,7 @@
             </div>
             <form id="formBarangMasuk" onsubmit="submitBarangMasuk(event)">
                 <div class="p-8 pt-4">
-                    <h3 class="text-lg mb-6 text-black">Masukkan Barang</h3>
+                    <h3 class="text-lg mb-6 text-black">Masukkan Barang Masuk</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <input type="text" name="nama_barang" id="nama_barang" placeholder="Nama Barang..." class="input-field placeholder-gray-500" required>
