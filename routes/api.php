@@ -4,8 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BarangApiController;
 use App\Http\Controllers\Api\UserApiController;
 use App\Http\Controllers\Api\KategoriApiController; // Jika ada controller kategori
+use App\Http\Controllers\Api\DashboardController;
 
 // --- Route Baru Anda ---
+
+//index dashboard
+Route::get('/dashboard/stats', [DashboardController::class, 'index']);
 
 // Barang (ATK) API Routes
 Route::get('/barang', [BarangApiController::class, 'index'])->name('api.barang.index');
