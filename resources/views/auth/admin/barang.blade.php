@@ -116,7 +116,8 @@
                 'Kategori' => 'kategori.nama_kategori',
                 'Nama Pack' => 'nama_pack',
                 'Jumlah Pack' => 'jumlah_pack',
-                'Jumlah Pcs' => 'jumlah_pcs',
+                'Pcs per pack' => 'jumlah_pcs',
+                'Total Pcs' => 'total_pcs',
                 ]"
         data-url="{{ route('api.barang.index') }}"
         primary-key="id_barang">
@@ -443,42 +444,67 @@
 
     // Submit Barang Keluar
     async function submitBarangKeluar(e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        const form = document.getElementById('formBarangKeluar');
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
+    // Ambil elemen input
+    const idBarangInput = document.getElementById('id_barang_keluar');
+    const jumlahInput = document.getElementById('jumlah_pcs_keluar');
 
-        if (!data.id_barang) {
-            alert('Silakan pilih barang dari daftar pencarian terlebih dahulu!');
-            return;
-        }
+    // Validasi sederhana
+    const id_barang = idBarangInput.value;
+    const jumlah_keluar = parseInt(jumlahInput.value);
 
-        try {
-            const response = await fetch("{{ route('api.barang.keluar') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify(data)
-            });
-
-            const result = await response.json();
-
-            if (response.ok && result.success) {
-                alert('Stok berhasil dikurangi!');
-                closeModal('modalKeluar');
-                form.reset();
-                window.location.reload();
-            } else {
-                alert('Gagal: ' + (result.message || 'Error tidak diketahui'));
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan sistem');
-        }
+    if (!id_barang) {
+        alert('ID Barang kosong. Silakan cari barang ulang.');
+        return;
     }
+
+    if (!jumlah_keluar || jumlah_keluar <= 0) {
+        alert('Masukkan jumlah barang yang valid (minimal 1).');
+        return;
+    }
+
+    // Siapkan data
+    const payload = {
+        id_barang: id_barang,
+        jumlah_pcs_keluar: jumlah_keluar
+    };
+
+    console.log('Mengirim data:', payload); // Cek di Console
+
+    try {
+        const response = await fetch("{{ route('api.barang.keluar') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        // Cek status HTTP (200 OK, 404 Not Found, 500 Server Error)
+        if (!response.ok) {
+            // Jika error dari server (misal stok kurang), ambil pesan errornya
+            const errorResult = await response.json();
+            throw new Error(errorResult.message || 'Terjadi kesalahan di server (Status ' + response.status + ')');
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Sukses! Stok berhasil dikurangi.');
+            closeModal('modalKeluar');
+            document.getElementById('formBarangKeluar').reset();
+            window.location.reload();
+        } else {
+            alert('Gagal: ' + result.message);
+        }
+
+    } catch (error) {
+        console.error('Error Detail:', error);
+        alert('Gagal: ' + error.message);
+    }
+}
 
     // --- LISTENER EDIT DATA (Dari Component Table) ---
    window.addEventListener('edit-data', function(e) {
