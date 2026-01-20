@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\RiwayatStok;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BarangApiController extends Controller
 {
@@ -50,76 +52,127 @@ class BarangApiController extends Controller
         return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nama_barang' => 'required',
-            'id_kategori' => 'required',
-            'jumlah_pack' => 'required|numeric',
-            'jumlah_pcs'  => 'required|numeric',
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'nama_barang' => 'required',
+        'id_kategori' => 'required',
+        'jumlah_pack' => 'required|numeric',
+        'jumlah_pcs'  => 'required|numeric', // Kapasitas per pack
+    ]);
 
-        $barang = Barang::create($request->all());
+    try {
+        return DB::transaction(function () use ($request) {
+            // MEMBUAT VARIABEL TOTAL_PCS
+            $total_pcs = $request->jumlah_pack * $request->jumlah_pcs;
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Barang berhasil ditambah',
-            'data'    => $barang
-        ]);
+            // Gabungkan input awal dengan total_pcs yang baru dihitung
+            $data = $request->all();
+            $data['total_pcs'] = $total_pcs;
+
+            $barang = Barang::create($data);
+
+            RiwayatStok::create([
+                'id_barang'  => $barang->id_barang,
+                'jenis'      => 'masuk',
+                'jumlah_pcs' => $total_pcs, // Riwayat mencatat total butiran masuk
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Barang berhasil disimpan',
+                'data'    => $barang
+            ]);
+        });
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
     }
+}
 
-    public function update(Request $request, $id)
-    {
-        $barang = Barang::findOrFail($id);
-        $barang->update($request->all());
+   public function update(Request $request, $id)
+{
+    $barang = Barang::findOrFail($id);
+    
+    // Hitung ulang variabel total_pcs berdasarkan input baru
+    $total_pcs = $request->jumlah_pack * $request->jumlah_pcs;
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Barang berhasil diupdate'
-        ]);
-    }
+    $data = $request->all();
+    $data['total_pcs'] = $total_pcs;
 
-    public function destroy($id)
+    $barang->update($data);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Barang berhasil diupdate',
+        'data'    => $barang
+    ]);
+}
+
+   public function destroy($id)
     {
         $barang = Barang::find($id);
         if ($barang) {
-            $barang->delete();
+            $barang->delete(); // Riwayat_stok akan ikut terhapus jika di migrasi ada 'onDelete cascade'
             return response()->json(['success' => true, 'message' => 'Data berhasil dihapus']);
         }
         return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
     }
 
+
     /**
      * Kurangi stok barang (Barang Keluar)
      */
-    public function keluar(Request $request)
-    {
-        $request->validate([
-            'id_barang' => 'required|exists:barang,id_barang', // Pastikan ID valid
-            'jumlah_pcs' => 'required|numeric|min:1',
-        ]);
+   public function keluar(Request $request)
+{
+    $request->validate([
+        'id_barang' => 'required|exists:barang,id_barang',
+        'jumlah_pcs_keluar' => 'required|integer|min:1',
+    ]);
 
-        $barang = Barang::find($request->id_barang);
+    return DB::transaction(function () use ($request) {
+        $barang = Barang::findOrFail($request->id_barang);
 
-        // Cek stok
-        if ($barang->jumlah_pcs < $request->jumlah_pcs) {
+        // 1. Kapasitas per pack (statis)
+        $kapasitas = (int) $barang->jumlah_pcs;
+
+        // 2. Cek stok pada kolom total_pcs
+        if ($request->jumlah_pcs_keluar > $barang->total_pcs) {
             return response()->json([
                 'success' => false,
-                'message' => 'Stok tidak mencukupi! Sisa stok: ' . $barang->jumlah_pcs
+                'message' => "Stok tidak cukup! Sisa: $barang->total_pcs Pcs"
             ], 400);
         }
 
-        // Kurangi stok
-        $barang->jumlah_pcs -= $request->jumlah_pcs;
-        // Opsional: Sesuaikan jumlah_pack jika perlu, atau biarkan null/tidak berubah
-        // $barang->jumlah_pack = floor($barang->jumlah_pcs / $barang->isi_per_pack); 
+        // 3. Hitung Sisa Total PCS
+        $sisaTotalPcs = $barang->total_pcs - $request->jumlah_pcs_keluar;
 
-        $barang->save();
+        // 4. Hitung Sisa Pack (BULAT KE BAWAH)
+        // Jika sisa 115 pcs dan kapasitas 12, maka 115/12 = 9.58 -> Jadi 9 Pack bulat.
+        $sisaPackBulat = floor($sisaTotalPcs / $kapasitas);
+
+        // 5. Update Database
+        $barang->update([
+            'total_pcs'   => $sisaTotalPcs,
+            'jumlah_pack' => $sisaPackBulat, 
+            // jumlah_pcs tetap statis
+        ]);
+
+        // 6. Simpan Riwayat
+        RiwayatStok::create([
+            'id_barang'  => $barang->id_barang,
+            'jenis'      => 'keluar',
+            'jumlah_pcs' => $request->jumlah_pcs_keluar,
+        ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Stok berhasil dikurangi',
-            'data'    => $barang
+            'data'    => [
+                'sisa_total_pcs' => $sisaTotalPcs,
+                'sisa_pack_utuh' => $sisaPackBulat
+            ]
         ]);
-    }
+    });
+}
+
 }

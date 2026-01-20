@@ -16,6 +16,7 @@ class Barang extends Model
         'nama_pack',
         'jumlah_pack',
         'jumlah_pcs',
+        'total_pcs',
     ];
 
     // Relasi: Barang dimiliki oleh satu kategori

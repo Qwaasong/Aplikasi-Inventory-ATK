@@ -259,15 +259,17 @@
 
         <hr class="my-6 border-gray-200">
 
-        <!-- Tabel Data Menggunakan Component -->
-        <x-table :data-table="[
-                                                                                                            'Nama Barang' => 'nama_barang',
-                                                                                                            'Kategori' => 'kategori.nama_kategori',
-                                                                                                            'Nama Pack' => 'nama_pack',
-                                                                                                            'Jumlah Pack' => 'jumlah_pack',
-                                                                                                            'Jumlah Pcs' => 'jumlah_pcs',
-                                                                                                            ]"
-            data-url="{{ route('api.barang.index') }}" primary-key="id_barang">
+    <!-- Tabel Data Menggunakan Component -->
+    <x-table :data-table="[
+                'Nama Barang' => 'nama_barang',
+                'Kategori' => 'kategori.nama_kategori',
+                'Nama Pack' => 'nama_pack',
+                'Jumlah Pack' => 'jumlah_pack',
+                'Pcs per pack' => 'jumlah_pcs',
+                'Total Pcs' => 'total_pcs',
+                ]"
+        data-url="{{ route('api.barang.index') }}"
+        primary-key="id_barang">
 
             <x-slot:filter>
                 <div class="flex items-center space-x-4">
@@ -399,52 +401,46 @@
         </div>
         </div>
 
-        <!-- ================= MODAL 3: EDIT BARANG ================= -->
-        <div id="modalEdit"
-            class="fixed inset-0 bg-black bg-opacity-30 hidden flex justify-center items-center z-50 p-4 transition-opacity duration-300">
-            <div class="modal-bg rounded-lg shadow-lg w-full max-w-2xl relative">
-                <div class="flex justify-between items-start p-6 pb-2">
-                    <button onclick="closeModal('modalEdit')"
-                        class="absolute top-4 right-4 text-gray-800 hover:text-red-600 text-3xl font-light">
-                        &times;
-                    </button>
-                </div>
-                <form id="formBarangEdit" onsubmit="submitBarangEdit(event)">
-                    <!-- Hidden Input untuk ID Barang yang diedit -->
-                    <input type="hidden" name="id_barang" id="edit_id_barang">
-
-                    <div class="p-8 pt-4">
-                        <h3 class="text-lg mb-6 text-black">Edit Barang</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <input type="text" name="nama_barang" id="edit_nama_barang" placeholder="Nama Barang..."
-                                    class="input-field placeholder-gray-500" required>
-                            </div>
-                            <div>
-                                <input type="number" name="jumlah_pack" id="edit_jumlah_pack" placeholder="Jumlah Pack"
-                                    class="input-field placeholder-gray-500" required>
-                            </div>
-                            <div>
-                                <select name="id_kategori" id="edit_id_kategori" class="input-field text-gray-700" required>
-                                    <option value="">Pilih Kategori</option>
-                                    <!-- Options populated by JS -->
-                                </select>
-                            </div>
-                            <div>
-                                <input type="number" name="jumlah_pcs" id="edit_jumlah_pcs" placeholder="Jumlah Pcs"
-                                    class="input-field placeholder-gray-500" required>
-                            </div>
-                        </div>
-                        <div class="flex justify-end gap-3 mt-10">
-                            <button type="submit" class="btn-modal-action text-blue-500 border-blue-400 hover:bg-blue-50">
-                                Simpan Perubahan
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+    <!-- ================= MODAL 3: EDIT BARANG ================= -->
+    <div id="modalEdit" class="fixed inset-0 bg-black bg-opacity-30 hidden flex justify-center items-center z-50 p-4 transition-opacity duration-300">
+    <div class="modal-bg rounded-lg shadow-lg w-full max-w-2xl relative">
+        <div class="flex justify-between items-start p-6 pb-2">
+            <button onclick="closeModal('modalEdit')" class="absolute top-4 right-4 text-gray-800 hover:text-red-600 text-3xl font-light">&times;</button>
         </div>
-    </main>
+        <form id="formBarangEdit" onsubmit="submitBarangEdit(event)">
+            <input type="hidden" name="id_barang" id="edit_id_barang">
+            
+            <div class="p-8 pt-4">
+                <h3 class="text-lg mb-6 text-black">Edit Barang</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Nama Barang</label>
+                        <input type="text" name="nama_barang" id="edit_nama_barang" class="input-field bg-gray-100 cursor-not-allowed" >
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Jumlah Pack</label>
+                        <input type="number" name="jumlah_pack" id="edit_jumlah_pack" class="input-field" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Kategori</label>
+                        <select id="edit_id_kategori_display" class="input-field bg-gray-100 cursor-not-allowed" >
+                            <option value="">Pilih Kategori</option>
+                        </select>
+                        <input type="hidden" name="id_kategori" id="edit_id_kategori">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Jumlah Pcs</label>
+                        <input type="number" name="jumlah_pcs" id="edit_jumlah_pcs" class="input-field" required>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-10">
+                    <button type="submit" class="btn-modal-action text-blue-500 border-blue-400 hover:bg-blue-50">Simpan Perubahan</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</main>
 
 @endsection
 
@@ -602,68 +598,111 @@
             }
         });
 
-        // Submit Barang Keluar
-        async function submitBarangKeluar(e) {
-            e.preventDefault();
+    // Submit Barang Keluar
+    async function submitBarangKeluar(e) {
+    e.preventDefault();
 
-            const form = document.getElementById('formBarangKeluar');
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
+    // Ambil elemen input
+    const idBarangInput = document.getElementById('id_barang_keluar');
+    const jumlahInput = document.getElementById('jumlah_pcs_keluar');
 
-            if (!data.id_barang) {
-                alert('Silakan pilih barang dari daftar pencarian terlebih dahulu!');
-                return;
-            }
+    // Validasi sederhana
+    const id_barang = idBarangInput.value;
+    const jumlah_keluar = parseInt(jumlahInput.value);
 
-            try {
-                const response = await fetch("{{ route('api.barang.keluar') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify(data)
-                });
+    if (!id_barang) {
+        alert('ID Barang kosong. Silakan cari barang ulang.');
+        return;
+    }
 
-                const result = await response.json();
+    if (!jumlah_keluar || jumlah_keluar <= 0) {
+        alert('Masukkan jumlah barang yang valid (minimal 1).');
+        return;
+    }
 
-                if (response.ok && result.success) {
-                    alert('Stok berhasil dikurangi!');
-                    closeModal('modalKeluar');
-                    form.reset();
-                    window.location.reload();
-                } else {
-                    alert('Gagal: ' + (result.message || 'Error tidak diketahui'));
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan sistem');
-            }
+    // Siapkan data
+    const payload = {
+        id_barang: id_barang,
+        jumlah_pcs_keluar: jumlah_keluar
+    };
+
+    console.log('Mengirim data:', payload); // Cek di Console
+
+    try {
+        const response = await fetch("{{ route('api.barang.keluar') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        // Cek status HTTP (200 OK, 404 Not Found, 500 Server Error)
+        if (!response.ok) {
+            // Jika error dari server (misal stok kurang), ambil pesan errornya
+            const errorResult = await response.json();
+            throw new Error(errorResult.message || 'Terjadi kesalahan di server (Status ' + response.status + ')');
         }
 
-        // --- LISTENER EDIT DATA (Dari Component Table) ---
-        window.addEventListener('edit-data', function (e) {
-            const data = e.detail;
-            console.log('Edit data received:', data);
+        const result = await response.json();
 
-            // 1. Buka Modal
-            openModal('modalEdit');
+        if (result.success) {
+            alert('Sukses! Stok berhasil dikurangi.');
+            closeModal('modalKeluar');
+            document.getElementById('formBarangKeluar').reset();
+            window.location.reload();
+        } else {
+            alert('Gagal: ' + result.message);
+        }
 
-            // 2. Load Kategori untuk modal edit, lalu set value setelah load selesai
-            // Kita gunakan ID select 'edit_id_kategori'
-            loadKategori('edit_id_kategori').then(() => {
-                // Kita coba berbagai kemungkinan nama property untuk id_kategori
-                // Sesuaikan dengan response API backend (biasanya nested 'kategori.id_kategori' atau flat 'id_kategori')
-                const idKat = data.id_kategori || (data.kategori ? data.kategori.id_kategori : '') || '';
-                document.getElementById('edit_id_kategori').value = idKat;
-            });
+    } catch (error) {
+        console.error('Error Detail:', error);
+        alert('Gagal: ' + error.message);
+    }
+}
 
-            // 3. Populate Form
-            document.getElementById('edit_id_barang').value = data.id_barang || data.id;
-            document.getElementById('edit_nama_barang').value = data.nama_barang;
-            document.getElementById('edit_jumlah_pack').value = data.jumlah_pack;
-            document.getElementById('edit_jumlah_pcs').value = data.jumlah_pcs;
-        });
+    // --- LISTENER EDIT DATA (Dari Component Table) ---
+   window.addEventListener('edit-data', function(e) {
+    // 1. Ambil raw data dari event
+    const rawData = e.detail.row || e.detail;
+    
+    // 2. DETEKSI STRUKTUR DATA (Perbaikan Utama)
+    // Jika ada properti .data di dalamnya, kita masuk ke situ.
+    // Jika tidak, kita pakai rawData itu sendiri.
+    const data = (rawData.data) ? rawData.data : rawData;
+
+    console.log('Data Final untuk Edit:', data); // Cek ini di console, harusnya langsung objek barang
+
+    // 3. Buka Modal
+    openModal('modalEdit');
+
+    // 4. Isi Form Input Teks
+    document.getElementById('edit_id_barang').value = data.id_barang || '';
+    
+    // Debugging visual: jika nama barang masih kosong, kita beri pesan error di inputnya
+    document.getElementById('edit_nama_barang').value = data.nama_barang || '(Nama tidak terbaca)';
+    
+    document.getElementById('edit_jumlah_pack').value = data.jumlah_pack || 0;
+    document.getElementById('edit_jumlah_pcs').value = data.jumlah_pcs || 0;
+
+    // 5. Isi Kategori
+    // Dari log Anda, id_kategori ada langsung di root (id_kategori: 3), tidak perlu masuk object kategori
+    const idKat = data.id_kategori; 
+
+    loadKategori('edit_id_kategori_display').then(() => {
+        const selectDisplay = document.getElementById('edit_id_kategori_display');
+        const inputHidden = document.getElementById('edit_id_kategori');
+
+        if(idKat) {
+            selectDisplay.value = idKat; 
+            inputHidden.value = idKat;
+        } else {
+            // Jika kategori kosong/null
+            selectDisplay.value = "";
+        }
+    });
+});
 
         // Submit Edit
         async function submitBarangEdit(e) {
