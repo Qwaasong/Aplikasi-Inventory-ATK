@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\RiwayatStok;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BarangApiController extends Controller
 {
@@ -50,26 +52,47 @@ class BarangApiController extends Controller
         return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
     }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $request->validate([
             'nama_barang' => 'required',
             'id_kategori' => 'required',
             'jumlah_pack' => 'required|numeric',
+            'nama_pack'   => 'string|nullable',
             'jumlah_pcs'  => 'required|numeric',
         ]);
 
-        $barang = Barang::create($request->all());
+        try {
+            return DB::transaction(function () use ($request) {
+                // 2. Simpan Barang
+                $barang = Barang::create($request->all());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Barang berhasil ditambah',
-            'data'    => $barang
-        ]);
+                // 3. Simpan ke Riwayat
+                RiwayatStok::create([
+                    'id_barang'  => $barang->id_barang, // Pastikan PK-nya benar
+                    'jenis'      => 'masuk',
+                    'jumlah_pcs' => $request->jumlah_pcs,
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Barang dan Riwayat berhasil disimpan',
+                    'data'    => $barang
+                ]);
+            });
+        } catch (\Exception $e) {
+            // Jika ada error, kirimkan pesan errornya agar kita tahu penyebabnya
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menyimpan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    public function update(Request $request, $id)
+   public function update(Request $request, $id)
     {
+        // Catatan: Jika update mengubah 'jumlah_pcs', idealnya catat riwayat juga.
+        // Namun untuk dashboard, fungsi 'store' dan 'keluar' adalah yang paling utama.
         $barang = Barang::findOrFail($id);
         $barang->update($request->all());
 
@@ -79,15 +102,16 @@ class BarangApiController extends Controller
         ]);
     }
 
-    public function destroy($id)
+   public function destroy($id)
     {
         $barang = Barang::find($id);
         if ($barang) {
-            $barang->delete();
+            $barang->delete(); // Riwayat_stok akan ikut terhapus jika di migrasi ada 'onDelete cascade'
             return response()->json(['success' => true, 'message' => 'Data berhasil dihapus']);
         }
         return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
     }
+
 
     /**
      * Kurangi stok barang (Barang Keluar)
@@ -95,31 +119,42 @@ class BarangApiController extends Controller
     public function keluar(Request $request)
     {
         $request->validate([
-            'id_barang' => 'required|exists:barang,id_barang', // Pastikan ID valid
+            'id_barang'  => 'required|exists:barang,id_barang',
             'jumlah_pcs' => 'required|numeric|min:1',
         ]);
 
-        $barang = Barang::find($request->id_barang);
+        try {
+            return DB::transaction(function () use ($request) {
+                $barang = Barang::findOrFail($request->id_barang);
 
-        // Cek stok
-        if ($barang->jumlah_pcs < $request->jumlah_pcs) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Stok tidak mencukupi! Sisa stok: ' . $barang->jumlah_pcs
-            ], 400);
+                // Cek stok
+                if ($barang->jumlah_pcs < $request->jumlah_pcs) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Stok tidak mencukupi! Sisa: ' . $barang->jumlah_pcs
+                    ], 400);
+                }
+
+                // 1. Kurangi stok di tabel barang
+                $barang->decrement('jumlah_pcs', $request->jumlah_pcs);
+
+                // 2. CATAT RIWAYAT KELUAR
+                RiwayatStok::create([
+                    'id_barang'  => $barang->id_barang,
+                    'jenis'      => 'keluar',
+                    'jumlah_pcs' => $request->jumlah_pcs,
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Stok berhasil dikurangi dan dicatat di riwayat',
+                    'data'    => $barang
+                ]);
+            });
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
-
-        // Kurangi stok
-        $barang->jumlah_pcs -= $request->jumlah_pcs;
-        // Opsional: Sesuaikan jumlah_pack jika perlu, atau biarkan null/tidak berubah
-        // $barang->jumlah_pack = floor($barang->jumlah_pcs / $barang->isi_per_pack); 
-
-        $barang->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Stok berhasil dikurangi',
-            'data'    => $barang
-        ]);
     }
+
+
 }
