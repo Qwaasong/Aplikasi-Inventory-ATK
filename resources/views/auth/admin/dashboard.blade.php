@@ -203,22 +203,19 @@
     </style>
 
     <body>
-        <div class="wrapper">
-            <div class="box-container">
-                <span>Total Pack</span>
-                <h3>12</h3>
-            </div>
+       <div class="wrapper">
+    <div class="box-container">
+        <span>Total Pack</span>
+        <h3 id="totalPack">0</h3> </div>
 
-            <div class="box-container">
-                <span>Total Pcs</span>
-                <h3>120</h3>
-            </div>
+    <div class="box-container">
+        <span>Total Pcs</span>
+        <h3 id="totalPcs">0</h3> </div>
 
-            <div class="box-container">
-                <span>Total User</span>
-                <h3>120</h3>
-            </div>
-        </div>
+    <div class="box-container">
+        <span>Total User</span>
+        <h3 id="totalUser">0</h3> </div>
+</div>
 
         <div class="header-bar">
             <div class="title">
@@ -334,5 +331,75 @@
 @endsection
 
     @section('script')
+    <script>
+    // Inisialisasi Chart Global agar bisa diupdate
+    let chartMasukKeluar;
+    let chartDistribusi;
+
+    // Fungsi untuk mengambil data dari API
+    async function loadDashboardData(filter = 'mingguan') {
+        try {
+            const response = await fetch(`/api/dashboard/stats?filter=${filter}`);
+            const res = await response.json();
+
+            if (res.success) {
+                // 1. Update Summary Cards
+                document.getElementById('totalPack').innerText = res.summary.total_pack;
+                document.getElementById('totalPcs').innerText = res.summary.total_pcs;
+                document.getElementById('totalUser').innerText = res.summary.total_user;
+
+                // 2. Update Chart Statistik (Masuk & Keluar)
+                chartMasukKeluar.update({
+                    xAxis: { categories: res.charts.statistik_masuk_keluar.labels },
+                    series: [
+                        { name: 'Barang Masuk', data: res.charts.statistik_masuk_keluar.masuk },
+                        { name: 'Barang Keluar', data: res.charts.statistik_masuk_keluar.keluar }
+                    ]
+                });
+
+                // 3. Update Chart Distribusi (Berdasarkan Kategori)
+                const kategoriLabels = res.charts.distribusi_barang.map(item => item.label);
+                const kategoriData = res.charts.distribusi_barang.map(item => item.jumlah);
+                
+                chartDistribusi.update({
+                    xAxis: { categories: kategoriLabels },
+                    series: [{ data: kategoriData }]
+                });
+            }
+        } catch (error) {
+            console.error("Gagal mengambil data dashboard:", error);
+        }
+    }
+
+    // Inisialisasi Chart saat halaman pertama kali dibuka
+    document.addEventListener('DOMContentLoaded', function () {
+        chartMasukKeluar = Highcharts.chart('chartMasukKeluar', {
+            chart: { type: 'column' },
+            title: { text: 'Statistik Barang Masuk & Keluar' },
+            credits: { enabled: false },
+            xAxis: { categories: [] },
+            series: [
+                { name: 'Barang Masuk', color: '#1C3AFF', data: [] },
+                { name: 'Barang Keluar', color: '#FF2929', data: [] }
+            ]
+        });
+
+        chartDistribusi = Highcharts.chart('chartDistribusi', {
+            chart: { type: 'column' },
+            title: { text: 'Distribusi Barang per Kategori' },
+            credits: { enabled: false },
+            xAxis: { categories: [] },
+            series: [{ name: 'Jumlah Barang', color: '#1C3AFF', data: [] }]
+        });
+
+        // Load data pertama kali (default mingguan)
+        loadDashboardData('mingguan');
+
+        // Event listener untuk Filter Dropdown
+        document.getElementById('range').addEventListener('change', function() {
+            loadDashboardData(this.value);
+        });
+    });
+</script>
 
     @endsection
