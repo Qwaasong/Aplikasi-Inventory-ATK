@@ -57,6 +57,7 @@ class BarangApiController extends Controller
     $request->validate([
         'nama_barang' => 'required',
         'id_kategori' => 'required',
+        'nama_pack'   => 'nullable|string',
         'jumlah_pack' => 'required|numeric',
         'jumlah_pcs'  => 'required|numeric', // Kapasitas per pack
     ]);

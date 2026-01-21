@@ -329,36 +329,38 @@
                     </button>
                 </div>
                 <form id="formBarangMasuk" onsubmit="submitBarangMasuk(event)">
-                    <div class="p-8 pt-4">
-                        <h3 class="text-lg mb-6 text-black">Masukkan Barang Masuk</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <input type="text" name="nama_barang" id="nama_barang" placeholder="Nama Barang..."
-                                    class="input-field placeholder-gray-500" required>
-                            </div>
-                            <div>
-                                <input type="number" name="jumlah_pack" id="jumlah_pack" placeholder="Jumlah Pack"
-                                    class="input-field placeholder-gray-500" required>
-                            </div>
-                            <div>
-                                <select name="id_kategori" id="id_kategori" class="input-field text-gray-700" required>
-                                    <option value="">Pilih Kategori</option>
-                                    <!-- Options will be populated via JS -->
-                                </select>
-                            </div>
-                            <div>
-                                <input type="number" name="jumlah_pcs" id="jumlah_pcs" placeholder="Jumlah Pcs"
-                                    class="input-field placeholder-gray-500" required>
-                            </div>
-                        </div>
-                        <div class="flex justify-end gap-3 mt-10">
-                            <button type="submit" class="btn-modal-action text-blue-500 border-blue-400 hover:bg-blue-50">
-                                Simpan Data
-                            </button>
-                            <!-- Opsi 'Simpan Dan Buat Lagi' bisa ditambahkan nanti jika diperlukan logika khusus -->
-                        </div>
-                    </div>
-                </form>
+    <div class="p-8 pt-4">
+        <h3 class="text-lg mb-6 text-black">Masukkan Barang Masuk</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <input type="text" name="nama_barang" id="nama_barang" placeholder="Nama Barang..."
+                    class="input-field placeholder-gray-500" required>
+            </div>
+            <div>
+                <select name="id_kategori" id="id_kategori" class="input-field text-gray-700" required>
+                    <option value="">Pilih Kategori</option>
+                </select>
+            </div>
+            <div>
+                <input type="text" name="nama_pack" id="nama_pack" placeholder="Satuan Pack (Contoh: Dus, Box, Karton)"
+                    class="input-field placeholder-gray-500">
+            </div>
+            <div>
+                <input type="number" name="jumlah_pack" id="jumlah_pack" placeholder="Jumlah Pack"
+                    class="input-field placeholder-gray-500" required>
+            </div>
+            <div>
+                <input type="number" name="jumlah_pcs" id="jumlah_pcs" placeholder="Jumlah Pcs (Kapasitas per Pack)"
+                    class="input-field placeholder-gray-500" required>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-10">
+            <button type="submit" class="btn-modal-action text-blue-500 border-blue-400 hover:bg-blue-50">
+                Simpan Data
+            </button>
+        </div>
+    </div>
+</form>
             </div>
         </div>
 
