@@ -7,7 +7,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <title>@yield('title')</title>
 
     <style>
@@ -38,7 +37,6 @@
             <button id="toggleBtn" class="p-1 rounded-md hover:bg-gray-200 focus:outline-none transition-colors">
                 <i class="ph ph-list text-3xl font-bold text-black"></i>
             </button>
-            <div class="text-3xl font-medium tracking-tight text-black select-none">V</div>
         </div>
         <div class="flex items-center">
             <button class="relative inline-flex items-center h-7 rounded-full w-12 border border-black bg-transparent focus:outline-none">
