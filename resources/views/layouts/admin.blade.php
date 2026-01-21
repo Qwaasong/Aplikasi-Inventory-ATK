@@ -105,10 +105,10 @@
         // karena padding container (px-3) dibiarkan statis.
 
         let isExpanded = true;
-        // let isAnimating = false;
+        let isAnimatingSidebar = false;
 
         toggleBtn.addEventListener('click', () => {
-            if (isAnimating) return;
+            if (isAnimatingSidebar) return;
 
             // Handle Mobile Toggle (< 640px)
             if (window.innerWidth < 640) {
@@ -129,7 +129,7 @@
                 return;
             }
 
-            isAnimating = true;
+            isAnimatingSidebar = true;
             isExpanded = !isExpanded;
 
             if (!isExpanded) {
@@ -147,7 +147,7 @@
                         item.classList.remove('pl-3');
                         item.classList.add('pl-4', 'pr-0');
                     });
-                    isAnimating = false;
+                    isAnimatingSidebar = false;
                 }, 300);
 
             } else {
@@ -168,7 +168,7 @@
                                 text.classList.remove('opacity-0');
                             });
                         });
-                        isAnimating = false;
+                        isAnimatingSidebar = false;
                     }, 150);
                 }, 200);
             }
