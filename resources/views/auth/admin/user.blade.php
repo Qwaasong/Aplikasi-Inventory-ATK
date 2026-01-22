@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <hr class="my-6 border-gray-200">
+    <hr class="my-6 border-gray-200">
 
         <x-table :data-table="['Nama User' => 'nama_user', 'Username' => 'username', 'Role' => 'role']" 
                  data-url="{{ route('api.user.index') }}" 
