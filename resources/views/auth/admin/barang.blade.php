@@ -4,10 +4,6 @@
 
 @section('content')
 <main class="px-8 py-6">
-    <!-- Font Awesome untuk Icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
     <!-- Custom Style untuk penyesuaian spesifik agar mirip gambar dan modal -->
     <style>
         body {
@@ -445,8 +441,7 @@
 </main>
 @endsection
 
-@section('script')
-<script src="{{ asset('assets/js/fab.js') }}"></script>
+@section('script')  
 <script>
     // Fungsi Membuka Modal
     function openModal(modalId) {
