@@ -29,3 +29,5 @@ Route::delete('/user/{id}', [UserApiController::class, 'destroy'])->name('api.us
 
 // Kategori API Routes (Opsional - Untuk mengisi dropdown di modal)
 Route::get('/kategori', [KategoriApiController::class, 'index'])->name('api.kategori.index');
+Route::post('/kategori', [KategoriApiController::class, 'store'])->name('api.kategori.store');
+Route::delete('/kategori/{id}', [KategoriApiController::class, 'destroy'])->name('api.kategori.destroy');
