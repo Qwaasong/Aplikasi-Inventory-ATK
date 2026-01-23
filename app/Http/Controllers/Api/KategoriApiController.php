@@ -17,7 +17,34 @@ class KategoriApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'data'    => $kategori
+            'data' => $kategori
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_kategori' => 'required|string|max:255',
+        ]);
+
+        $kategori = Kategori::create([
+            'nama_kategori' => $request->nama_kategori
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kategori Berhasil Ditambahkan',
+            'data' => $kategori
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $kategori = Kategori::find($id);
+        if ($kategori) {
+            $kategori->delete(); // Riwayat_stok akan ikut terhapus jika di migrasi ada 'onDelete cascade'
+            return response()->json(['success' => true, 'message' => 'Data berhasil dihapus']);
+        }
+        return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
     }
 }

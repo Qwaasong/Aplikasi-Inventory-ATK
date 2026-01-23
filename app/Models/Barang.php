@@ -22,6 +22,9 @@ class Barang extends Model
     // Relasi: Barang dimiliki oleh satu kategori
     public function kategori(): BelongsTo
     {
-        return $this->belongsTo(Kategori::class, 'id_kategori', 'id_kategori');
+        return $this->belongsTo(Kategori::class, 'id_kategori', 'id_kategori')
+                    ->withDefault([
+                        'nama_kategori' => 'Tanpa Kategori'
+                    ]);
     }
 }

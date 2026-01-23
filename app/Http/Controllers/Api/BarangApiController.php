@@ -29,8 +29,8 @@ class BarangApiController extends Controller
                     $q->where('nama_barang', 'like', '%' . $search . '%')
                         // ATAU cari berdasarkan nama kategori (relasi)
                         ->orWhereHas('kategori', function ($qKategori) use ($search) {
-                            $qKategori->where('nama_kategori', 'like', '%' . $search . '%');
-                        });
+                        $qKategori->where('nama_kategori', 'like', '%' . $search . '%');
+                    });
                 });
             })
             ->latest() // Urutkan dari yang terbaru
@@ -39,7 +39,7 @@ class BarangApiController extends Controller
         // 3. Kembalikan respon JSON
         return response()->json([
             'success' => true,
-            'data'    => $barang
+            'data' => $barang
         ]);
     }
 
@@ -52,63 +52,63 @@ class BarangApiController extends Controller
         return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
     }
 
-   public function store(Request $request)
-{
-    $request->validate([
-        'nama_barang' => 'required',
-        'id_kategori' => 'required',
-        'jumlah_pack' => 'required|numeric',
-        'jumlah_pcs'  => 'required|numeric', // Kapasitas per pack
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_barang' => 'required',
+            'id_kategori' => 'required',
+            'jumlah_pack' => 'required|numeric',
+            'jumlah_pcs' => 'required|numeric', // Kapasitas per pack
+        ]);
 
-    try {
-        return DB::transaction(function () use ($request) {
-            // MEMBUAT VARIABEL TOTAL_PCS
-            $total_pcs = $request->jumlah_pack * $request->jumlah_pcs;
+        try {
+            return DB::transaction(function () use ($request) {
+                // MEMBUAT VARIABEL TOTAL_PCS
+                $total_pcs = $request->jumlah_pack * $request->jumlah_pcs;
 
-            // Gabungkan input awal dengan total_pcs yang baru dihitung
-            $data = $request->all();
-            $data['total_pcs'] = $total_pcs;
+                // Gabungkan input awal dengan total_pcs yang baru dihitung
+                $data = $request->all();
+                $data['total_pcs'] = $total_pcs;
 
-            $barang = Barang::create($data);
+                $barang = Barang::create($data);
 
-            RiwayatStok::create([
-                'id_barang'  => $barang->id_barang,
-                'jenis'      => 'masuk',
-                'jumlah_pcs' => $total_pcs, // Riwayat mencatat total butiran masuk
-            ]);
+                RiwayatStok::create([
+                    'id_barang' => $barang->id_barang,
+                    'jenis' => 'masuk',
+                    'jumlah_pcs' => $total_pcs, // Riwayat mencatat total butiran masuk
+                ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Barang berhasil disimpan',
-                'data'    => $barang
-            ]);
-        });
-    } catch (\Exception $e) {
-        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Barang berhasil disimpan',
+                    'data' => $barang
+                ]);
+            });
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
-}
 
-   public function update(Request $request, $id)
-{
-    $barang = Barang::findOrFail($id);
-    
-    // Hitung ulang variabel total_pcs berdasarkan input baru
-    $total_pcs = $request->jumlah_pack * $request->jumlah_pcs;
+    public function update(Request $request, $id)
+    {
+        $barang = Barang::findOrFail($id);
 
-    $data = $request->all();
-    $data['total_pcs'] = $total_pcs;
+        // Hitung ulang variabel total_pcs berdasarkan input baru
+        $total_pcs = $request->jumlah_pack * $request->jumlah_pcs;
 
-    $barang->update($data);
+        $data = $request->all();
+        $data['total_pcs'] = $total_pcs;
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Barang berhasil diupdate',
-        'data'    => $barang
-    ]);
-}
+        $barang->update($data);
 
-   public function destroy($id)
+        return response()->json([
+            'success' => true,
+            'message' => 'Barang berhasil diupdate',
+            'data' => $barang
+        ]);
+    }
+
+    public function destroy($id)
     {
         $barang = Barang::find($id);
         if ($barang) {
@@ -122,57 +122,57 @@ class BarangApiController extends Controller
     /**
      * Kurangi stok barang (Barang Keluar)
      */
-   public function keluar(Request $request)
-{
-    $request->validate([
-        'id_barang' => 'required|exists:barang,id_barang',
-        'jumlah_pcs_keluar' => 'required|integer|min:1',
-    ]);
+    public function keluar(Request $request)
+    {
+        $request->validate([
+            'id_barang' => 'required|exists:barang,id_barang',
+            'jumlah_pcs_keluar' => 'required|integer|min:1',
+        ]);
 
-    return DB::transaction(function () use ($request) {
-        $barang = Barang::findOrFail($request->id_barang);
+        return DB::transaction(function () use ($request) {
+            $barang = Barang::findOrFail($request->id_barang);
 
-        // 1. Kapasitas per pack (statis)
-        $kapasitas = (int) $barang->jumlah_pcs;
+            // 1. Kapasitas per pack (statis)
+            $kapasitas = (int) $barang->jumlah_pcs;
 
-        // 2. Cek stok pada kolom total_pcs
-        if ($request->jumlah_pcs_keluar > $barang->total_pcs) {
+            // 2. Cek stok pada kolom total_pcs
+            if ($request->jumlah_pcs_keluar > $barang->total_pcs) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Stok tidak cukup! Sisa: $barang->total_pcs Pcs"
+                ], 400);
+            }
+
+            // 3. Hitung Sisa Total PCS
+            $sisaTotalPcs = $barang->total_pcs - $request->jumlah_pcs_keluar;
+
+            // 4. Hitung Sisa Pack (BULAT KE BAWAH)
+            // Jika sisa 115 pcs dan kapasitas 12, maka 115/12 = 9.58 -> Jadi 9 Pack bulat.
+            $sisaPackBulat = floor($sisaTotalPcs / $kapasitas);
+
+            // 5. Update Database
+            $barang->update([
+                'total_pcs' => $sisaTotalPcs,
+                'jumlah_pack' => $sisaPackBulat,
+                // jumlah_pcs tetap statis
+            ]);
+
+            // 6. Simpan Riwayat
+            RiwayatStok::create([
+                'id_barang' => $barang->id_barang,
+                'jenis' => 'keluar',
+                'jumlah_pcs' => $request->jumlah_pcs_keluar,
+            ]);
+
             return response()->json([
-                'success' => false,
-                'message' => "Stok tidak cukup! Sisa: $barang->total_pcs Pcs"
-            ], 400);
-        }
-
-        // 3. Hitung Sisa Total PCS
-        $sisaTotalPcs = $barang->total_pcs - $request->jumlah_pcs_keluar;
-
-        // 4. Hitung Sisa Pack (BULAT KE BAWAH)
-        // Jika sisa 115 pcs dan kapasitas 12, maka 115/12 = 9.58 -> Jadi 9 Pack bulat.
-        $sisaPackBulat = floor($sisaTotalPcs / $kapasitas);
-
-        // 5. Update Database
-        $barang->update([
-            'total_pcs'   => $sisaTotalPcs,
-            'jumlah_pack' => $sisaPackBulat, 
-            // jumlah_pcs tetap statis
-        ]);
-
-        // 6. Simpan Riwayat
-        RiwayatStok::create([
-            'id_barang'  => $barang->id_barang,
-            'jenis'      => 'keluar',
-            'jumlah_pcs' => $request->jumlah_pcs_keluar,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Stok berhasil dikurangi',
-            'data'    => [
-                'sisa_total_pcs' => $sisaTotalPcs,
-                'sisa_pack_utuh' => $sisaPackBulat
-            ]
-        ]);
-    });
-}
+                'success' => true,
+                'message' => 'Stok berhasil dikurangi',
+                'data' => [
+                    'sisa_total_pcs' => $sisaTotalPcs,
+                    'sisa_pack_utuh' => $sisaPackBulat
+                ]
+            ]);
+        });
+    }
 
 }
