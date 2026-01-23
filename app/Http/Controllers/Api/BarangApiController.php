@@ -52,14 +52,15 @@ class BarangApiController extends Controller
         return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nama_barang' => 'required',
-            'id_kategori' => 'required',
-            'jumlah_pack' => 'required|numeric',
-            'jumlah_pcs' => 'required|numeric', // Kapasitas per pack
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'nama_barang' => 'required',
+        'id_kategori' => 'required',
+        'nama_pack'   => 'nullable|string',
+        'jumlah_pack' => 'required|numeric',
+        'jumlah_pcs'  => 'required|numeric', // Kapasitas per pack
+    ]);
 
         try {
             return DB::transaction(function () use ($request) {

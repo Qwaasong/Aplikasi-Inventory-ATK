@@ -17,41 +17,49 @@
         </div>
     </div>
 
-    <div class="overflow-x-auto bg-white rounded-xl shadow-sm">
-        <div class="hidden sm:table w-full">
-            <table class="w-full text-sm text-left text-gray-60">
-                <thead class="bg-gray-50 border-b border-t border-gray-200">
-                    <tr>
-                        {{-- LOOPING KOLOM HEADER --}}
-                        @foreach (array_keys($dataTable) as $header)
-                        <th scope="col" class="px-6 py-3 font-bold text-gray-900">{{ $header }}</th>
-                        @endforeach
-                        {{-- Kolom Aksi --}}
-                        @if($showAction)
-                        <th scope="col" class="px-6 py-3">
-                            <span class="sr-only">Actions</span>
-                        </th>
-                        @endif
-                    </tr>
-                </thead>
-                {{-- ISI TABEL AKAN DI-INJECT OLEH AJAX/JQUERY --}}
-                <tbody id="table-body">
-                    <tr>
-                        <td colspan="{{ count($dataTable) + ($showAction ? 1 : 0) }}" class="text-center py-4 text-gray-500">
-                            Memuat data...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+        <div class="overflow-x-auto">
+            <div class="hidden sm:table w-full">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="bg-gray-50/50 border-b border-gray-200">
+                        <tr>
+                            {{-- LOOPING KOLOM HEADER --}}
+                            @foreach (array_keys($dataTable) as $header)
+                            <th scope="col" class="px-6 py-4 font-bold text-gray-900 uppercase tracking-wider text-xs">{{ $header }}</th>
+                            @endforeach
+                            {{-- Kolom Aksi --}}
+                            @if($showAction)
+                            <th scope="col" class="px-6 py-4">
+                                <span class="sr-only">Actions</span>
+                            </th>
+                            @endif
+                        </tr>
+                    </thead>
+                    {{-- ISI TABEL AKAN DI-INJECT OLEH AJAX/JQUERY --}}
+                    <tbody id="table-body" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="{{ count($dataTable) + ($showAction ? 1 : 0) }}" class="text-center py-10 text-gray-400">
+                                <div class="flex flex-col items-center">
+                                    <svg class="animate-spin h-8 w-8 text-blue-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span>Memuat data...</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="sm:hidden p-4 space-y-4" id="card-view-container">
+                <div class="text-center py-10 text-gray-400 font-medium">Memuat data...</div>
+            </div>
         </div>
 
-        <div class="sm:hidden space-y-4" id="card-view-container">
-            <div class="text-center py-4 text-gray-500">Memuat data...</div>
-        </div>
+        {{-- Pagination terintegrasi (Modern & Minimalist) --}}
+        <div id="pagination-links" class="border-t border-gray-100 bg-gray-50/30"></div>
     </div>
-
-    {{-- Pagination akan di-inject di sini --}}
-    <div id="pagination-links" class="mt-4 flex justify-center"></div>
 
 </div>
 
@@ -110,118 +118,128 @@
             return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
 
-        // Helper: buat tombol pagination
+        // Helper: buat tombol pagination modern minimalis
         function renderPageButton(pageNum, currentPage) {
             const isActive = pageNum === currentPage;
-
             return `
                 <button
                     data-page="${pageNum}"
-                    class="pagination-link relative inline-flex items-center px-4 py-2 text-sm font-medium
-                        ${isActive
-                            ? 'text-white bg-blue-600'
-                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}">
+                    class="pagination-link flex items-center justify-center min-w-[32px] h-8 mx-0.5 text-sm font-medium rounded-lg transition-all 
+                        ${isActive 
+                            ? 'bg-blue-600 text-white shadow-sm' 
+                            : 'text-gray-600 hover:bg-gray-100'}"
+                >
                     ${pageNum}
                 </button>
             `;
         }
 
-        // Helper: tombol Prev / Next
+        // Helper: tombol navigasi (Prev/Next)
         function renderNavButton({
             label,
             page,
             disabled,
             icon,
-            extraClass = ''
+            iconPosition = 'left'
         }) {
             return `
-                <button
-                    data-page="${page}"
-                    ${disabled ? 'disabled' : ''}
-                    class="pagination-link relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500
-                        ${disabled ? 'cursor-not-allowed opacity-50' : 'hover:text-gray-700'}
-                        ${extraClass}">
-                    ${icon || ''}
-                    ${label}
-                </button>
+        <button
+            data-page="${page}"
+            ${disabled ? 'disabled' : ''}
+            class="pagination-link flex items-center px-3 h-8 text-sm font-medium rounded-lg transition-all
+                ${disabled 
+                    ? 'text-gray-300 cursor-not-allowed' 
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-blue-600'}"
+        >
+            ${icon && iconPosition === 'left' ? icon : ''}
+            <span class="${icon ? (iconPosition === 'left' ? 'ml-1.5' : 'mr-1.5') : ''}">
+                ${label}
+            </span>
+            ${icon && iconPosition === 'right' ? icon : ''}
+        </button>
+    `;
+        }
+
+
+        // Helper: renderer titik-titik (ellipsis)
+        function renderEllipsis() {
+            return `
+                <span class="flex items-center justify-center w-10 h-10 mx-0.5 text-gray-400">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </span>
             `;
         }
 
-        // Helper: hitung range halaman
-        function getPageRange(current, last, windowSize) {
-            let start = Math.max(1, current - Math.floor(windowSize / 2));
-            let end = start + windowSize - 1;
-
-            if (end > last) {
-                end = last;
-                start = Math.max(1, end - windowSize + 1);
-            }
-
-            return {
-                start,
-                end
-            };
-        }
-
-        // Fungsi utama render pagination
+        // Fungsi utama render pagination dengan tampilan integrated
         function renderPagination(paginationMeta) {
             if (!paginationMeta || paginationMeta.last_page <= 1) {
                 return '';
             }
 
-            const isDesktop = window.innerWidth >= 768;
-            const windowSize = isDesktop ? 5 : 3;
-
-            const {
-                start,
-                end
-            } = getPageRange(
-                paginationMeta.current_page,
-                paginationMeta.last_page,
-                windowSize
-            );
+            const current = paginationMeta.current_page;
+            const last = paginationMeta.last_page;
+            const isMobile = window.innerWidth < 640;
+            const delta = isMobile ? 1 : 2;
 
             let html = `
-                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px justify-center"
-                    aria-label="Pagination">
+                <div class="flex flex-col sm:flex-row items-center justify-between px-6 py-4 w-full gap-4">
+                    <div class="text-xs font-medium text-gray-500 order-2 sm:order-1">
+                        Menampilkan <span class="text-gray-900">${paginationMeta.from || 0}</span> - 
+                        <span class="text-gray-900">${paginationMeta.to || 0}</span> dari 
+                        <span class="text-gray-900">${paginationMeta.total || 0}</span> data
+                    </div>
+                    <nav class="flex items-center gap-1 order-1 sm:order-2" aria-label="Pagination">
             `;
 
-            // Previous
+            // Button: Previous
             html += renderNavButton({
-                label: 'Previous',
-                page: paginationMeta.current_page - 1,
-                disabled: paginationMeta.current_page === 1,
-                icon: `
-                    <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                    </svg>
-                `,
-                extraClass: 'rounded-l-md'
+                label: 'Prev',
+                page: current - 1,
+                disabled: current === 1,
+                iconPosition: 'left',
+                icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>'
             });
 
-            // Page numbers
-            for (let page = start; page <= end; page++) {
-                html += renderPageButton(page, paginationMeta.current_page);
+            // Logic Page Numbers...
+            const pages = [];
+            const leftLimit = current - delta;
+            const rightLimit = current + delta;
+            for (let i = 1; i <= last; i++) {
+                if (i === 1 || i === last || (i >= leftLimit && i <= rightLimit)) {
+                    pages.push(i);
+                } else if (i === leftLimit - 1 || i === rightLimit + 1) {
+                    pages.push('...');
+                }
             }
 
-            // Next
-            html += renderNavButton({
-                label: 'Next',
-                page: paginationMeta.current_page + 1,
-                disabled: paginationMeta.current_page === paginationMeta.last_page,
-                icon: `
-                    <svg class="w-5 h-5 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                    </svg>
-                `,
-                extraClass: 'rounded-r-md'
+            let lastPageAdded = null;
+            pages.forEach(page => {
+                if (page === '...') {
+                    if (lastPageAdded !== '...') {
+                        html += renderEllipsis();
+                        lastPageAdded = '...';
+                    }
+                } else {
+                    html += renderPageButton(page, current);
+                    lastPageAdded = page;
+                }
             });
 
-            html += '</nav>';
+            // Button: Next
+            html += renderNavButton({
+                label: 'Next',
+                page: current + 1,
+                disabled: current === last,
+                iconPosition: 'right',
+                icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>'
+            });
+
+            html += `
+                    </nav>
+                </div>
+            `;
 
             return html;
         }
@@ -420,13 +438,10 @@
                     }); // Debugging line
                     // Gunakan totalColumns yang sudah didefinisikan di scope atas
                     tableBody.html(
-                        ` < tr > < td colspan = "${totalColumns}"
-                    class = "text-center py-4 text-red-500" > Gagal memuat data: $ {
-                        xhr.statusText
-                    } < /td></tr > `
+                        `<tr><td colspan="${totalColumns}" class="text-center py-4 text-red-500">Gagal memuat data: ${xhr.statusText}</td></tr>`
                     );
                     cardContainer.html(
-                        ` < div class = "text-center py-4 text-red-500" > Gagal memuat data. < /div>`);
+                        `<div class="text-center py-4 text-red-500">Gagal memuat data.</div>`);
                 }
             });
         }
@@ -637,8 +652,10 @@
             }
         }, 150); // Jalankan maksimal sekali setiap 150ms
 
-        // Event listener untuk menutup dropdown saat halaman di-scroll
-        window.addEventListener('scroll', handleScrollWithThrottle);
+        // Event listener untuk menutup dropdown saat halaman di-scroll atau di-resize
+        // Menggunakan capture: true agar mendeteksi scroll pada elemen internal (seperti container tabel)
+        window.addEventListener('scroll', handleScrollWithThrottle, true);
+        window.addEventListener('resize', handleScrollWithThrottle);
 
         // Event listener untuk menutup dropdown jika diklik di luar area
         window.addEventListener('click', (event) => {

@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class USERController extends Controller
 {
     // Fungsi index dan destroy diletakkan di API (serupa dengan BarangApiController)
     

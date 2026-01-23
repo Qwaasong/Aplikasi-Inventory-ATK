@@ -51,149 +51,149 @@
             }
 
 
-            .btn-modal-action:hover {
-                background-color: #E5E7EB;
-                color: #111;
-            }
+        .btn-modal-action:hover {
+            background-color: #E5E7EB;
+            color: #111;
+        }
 
-            /* Styling untuk Hasil Pencarian (Autocomplete) */
-            .search-results {
-                position: absolute;
-                background: white;
-                border: 1px solid #ccc;
-                width: 100%;
-                max-height: 200px;
-                overflow-y: auto;
-                z-index: 1000;
-                border-radius: 4px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
+        /* Styling untuk Hasil Pencarian (Autocomplete) */
+        .search-results {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-            .search-item {
-                padding: 10px;
-                cursor: pointer;
-                border-bottom: 1px solid #eee;
-            }
+        .search-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
 
-            .search-item:hover {
-                background-color: #f0f0f0;
-            }
+        .search-item:hover {
+            background-color: #f0f0f0;
+        }
 
-            /* 1. WRAPPER UTAMA FAB */
-            .fab {
-                z-index: 9999;
-                /* KUNCI: Buat container selebar tombol utama (56px) & ratakan tengah */
-                width: 56px !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                /* Semua tombol dipaksa ke tengah as */
-                right: 24px !important;
-                /* Jarak dari kanan layar (right-6) */
-            }
+        /* 1. WRAPPER UTAMA FAB */
+        .fab {
+            z-index: 9999;
+            /* KUNCI: Buat container selebar tombol utama (56px) & ratakan tengah */
+            width: 56px !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            /* Semua tombol dipaksa ke tengah as */
+            right: 24px !important;
+            /* Jarak dari kanan layar (right-6) */
+        }
 
-            /* 2. ITEM LIST (ANAK-ANAK) */
-            .fab-items {
-                width: 100%;
-                display: flex;
-                flex-direction: column-reverse;
-                align-items: center;
-                /* Pastikan anak-anak juga rata tengah */
-                gap: 12px;
-                padding-bottom: 12px;
-                /* Jarak antara tombol kecil & tombol utama */
-            }
+        /* 2. ITEM LIST (ANAK-ANAK) */
+        .fab-items {
+            width: 100%;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            /* Pastikan anak-anak juga rata tengah */
+            gap: 12px;
+            padding-bottom: 12px;
+            /* Jarak antara tombol kecil & tombol utama */
+        }
 
-            .fab-item-wrapper {
-                /* Wrapper memenuhi lebar 56px, tombol ditaruh di tengah */
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                /* Tombol kecil dipaksa ke tengah */
-                position: relative;
-                /* Jangkar untuk label absolute */
+        .fab-item-wrapper {
+            /* Wrapper memenuhi lebar 56px, tombol ditaruh di tengah */
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Tombol kecil dipaksa ke tengah */
+            position: relative;
+            /* Jangkar untuk label absolute */
 
-                /* Animasi */
-                transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                visibility: visible;
-                height: 48px;
-                /* Tinggi fix sesuai tombol kecil */
-            }
+            /* Animasi */
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            visibility: visible;
+            height: 48px;
+            /* Tinggi fix sesuai tombol kecil */
+        }
 
-            /* Kondisi Tersembunyi */
-            .fab-item-wrapper.hidden-space {
-                opacity: 0;
-                transform: translateY(20px) scale(0.8);
-                visibility: hidden;
-                height: 0;
-            }
+        /* Kondisi Tersembunyi */
+        .fab-item-wrapper.hidden-space {
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+            visibility: hidden;
+            height: 0;
+        }
 
-            /* Tombol Bulat Anak (48px) */
-            .fab-item {
-                width: 48px;
-                height: 48px;
-                border: none;
-                outline: none;
-                cursor: pointer;
-                border-radius: 9999px;
-                /* Tidak perlu margin aneh-aneh lagi */
-            }
+        /* Tombol Bulat Anak (48px) */
+        .fab-item {
+            width: 48px;
+            height: 48px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            border-radius: 9999px;
+            /* Tidak perlu margin aneh-aneh lagi */
+        }
 
-            /* 3. LABEL TEKS (POSISI ABSOLUTE) */
-            /* Label menempel melayang di sebelah kiri tombol */
-            .fab-label {
-                position: absolute;
-                right: 56px;
-                /* Geser ke kiri sejauh lebar container */
-                top: 50%;
-                transform: translateY(-50%);
-                /* Trik CSS biar lurus vertikal tengah */
+        /* 3. LABEL TEKS (POSISI ABSOLUTE) */
+        /* Label menempel melayang di sebelah kiri tombol */
+        .fab-label {
+            position: absolute;
+            right: 56px;
+            /* Geser ke kiri sejauh lebar container */
+            top: 50%;
+            transform: translateY(-50%);
+            /* Trik CSS biar lurus vertikal tengah */
 
-                font-family: 'Inter', sans-serif;
-                background-color: #1f2937;
-                color: white;
-                padding: 6px 14px;
-                border-radius: 8px;
-                font-size: 13px;
-                font-weight: 500;
-                margin-right: 12px;
-                /* Jarak label ke tombol */
-                white-space: nowrap;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                cursor: pointer;
-            }
+            font-family: 'Inter', sans-serif;
+            background-color: #1f2937;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-right: 12px;
+            /* Jarak label ke tombol */
+            white-space: nowrap;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
 
-            /* 4. TOMBOL UTAMA (TRIGGER) */
-            #fabMain {
-                width: 56px;
-                height: 56px;
-                position: relative;
-                border: none;
-                outline: none;
-                cursor: pointer;
-                transform: none !important;
-                transition: background-color 0.2s;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                /* Otomatis rata tengah karena parent align-items: center */
-            }
+        /* 4. TOMBOL UTAMA (TRIGGER) */
+        #fabMain {
+            width: 56px;
+            height: 56px;
+            position: relative;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            transform: none !important;
+            transition: background-color 0.2s;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            /* Otomatis rata tengah karena parent align-items: center */
+        }
 
-            /* ICON X */
-            #iconX {
-                position: static !important;
-                transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-                display: flex !important;
-                align-items: center;
-                justify-content: center;
-            }
+        /* ICON X */
+        #iconX {
+            position: static !important;
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+        }
 
-            #fabMain[aria-expanded="true"] #iconX {
-                transform: rotate(135deg) !important;
-            }
-        </style>
+        #fabMain[aria-expanded="true"] #iconX {
+            transform: rotate(135deg) !important;
+        }
+    </style>
 
 
         <!-- Header Konten -->
@@ -254,18 +254,18 @@
                 </div>
             </div>
 
-            <button id="fabMain" class="fab-main rounded-full shadow-xl bg-[#1e5bb5] hover:bg-blue-800 text-white z-50"
-                aria-expanded="false" aria-label="Open FAB">
+        <button id="fabMain" class="fab-main rounded-full shadow-xl bg-[#1e5bb5] hover:bg-blue-800 text-white z-50"
+            aria-expanded="false" aria-label="Open FAB">
 
-                <span id="iconX" class="fab-icon visible text-xl">
-                    <i class="fa-solid fa-plus"></i>
-                </span>
-            </button>
+            <span id="iconX" class="fab-icon visible text-xl">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </button>
 
-        </div>
+    </div>
 
 
-        <hr class="my-6 border-gray-200">
+    <hr class="my-6 border-gray-200">
 
         <!-- Tabel Data Menggunakan Component -->
         <x-table
@@ -291,39 +291,39 @@
                         </svg>
                     </button>
 
-                    <div id="filter-dropdown"
-                        class="hidden absolute mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-20 top-full">
-                        <form id="filter-form" class="p-6 space-y-4">
+                <div id="filter-dropdown"
+                    class="hidden absolute mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-20 top-full">
+                    <form id="filter-form" class="p-6 space-y-4">
 
-                            <div>
-                                <label for="filter_tanggal_awal" class="block text-sm font-medium text-gray-700">Tanggal
-                                    Awal</label>
-                                <input type="date" name="filter[tanggal_awal]" id="filter_tanggal_awal"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            </div>
+                        <div>
+                            <label for="filter_tanggal_awal" class="block text-sm font-medium text-gray-700">Tanggal
+                                Awal</label>
+                            <input type="date" name="filter[tanggal_awal]" id="filter_tanggal_awal"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
 
-                            <div>
-                                <label for="filter_tanggal_akhir" class="block text-sm font-medium text-gray-700">Tanggal
-                                    Akhir</label>
-                                <input type="date" name="filter[tanggal_akhir]" id="filter_tanggal_akhir"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            </div>
+                        <div>
+                            <label for="filter_tanggal_akhir" class="block text-sm font-medium text-gray-700">Tanggal
+                                Akhir</label>
+                            <input type="date" name="filter[tanggal_akhir]" id="filter_tanggal_akhir"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
 
-                            <div class="flex justify-end space-x-2 pt-4">
-                                <button type="button" id="reset-filter-btn"
-                                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
-                                    Reset
-                                </button>
-                                <button type="submit"
-                                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700">
-                                    Apply
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="flex justify-end space-x-2 pt-4">
+                            <button type="button" id="reset-filter-btn"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
+                                Reset
+                            </button>
+                            <button type="submit"
+                                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700">
+                                Apply
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </x-slot:filter>
-        </x-table>
+            </div>
+        </x-slot:filter>
+    </x-table>
 
 
         <!-- ================= MODAL 1: TAMBAH BARANG MASUK ================= -->
@@ -643,24 +643,24 @@
             }
         }
 
-        // Fungsi Menutup Modal
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
+    // Fungsi Menutup Modal
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
 
-        // Menutup modal jika user klik di area gelap (backdrop)
-        ['modalMasuk', 'modalKeluar', 'modalEdit'].forEach(id => {
-            const modal = document.getElementById(id);
-            if (!modal) return;
+    // Menutup modal jika user klik di area gelap (backdrop)
+    ['modalMasuk', 'modalKeluar', 'modalEdit'].forEach(id => {
+        const modal = document.getElementById(id);
+        if (!modal) return;
 
-            modal.addEventListener('click', function (e) {
-                if (e.target === modal) {
-                    closeModal(id);
-                }
-            });
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal(id);
+            }
         });
+    });
 
 
         // Load Kategori (Reusable)
@@ -722,64 +722,64 @@
             }
         }
 
-        // --- LOGIKA BARANG KELUAR (AUTOCOMPLETE) ---
+    // --- LOGIKA BARANG KELUAR (AUTOCOMPLETE) ---
 
-        let debounceTimer;
-        const searchInput = document.getElementById('search_barang_keluar');
-        const resultsContainer = document.getElementById('search_results_container');
-        const idBarangInput = document.getElementById('id_barang_keluar');
+    let debounceTimer;
+    const searchInput = document.getElementById('search_barang_keluar');
+    const resultsContainer = document.getElementById('search_results_container');
+    const idBarangInput = document.getElementById('id_barang_keluar');
 
-        searchInput.addEventListener('input', function () {
-            clearTimeout(debounceTimer);
-            const query = this.value;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        const query = this.value;
 
-            if (query.length < 2) {
-                resultsContainer.classList.add('hidden');
-                return;
-            }
-
-            debounceTimer = setTimeout(() => {
-                fetchBarang(query);
-            }, 300); // Tunggu 300ms sebelum request
-        });
-
-        async function fetchBarang(query) {
-            try {
-                // Gunakan endpoint index yang sudah ada dengan param search
-                const response = await fetch(`{{ route('api.barang.index') }}?search=${query}`);
-                const result = await response.json();
-
-                resultsContainer.innerHTML = '';
-
-                if (result.success && result.data.data.length > 0) {
-                    resultsContainer.classList.remove('hidden');
-                    result.data.data.forEach(item => {
-                        const div = document.createElement('div');
-                        div.classList.add('search-item');
-                        div.textContent = `${item.nama_barang} (Stok: ${item.jumlah_pcs})`;
-
-                        div.onclick = function () {
-                            searchInput.value = item.nama_barang;
-                            idBarangInput.value = item.id_barang; // Simpan ID
-                            resultsContainer.classList.add('hidden');
-                        };
-
-                        resultsContainer.appendChild(div);
-                    });
-                } else {
-                    resultsContainer.classList.add('hidden');
-                }
-            } catch (error) {
-                console.error('Error fetching barang:', error);
-            }
+        if (query.length < 2) {
+            resultsContainer.classList.add('hidden');
+            return;
         }
 
-        // Sembunyikan dropdown jika klik di luar
-        document.addEventListener('click', function (e) {
-            if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+        debounceTimer = setTimeout(() => {
+            fetchBarang(query);
+        }, 300); // Tunggu 300ms sebelum request
+    });
+
+    async function fetchBarang(query) {
+        try {
+            // Gunakan endpoint index yang sudah ada dengan param search
+            const response = await fetch(`{{ route('api.barang.index') }}?search=${query}`);
+            const result = await response.json();
+
+            resultsContainer.innerHTML = '';
+
+            if (result.success && result.data.data.length > 0) {
+                resultsContainer.classList.remove('hidden');
+                result.data.data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.classList.add('search-item');
+                    div.textContent = `${item.nama_barang} (Stok: ${item.jumlah_pcs})`;
+
+                    div.onclick = function() {
+                        searchInput.value = item.nama_barang;
+                        idBarangInput.value = item.id_barang; // Simpan ID
+                        resultsContainer.classList.add('hidden');
+                    };
+
+                    resultsContainer.appendChild(div);
+                });
+            } else {
                 resultsContainer.classList.add('hidden');
             }
-        });
+        } catch (error) {
+            console.error('Error fetching barang:', error);
+        }
+    }
+
+    // Sembunyikan dropdown jika klik di luar
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+            resultsContainer.classList.add('hidden');
+        }
+    });
 
         // Submit Barang Keluar
         async function submitBarangKeluar(e) {
@@ -889,48 +889,48 @@
             });
         });
 
-        // Submit Edit
-        async function submitBarangEdit(e) {
-            e.preventDefault();
+    // Submit Edit
+    async function submitBarangEdit(e) {
+        e.preventDefault();
 
-            const form = document.getElementById('formBarangEdit');
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
+        const form = document.getElementById('formBarangEdit');
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
 
-            // Ambil ID dari hidden input
-            const id = document.getElementById('edit_id_barang').value;
+        // Ambil ID dari hidden input
+        const id = document.getElementById('edit_id_barang').value;
 
-            if (!id) {
-                alert('ID Barang tidak ditemukan!');
-                return;
-            }
-
-            try {
-                // Gunakan URL update yang benar. Perhatikan method PUT/PATCH
-                // Laravel Resource Route biasanya menggunakan PUT/PATCH untuk update
-                const response = await fetch(`{{ url('api/barang') }}/${id}`, {
-                    method: 'PUT', // Fetch support PUT directly
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (response.ok && result.success) {
-                    alert('Data berhasil diperbarui!');
-                    closeModal('modalEdit');
-                    window.location.reload();
-                } else {
-                    alert('Gagal update: ' + (result.message || 'Unknown error'));
-                }
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan sistem saat update');
-            }
+        if (!id) {
+            alert('ID Barang tidak ditemukan!');
+            return;
         }
-    </script>
+
+        try {
+            // Gunakan URL update yang benar. Perhatikan method PUT/PATCH
+            // Laravel Resource Route biasanya menggunakan PUT/PATCH untuk update
+            const response = await fetch(`{{ url('api/barang') }}/${id}`, {
+                method: 'PUT', // Fetch support PUT directly
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                alert('Data berhasil diperbarui!');
+                closeModal('modalEdit');
+                window.location.reload();
+            } else {
+                alert('Gagal update: ' + (result.message || 'Unknown error'));
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan sistem saat update');
+        }
+    }
+</script>
 @endsection

@@ -5,29 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/inter-font.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/admin-layout.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <title>@yield('title')</title>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .nav-item.active {
-            background-color: rgba(209, 213, 219, 0.6) !important;
-            color: #111827 !important;
-        }
-
-        @media(min-width: 765px){
-            .fab {
-                display: none !important;
-            }
-        }
-    </style>
 </head>
 
 <body class="flex flex-col h-screen overflow-hidden bg-gray-100 text-gray-800">
@@ -36,14 +19,17 @@
     <header class="h-16 w-full bg-[#f0f0f0] border-b border-gray-300 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20">
         <div class="flex items-center gap-4">
             <button id="toggleBtn" class="p-1 rounded-md hover:bg-gray-200 focus:outline-none transition-colors">
-                <i class="ph ph-list text-3xl font-bold text-black"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256" class="text-black font-bold">
+                    <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path>
+                </svg>
             </button>
-            <div class="text-3xl font-medium tracking-tight text-black select-none">V</div>
         </div>
         <div class="flex items-center">
             <button class="relative inline-flex items-center h-7 rounded-full w-12 border border-black bg-transparent focus:outline-none">
                 <span class="translate-x-6 inline-block w-5 h-5 transform bg-transparent rounded-full transition-transform items-center justify-center flex">
-                    <i class="ph ph-moon text-lg text-black"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 256 256" class="text-black">
+                        <path d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.11,104.11,0,1,0,129.75,129.75A8,8,0,0,0,233.54,142.23ZM128,216a88.13,88.13,0,0,1-73.49-136.66,104.05,104.05,0,0,0,128.74,128.74A87.59,87.59,0,0,1,128,216Z"></path>
+                    </svg>
                 </span>
             </button>
         </div>
@@ -62,17 +48,23 @@
 
                 <!-- Nav Item -->
                 <a href="{{ route('admin.dashboard') }}" class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 hover:bg-gray-200/80 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.dashboard') ? 'active' : '' }}">
-                    <i class="ph ph-house text-2xl shrink-0"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
+                        <path d="M219.31,108.68l-80-73.34a16,16,0,0,0-22.62,0l-80,73.34A15.82,15.82,0,0,0,32,120.42V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V120.42A15.82,15.82,0,0,0,219.31,108.68ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V120.42l80-73.34,80,73.34Z"></path>
+                    </svg>
                     <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Dashboard</span>
                 </a>
 
                 <a href="{{ route('admin.barang') }}" class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 hover:bg-gray-200/80 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.barang') ? 'active' : '' }}">
-                    <i class="ph ph-package text-2xl shrink-0"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
+                        <path d="M223.68,66.15,135.68,18a15.88,15.88,0,0,0-15.36,0l-88,48.15a16,16,0,0,0-8.32,14V173.9a16,16,0,0,0,8.32,14l88,48.15a15.88,15.88,0,0,0,15.36,0l88-48.15a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,33.51l80,43.78-31.57,17.27L96.43,51.09ZM40,80.18l80-43.78V124.6L40,80.89Zm80,142.31L40,178.71V99.11L120,142.8ZM136,222.49V142.8l80-43.69v79.6Z"></path>
+                    </svg>
                     <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Barang</span>
                 </a>
 
                 <a href="{{ route('admin.user') }}" class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 hover:bg-gray-200/80 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.user') ? 'active' : '' }}">
-                    <i class="ph ph-user text-2xl shrink-0"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
+                        <path d="M231.39,212.46A104,104,0,0,0,36.07,176.84a8,8,0,1,0,12.83,9.54,88,88,0,0,1,164.44,30.3,8,8,0,0,0,15.79-2.61ZM128,152a64,64,0,1,0-64-64A64.07,64.07,0,0,0,128,152Zm0-112a48,48,0,1,1-48,48A48.05,48.05,0,0,1,128,40Z"></path>
+                    </svg>
                     <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">User</span>
                 </a>
             </nav>
@@ -82,7 +74,9 @@
                 <form action="" method="POST">
                     @csrf
                     <button type="submit" class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 hover:bg-gray-200/80 rounded-lg transition-all duration-200 w-full">
-                        <i class="ph ph-sign-out text-2xl shrink-0 rotate-180"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0 rotate-180">
+                            <path d="M112,216a8,8,0,0,1-8,8H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h56a8,8,0,0,1,0,16H48V208h56A8,8,0,0,1,112,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L196.69,120H104a8,8,0,0,0,0,16h92.69l-28.35,28.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,221.66,122.34Z"></path>
+                        </svg>
                         <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Logout</span>
                     </button>
                 </form>
@@ -93,128 +87,8 @@
             @yield('content')
         </div>
     </div>
-
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.getElementById('toggleBtn');
-        const sidebarTexts = document.querySelectorAll('.sidebar-text');
-        const navItems = document.querySelectorAll('.nav-item');
-
-        // Kita tidak perlu lagi memilih navContainer untuk diubah paddingnya,
-        // karena padding container (px-3) dibiarkan statis.
-
-        let isExpanded = true;
-        let isAnimatingSidebar = false;
-
-        toggleBtn.addEventListener('click', () => {
-            if (isAnimatingSidebar) return;
-
-            // Handle Mobile Toggle (< 640px)
-            if (window.innerWidth < 640) {
-                if (sidebar.classList.contains('hidden')) {
-                    sidebar.classList.remove('hidden');
-                    sidebar.classList.add('flex', 'absolute', 'inset-y-0', 'left-0', 'z-50', 'w-64');
-                    sidebarTexts.forEach(text => {
-                        text.classList.remove('hidden', 'opacity-0');
-                    });
-                    navItems.forEach(item => {
-                        item.classList.remove('pl-4', 'pr-0');
-                        item.classList.add('pl-3');
-                    });
-                } else {
-                    sidebar.classList.add('hidden');
-                    sidebar.classList.remove('flex', 'absolute', 'inset-y-0', 'left-0', 'z-50', 'w-64');
-                }
-                return;
-            }
-
-            isAnimatingSidebar = true;
-            isExpanded = !isExpanded;
-
-            if (!isExpanded) {
-                // === MENUTUP ===
-                sidebarTexts.forEach(text => {
-                    text.classList.add('opacity-0');
-                    setTimeout(() => text.classList.add('hidden'), 200);
-                });
-
-                sidebar.classList.remove('w-64');
-                sidebar.classList.add('w-20');
-
-                setTimeout(() => {
-                    navItems.forEach(item => {
-                        item.classList.remove('pl-3');
-                        item.classList.add('pl-4', 'pr-0');
-                    });
-                    isAnimatingSidebar = false;
-                }, 300);
-
-            } else {
-                // === MEMBUKA ===
-                navItems.forEach(item => {
-                    item.classList.remove('pl-4', 'pr-0');
-                    item.classList.add('pl-3');
-                });
-
-                setTimeout(() => {
-                    sidebar.classList.remove('w-20');
-                    sidebar.classList.add('w-64');
-
-                    setTimeout(() => {
-                        sidebarTexts.forEach(text => {
-                            text.classList.remove('hidden');
-                            requestAnimationFrame(() => {
-                                text.classList.remove('opacity-0');
-                            });
-                        });
-                        isAnimatingSidebar = false;
-                    }, 150);
-                }, 200);
-            }
-        });
-
-        // Responsif Init & Resize
-        function checkScreenSize() {
-            const width = window.innerWidth;
-            if (width < 640) {
-                // Mobile
-                sidebar.classList.add('hidden');
-                sidebar.classList.remove('flex', 'absolute', 'inset-y-0', 'left-0', 'z-50', 'w-64', 'w-20');
-                isExpanded = false;
-            } else if (width < 768) {
-                // Tablet (Collapsed)
-                sidebar.classList.remove('hidden', 'absolute', 'inset-y-0', 'left-0', 'z-50');
-                sidebar.classList.add('flex', 'w-20');
-                sidebar.classList.remove('w-64');
-                isExpanded = false;
-
-                navItems.forEach(item => {
-                    item.classList.remove('pl-3');
-                    item.classList.add('pl-4', 'pr-0');
-                });
-                sidebarTexts.forEach(text => {
-                    text.classList.add('opacity-0', 'hidden');
-                });
-            } else {
-                // Desktop (Expanded)
-                sidebar.classList.remove('hidden', 'absolute', 'inset-y-0', 'left-0', 'z-50', 'w-20');
-                sidebar.classList.add('flex', 'w-64');
-                isExpanded = true;
-
-                navItems.forEach(item => {
-                    item.classList.remove('pl-4', 'pr-0');
-                    item.classList.add('pl-3');
-                });
-                sidebarTexts.forEach(text => {
-                    text.classList.remove('hidden', 'opacity-0');
-                });
-            }
-        }
-
-        window.addEventListener('resize', checkScreenSize);
-        checkScreenSize();
-    </script>
+    <script src="{{ asset('assets/js/admin-layout.js') }}"></script>
+    <script src="{{ asset('assets/js/fab.js') }}"></script>
     @yield('script')
 </body>
 

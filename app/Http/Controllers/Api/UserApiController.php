@@ -6,12 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator; // Tambahkan ini
 
 class UserApiController extends Controller
 {
-    /**
-     * Tampilkan daftar user dengan pencarian dan paginasi.
-     */
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
@@ -24,7 +22,7 @@ class UserApiController extends Controller
                       ->orWhere('role', 'like', '%' . $search . '%');
                 });
             })
-            ->latest('id_user')
+            ->latest('id_user') // Pastikan primary key di model User adalah 'id_user'
             ->paginate($perPage);
 
         return response()->json([
@@ -33,79 +31,103 @@ class UserApiController extends Controller
         ]);
     }
 
-    /**
-     * Ambil satu data user untuk modal edit.
-     */
-    public function show($id)
-    {
-        $user = User::find($id);
-        if ($user) {
-            return response()->json(['success' => true, 'data' => $user]);
-        }
-        return response()->json(['success' => false, 'message' => 'User tidak ditemukan'], 404);
+    public function store(Request $request)
+{
+    // 1. Definisikan Rule Validasi
+    $rules = [
+        'nama_user' => 'required|string|max:255',
+        'username'  => 'required|unique:user,username',
+        'password'  => 'required|string|min:6', // <--- Minimal 6 Karakter
+        'role'      => 'required'
+    ];
+
+    // 2. Definisikan Pesan Error Kustom (Opsional tapi disarankan)
+    $messages = [
+        'password.min'      => 'Password harus memiliki minimal 6 karakter.',
+        'password.required' => 'Password wajib diisi.',
+        'username.unique'   => 'Username sudah terdaftar, silakan gunakan yang lain.',
+    ];
+
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validasi Gagal',
+            'errors'  => $validator->errors()
+        ], 422);
     }
 
-    /**
-     * Simpan user baru.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nama_user' => 'required|string|max:255',
-            'username'  => 'required|unique:user,username',
-            'password'  => 'required|min:6',
-            'role'      => 'required'
-        ]);
-
+    try {
         $user = User::create([
             'nama_user' => $request->nama_user,
             'username'  => $request->username,
             'role'      => $request->role,
-            'password'  => Hash::make($request->password), // Enkripsi Password
+            'password'  => Hash::make($request->password),
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'User berhasil ditambahkan',
-            'data'    => $user
-        ]);
+        ], 201);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal menyimpan data ke database.'
+        ], 500);
+    }
+}
+
+
+    public function show($id)
+    {
+        // Menggunakan id_user karena biasanya itu primary key kustom Anda
+        $user = User::where('id_user', $id)->first();
+        
+        if ($user) {
+            return response()->json([
+                'success' => true, 
+                'data' => $user
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false, 
+            'message' => 'User tidak ditemukan'
+        ], 404);
     }
 
-    /**
-     * Update data user.
-     */
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        // Cari user berdasarkan id_user (Primary Key)
+        $user = User::find($id);
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak ditemukan'
+            ], 404);
+        }
 
-        $request->validate([
-            'nama_user' => 'required',
-            'username'  => 'required|unique:user,username,' . $id . ',id_user',
-            'role'      => 'required'
-        ]);
+        // Ambil semua input
+        $data = $request->all();
 
-        $data = [
-            'nama_user' => $request->nama_user,
-            'username'  => $request->username,
-            'role'      => $request->role,
-        ];
-
-        // Update password hanya jika diisi
+        // Logika Password: Hanya update jika diisi
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
+        } else {
+            unset($data['password']); // Hapus dari array agar tidak terupdate jadi null
         }
 
         $user->update($data);
 
         return response()->json([
             'success' => true,
-            'message' => 'User berhasil diperbarui'
+            'message' => 'User berhasil diperbarui',
+            'data'    => $user
         ]);
     }
-
-    /**
-     * Hapus user.
-     */
     public function destroy($id)
     {
         $user = User::find($id);
