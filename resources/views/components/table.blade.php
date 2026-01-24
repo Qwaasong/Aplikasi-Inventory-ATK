@@ -1,3 +1,4 @@
+@props(['dataTable' => [], 'showAction' => true])
 <div class="max-w-7xl mx-auto">
     <div class="flex sm:flex-row items-center sm:justify-between gap-4 mb-6">
         <div class="sm:w-auto relative">
