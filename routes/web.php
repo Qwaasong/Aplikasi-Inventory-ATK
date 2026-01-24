@@ -1,65 +1,85 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-// Perhatikan Namespace ini harus sesuai dengan lokasi file controller Anda
-// use App\Http\Controllers\Api\BarangApiController; 
-// use App\Http\Controllers\TransaksiController;
-// use App\Http\Controllers\UserController;
+// Pastikan namespace ini sesuai dengan lokasi file Controller Anda
+use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes Admin
+| 1. Route Public (Halaman Awal & Login)
 |--------------------------------------------------------------------------
 */
 
-// Halaman login sebagai halaman utama
+// Redirect halaman utama (/) langsung ke halaman login
 Route::get('/', function () {
-    return view('auth.login');
+    return redirect()->route('login');
 });
 
-// Route untuk dashboard admin
-Route::get('admin/dashboard', function(){
-    return view('auth.admin.dashboard');
-})->name('admin.dashboard');
+// Route GET: Menampilkan Halaman Login
+// PENTING: Nama route harus 'login' agar middleware 'auth' tahu kemana harus melempar user yang belum login.
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 
-// Route untuk barang admin
-Route::get('admin/barang', function(){
-    return view('auth.admin.barang');
-})->name('admin.barang');
+// Route POST: Memproses data form login
+Route::post('/login', [LoginController::class, 'login']);
 
-// Route untuk halaman user admin
-Route::get('admin/user', function(){
-    return view('auth.admin.user');
-})->name('admin.user');
+// Route POST: Logout
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes Role 2
+| 2. Route Admin (Middleware Auth)
 |--------------------------------------------------------------------------
 */
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    
+    Route::get('/dashboard', function () {
+        return view('auth.admin.dashboard'); // Pastikan file view ini ada
+    })->name('dashboard');
 
-// Route untuk dashboard role 2
-Route::get('role2/dashboard', function(){
-    return view('auth.role2.dashboard');
-})->name('role2.dashboard');
+    Route::get('/barang', function () {
+        return view('auth.admin.barang');
+    })->name('barang');
 
-// Route untuk halaman barang masuk role 2
-Route::get('role2/barang_masuk', function(){
-    return view('auth.role2.barang_masuk');
-})->name('role2.barang_masuk');
+    Route::get('/user', function () {
+        return view('auth.admin.user');
+    })->name('user');
+    
+});
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes Role 3
+| 3. Route Role 2 (Contoh: Staff Gudang)
 |--------------------------------------------------------------------------
 */
+// Sebaiknya tambahkan middleware auth juga di sini
+Route::middleware(['auth'])->prefix('role2')->name('role2.')->group(function () {
 
-// Route untuk dashboard role 3
-Route::get('role3/dashboard', function(){
-    return view('auth.role3.dashboard');
-})->name('role3.dashboard');
+    Route::get('/dashboard', function(){
+        return view('auth.role2.dashboard');
+    })->name('dashboard');
 
-// Route untuk halaman barang keluar role 3
-Route::get('role3/barang_keluar', function(){   
-    return view('auth.role3.barang_keluar');
-})->name('role3.barang_keluar');
+    Route::get('/barang_masuk', function(){
+        return view('auth.role2.barang_masuk');
+    })->name('barang_masuk');
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| 4. Route Role 3 (Contoh: User Biasa)
+|--------------------------------------------------------------------------
+*/
+// Sebaiknya tambahkan middleware auth juga di sini
+Route::middleware(['auth'])->prefix('role3')->name('role3.')->group(function () {
+
+    Route::get('/dashboard', function(){
+        return view('auth.role3.dashboard');
+    })->name('dashboard');
+
+    Route::get('/barang_keluar', function(){   
+        return view('auth.role3.barang_keluar');
+    })->name('barang_keluar');
+
+});
