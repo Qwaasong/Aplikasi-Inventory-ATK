@@ -14,19 +14,19 @@
                 </svg>
             </div>
             <input type="text" id="table-search-input" placeholder="Search"
-                class="w-full pl-10 pr-4 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                class="w-full pl-10 pr-4 py-3 sm:py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 transition-colors">
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors">
         <div class="overflow-x-auto">
             <div class="hidden sm:table w-full">
-                <table class="w-full text-sm text-left text-gray-500">
-                    <thead class="bg-gray-50/50 border-b border-gray-200">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="bg-gray-50/50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
                         <tr>
                             {{-- LOOPING KOLOM HEADER --}}
                             @foreach (array_keys($dataTable) as $header)
-                            <th scope="col" class="px-6 py-4 font-bold text-gray-900 uppercase tracking-wider text-xs">{{ $header }}</th>
+                            <th scope="col" class="px-6 py-4 font-bold text-gray-900 dark:text-gray-200 uppercase tracking-wider text-xs">{{ $header }}</th>
                             @endforeach
                             {{-- Kolom Aksi --}}
                             @if($showAction)
@@ -59,7 +59,7 @@
         </div>
 
         {{-- Pagination terintegrasi (Modern & Minimalist) --}}
-        <div id="pagination-links" class="border-t border-gray-100 bg-gray-50/30"></div>
+        <div id="pagination-links" class="border-t border-gray-100 dark:border-gray-700 bg-gray-50/30 dark:bg-gray-900/30 transition-colors"></div>
     </div>
 
 </div>
@@ -128,7 +128,7 @@
                     class="pagination-link flex items-center justify-center min-w-[32px] h-8 mx-0.5 text-sm font-medium rounded-lg transition-all 
                         ${isActive 
                             ? 'bg-blue-600 text-white shadow-sm' 
-                            : 'text-gray-600 hover:bg-gray-100'}"
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'}"
                 >
                     ${pageNum}
                 </button>
@@ -149,8 +149,8 @@
             ${disabled ? 'disabled' : ''}
             class="pagination-link flex items-center px-3 h-8 text-sm font-medium rounded-lg transition-all
                 ${disabled 
-                    ? 'text-gray-300 cursor-not-allowed' 
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-blue-600'}"
+                    ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed' 
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600'}"
         >
             ${icon && iconPosition === 'left' ? icon : ''}
             <span class="${icon ? (iconPosition === 'left' ? 'ml-1.5' : 'mr-1.5') : ''}">
@@ -186,10 +186,10 @@
 
             let html = `
                 <div class="flex flex-col sm:flex-row items-center justify-between px-6 py-4 w-full gap-4">
-                    <div class="text-xs font-medium text-gray-500 order-2 sm:order-1">
-                        Menampilkan <span class="text-gray-900">${paginationMeta.from || 0}</span> - 
-                        <span class="text-gray-900">${paginationMeta.to || 0}</span> dari 
-                        <span class="text-gray-900">${paginationMeta.total || 0}</span> data
+                    <div class="text-xs font-medium text-gray-500 dark:text-gray-400 order-2 sm:order-1">
+                        Menampilkan <span class="text-gray-900 dark:text-gray-200">${paginationMeta.from || 0}</span> - 
+                        <span class="text-gray-900 dark:text-gray-200">${paginationMeta.to || 0}</span> dari 
+                        <span class="text-gray-900 dark:text-gray-200">${paginationMeta.total || 0}</span> data
                     </div>
                     <nav class="flex items-center gap-1 order-1 sm:order-2" aria-label="Pagination">
             `;
@@ -330,9 +330,9 @@
                                         <button class="menu-button p-2 text-gray-500 rounded-full hover:bg-gray-100 focus:outline-none" data-id="${item[primaryKey]}">
                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
                                         </button>
-                                        <div id="dropdown-${item[primaryKey]}" class="menu-dropdown hidden absolute right-0 mt-2 w-32 bg-white border border-gray-20 rounded-lg shadow-xl z-30">
-                                            <button type="button" class="edit-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-id="${item[primaryKey]}">Edit</button>
-                                            <a href="" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-10 delete-btn" data-id="${item[primaryKey]}" data-url="${entityBaseUrl}">Delete</a>
+                                        <div id="dropdown-${item[primaryKey]}" class="menu-dropdown hidden absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-30">
+                                            <button type="button" class="edit-btn block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" data-id="${item[primaryKey]}">Edit</button>
+                                            <a href="" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 delete-btn" data-id="${item[primaryKey]}" data-url="${entityBaseUrl}">Delete</a>
                                         </div>
                                     </div>
                                 `;
@@ -351,7 +351,7 @@
                             });
 
                             tableRows +=
-                                `<tr class="bg-white border-b" id="row-${item[primaryKey]}">`;
+                                `<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors" id="row-${item[primaryKey]}">`;
                             tableRows += dataCells;
                             // Tambahkan kolom aksi hanya jika showAction adalah true
                             if (showAction) {
@@ -382,9 +382,9 @@
                                         <button class="menu-button p-1 text-gray-500 rounded-full hover:bg-gray-100" data-id="${item[primaryKey]}">
                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
                                         </button>
-                                        <div id="dropdown-mobile-${item[primaryKey]}" class="menu-dropdown hidden absolute right-0 mt-1 w-32 bg-white border border-gray-200 rounded-lg shadow-xl z-10">
-                                            <button type="button" class="edit-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-id="${item[primaryKey]}">Edit</button>
-                                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 delete-btn" data-id="${item[primaryKey]}" data-url="${entityBaseUrl}">Delete</a>
+                                        <div id="dropdown-mobile-${item[primaryKey]}" class="menu-dropdown hidden absolute right-0 mt-1 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-10">
+                                            <button type="button" class="edit-btn block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" data-id="${item[primaryKey]}">Edit</button>
+                                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 delete-btn" data-id="${item[primaryKey]}" data-url="${entityBaseUrl}">Delete</a>
                                         </div>
                                     </div>
                                 `;
@@ -401,14 +401,14 @@
                                 }
                                 cardDetails += `
                                     <div class="flex justify-between items-center">
-                                        <dt class="font-semibold text-gray-800">${header}</dt>
-                                        <dd class="text-gray-600 text-right">${value || '-'}</dd>
+                                        <dt class="font-semibold text-gray-800 dark:text-gray-200">${header}</dt>
+                                        <dd class="text-gray-600 dark:text-gray-400 text-right">${value || '-'}</dd>
                                     </div>
                                 `;
                             });
 
                             cardHtml += `
-                                <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-5" id="card-${item[primaryKey]}">
+                                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm p-5 transition-colors" id="card-${item[primaryKey]}">
                                     <div class="flex justify-between items-start mb-4">
                                         <div class="w-8"></div>
                                         ${showAction ? actionsHtml : ''}

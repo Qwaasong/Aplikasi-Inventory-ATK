@@ -9,10 +9,22 @@
     /* ... CSS Anda tetap sama ... */
     body {
         background-color: #EEEFF1;
+        transition: background-color 0.3s;
+    }
+
+    .dark body {
+        background-color: #111827;
+        /* gray-900 */
     }
 
     .modal-bg {
         background-color: #F5F3F4;
+        transition: background-color 0.3s;
+    }
+
+    .dark .modal-bg {
+        background-color: #1F2937;
+        /* gray-800 */
     }
 
     .input-field {
@@ -22,6 +34,14 @@
         padding: 8px 12px;
         width: 100%;
         outline: none;
+        transition: color 0.3s, border-color 0.3s;
+    }
+
+    .dark .input-field {
+        color: #F3F4F6;
+        /* gray-100 */
+        border-color: #6B7280;
+        /* gray-500 */
     }
 
     .input-field:focus {
@@ -40,6 +60,28 @@
     .btn-modal-action:hover {
         background-color: #E5E7EB;
         color: #111;
+    }
+
+    /* Text Colors overrides */
+    .dark h2 {
+        color: #F3F4F6;
+    }
+
+    .dark h3 {
+        color: #F3F4F6;
+    }
+
+    .dark label {
+        color: #9CA3AF;
+    }
+
+    .dark select {
+        color: #F3F4F6;
+    }
+
+    .dark option {
+        background-color: #1F2937;
+        color: #F3F4F6;
     }
 </style>
 
