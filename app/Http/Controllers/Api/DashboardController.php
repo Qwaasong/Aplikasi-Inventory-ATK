@@ -37,7 +37,7 @@ class DashboardController extends Controller
             'success' => true,
             'summary' => [
                 'total_pack' => $totalPack,
-                'total_pcs'  => $totalPcs,
+                'total_pcs' => $totalPcs,
                 'total_user' => $totalUser,
             ],
             'charts' => [
@@ -48,75 +48,71 @@ class DashboardController extends Controller
     }
 
     private function getStatistikData($filter)
-{
-    $labels = [];
-    $dataMasuk = [];
-    $dataKeluar = [];
+    {
+        $labels = [];
+        $dataMasuk = [];
+        $dataKeluar = [];
+        
+        // Tambahkan baris ini agar nama hari/bulan otomatis Bahasa Indonesia
+        \Carbon\Carbon::setLocale('id');
 
-    // Pastikan locale Carbon diatur ke Indonesia agar translatedFormat('l') muncul sebagai 'Senin' dsb.
-    \Carbon\Carbon::setLocale('id');
+        if ($filter == 'mingguan') {
+            for ($i = 6; $i >= 0; $i--) {
+                $date = Carbon::now()->subDays($i);
+                // 'l' akan menghasilkan Senin, Selasa, dst karena locale sudah 'id'
+                $labels[] = $date->translatedFormat('l');
 
-    if ($filter == 'mingguan') {
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i);
-            $labels[] = $date->translatedFormat('l'); // Senin, Selasa...
-            
-            // Gunakan ->toDateString() agar query ke DB lebih akurat (YYYY-MM-DD)
-            $dataMasuk[] = (int) DB::table('riwayat_stok')
-                ->where('jenis', 'masuk')
-                ->whereDate('created_at', $date->toDateString())
-                ->sum('jumlah_pcs');
+                $dataMasuk[] = (int) DB::table('riwayat_stok')
+                    ->where('jenis', 'masuk')
+                    ->whereDate('created_at', $date->toDateString())
+                    ->sum('jumlah_pcs');
 
-            $dataKeluar[] = (int) DB::table('riwayat_stok')
-                ->where('jenis', 'keluar')
-                ->whereDate('created_at', $date->toDateString())
-                ->sum('jumlah_pcs');
+                $dataKeluar[] = (int) DB::table('riwayat_stok')
+                    ->where('jenis', 'keluar')
+                    ->whereDate('created_at', $date->toDateString())
+                    ->sum('jumlah_pcs');
+            }
+        } elseif ($filter == 'bulanan') {
+            // Loop 12 bulan dari Januari sampai Desember tahun ini
+            for ($m = 1; $m <= 12; $m++) {
+                $date = Carbon::create(Carbon::now()->year, $m, 1);
+                $labels[] = $date->translatedFormat('M'); // Jan, Feb, Mar...
+
+                $dataMasuk[] = (int) DB::table('riwayat_stok')
+                    ->where('jenis', 'masuk')
+                    ->whereMonth('created_at', $m)
+                    ->whereYear('created_at', Carbon::now()->year)
+                    ->sum('jumlah_pcs');
+
+                $dataKeluar[] = (int) DB::table('riwayat_stok')
+                    ->where('jenis', 'keluar')
+                    ->whereMonth('created_at', $m)
+                    ->whereYear('created_at', Carbon::now()->year)
+                    ->sum('jumlah_pcs');
+            }
+        } elseif ($filter == 'tahunan') {
+            // PERBAIKAN: Loop 5 Tahun (Contoh: 2024 sampai 2028)
+            $tahunSekarang = Carbon::now()->year;
+            for ($i = 0; $i < 5; $i++) {
+                $tahun = $tahunSekarang + $i;
+                $labels[] = (string) $tahun;
+
+                $dataMasuk[] = (int) DB::table('riwayat_stok')
+                    ->where('jenis', 'masuk')
+                    ->whereYear('created_at', $tahun)
+                    ->sum('jumlah_pcs');
+
+                $dataKeluar[] = (int) DB::table('riwayat_stok')
+                    ->where('jenis', 'keluar')
+                    ->whereYear('created_at', $tahun)
+                    ->sum('jumlah_pcs');
+            }
         }
-    } elseif ($filter == 'bulanan') {
-        for ($i = 3; $i >= 0; $i--) {
-            $start = Carbon::now()->subWeeks($i)->startOfWeek();
-            $end = Carbon::now()->subWeeks($i)->endOfWeek();
-            $labels[] = "Minggu " . (4 - $i);
 
-            $dataMasuk[] = (int) DB::table('riwayat_stok')
-                ->where('jenis', 'masuk')
-                ->whereBetween('created_at', [
-                    $start->startOfDay()->toDateTimeString(), 
-                    $end->endOfDay()->toDateTimeString()
-                ])
-                ->sum('jumlah_pcs');
-
-            $dataKeluar[] = (int) DB::table('riwayat_stok')
-                ->where('jenis', 'keluar')
-                ->whereBetween('created_at', [
-                    $start->startOfDay()->toDateTimeString(), 
-                    $end->endOfDay()->toDateTimeString()
-                ])
-                ->sum('jumlah_pcs');
-        }
-    } else { // Tahunan
-        for ($i = 5; $i >= 0; $i--) {
-            $date = Carbon::now()->subMonths($i);
-            $labels[] = $date->translatedFormat('M'); // Jan, Feb...
-
-            $dataMasuk[] = (int) DB::table('riwayat_stok')
-                ->where('jenis', 'masuk')
-                ->whereMonth('created_at', $date->month)
-                ->whereYear('created_at', $date->year)
-                ->sum('jumlah_pcs');
-
-            $dataKeluar[] = (int) DB::table('riwayat_stok')
-                ->where('jenis', 'keluar')
-                ->whereMonth('created_at', $date->month)
-                ->whereYear('created_at', $date->year)
-                ->sum('jumlah_pcs');
-        }
+        return [
+            'labels' => !empty($labels) ? $labels : ['No Data'],
+            'masuk' => !empty($dataMasuk) ? $dataMasuk : [0],
+            'keluar' => !empty($dataKeluar) ? $dataKeluar : [0],
+        ];
     }
-
-    return [
-        'labels' => $labels,
-        'masuk'  => $dataMasuk,
-        'keluar' => $dataKeluar,
-    ];
-}
 }
