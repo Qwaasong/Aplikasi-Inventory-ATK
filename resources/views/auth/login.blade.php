@@ -254,7 +254,7 @@
                     <div class="input-group">
                         <input type="password" name="password" id="password"
                             class="form-control @error('password') is-invalid @enderror" required
-                            autocomplete="current-password" placeholder="********">
+                            autocomplete="current-password">
                         <i class="fa-solid fa-eye-slash toggle-password"></i>
                     </div>
                 </div>

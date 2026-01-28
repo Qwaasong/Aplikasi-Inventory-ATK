@@ -91,6 +91,7 @@
             <nav class="pt-4 px-3 space-y-2">
 
                 <!-- Nav Item -->
+                 @can('admin-only')
                 <a href="{{ route('admin.dashboard') }}"
                     class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.dashboard') ? 'active' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -102,8 +103,24 @@
                     <span
                         class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Dashboard</span>
                 </a>
+                @endcan
 
-                <a href="{{ route('admin.barang') }}"
+                 @can('akses-laporan')
+                <a href="{{ route('kepsek.laporan') }}"
+                    class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.dashboard') ? 'active' : '' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                        viewBox="0 0 256 256" class="shrink-0">
+                        <path
+                            d="M219.31,108.68l-80-73.34a16,16,0,0,0-22.62,0l-80,73.34A15.82,15.82,0,0,0,32,120.42V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V120.42A15.82,15.82,0,0,0,219.31,108.68ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V120.42l80-73.34,80,73.34Z">
+                        </path>
+                    </svg>
+                    <span
+                        class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Dashboard</span>
+                </a>
+                @endcan
+
+                @can('akses-barang')
+                <a href="{{ auth()->user()->role === 'admin' ? route('admin.barang') : route('pegawai.barang')}}"
                     class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.barang') ? 'active' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                         viewBox="0 0 256 256" class="shrink-0">
@@ -114,7 +131,9 @@
                     <span
                         class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Barang</span>
                 </a>
+                @endcan
 
+                @can('admin-only')
                 <a href="{{ route('admin.user') }}"
                     class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.user') ? 'active' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -126,6 +145,7 @@
                     <span
                         class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">User</span>
                 </a>
+                @endcan
             </nav>
 
             <!-- Logout -->

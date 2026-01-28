@@ -54,15 +54,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 |--------------------------------------------------------------------------
 */
 // Sebaiknya tambahkan middleware auth juga di sini
-Route::middleware(['auth'])->prefix('role2')->name('role2.')->group(function () {
+Route::middleware(['auth'])->prefix('pegawai')->name('pegawai.')->group(function () {
 
-    Route::get('/dashboard', function(){
-        return view('auth.role2.dashboard');
-    })->name('dashboard');
-
-    Route::get('/barang_masuk', function(){
-        return view('auth.role2.barang_masuk');
-    })->name('barang_masuk');
+    Route::get('/barang', function(){
+        return view('auth.pegawai.barang');
+    })->name('barang');
 
 });
 
@@ -72,14 +68,9 @@ Route::middleware(['auth'])->prefix('role2')->name('role2.')->group(function () 
 |--------------------------------------------------------------------------
 */
 // Sebaiknya tambahkan middleware auth juga di sini
-Route::middleware(['auth'])->prefix('role3')->name('role3.')->group(function () {
+Route::middleware(['auth'])->prefix('kepsek')->name('kepsek.')->group(function () {
 
-    Route::get('/dashboard', function(){
-        return view('auth.role3.dashboard');
-    })->name('dashboard');
-
-    Route::get('/barang_keluar', function(){   
-        return view('auth.role3.barang_keluar');
-    })->name('barang_keluar');
-
+    Route::get('/laporan', function(){
+        return view('auth.kepsek.laporan');
+    })->name('laporan');
 });
