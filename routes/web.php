@@ -80,4 +80,7 @@ Route::middleware(['auth', 'role:supervisor'])->prefix('supervisor')->name('supe
     // Supervisor hanya memiliki akses ke dashboard untuk laporan
     // Jika perlu route lain, tambahkan di sini
 
+    Route::get('/laporan', function(){
+        return view('auth.kepsek.laporan');
+    })->name('laporan');
 });

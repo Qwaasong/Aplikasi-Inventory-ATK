@@ -19,29 +19,59 @@
         }
     </script>
     <title>@yield('title')</title>
+
+    <style>
+        /* Di dalam <style> pada admin.blade.php */
+        @media (max-width: 991px) {
+            .logout-section {
+                /* Memberikan bantalan bawah yang tebal agar tombol naik dari dasar layar */
+                padding: 12px 12px 880px 12px !important;
+
+                /* Memberikan jarak atas agar tidak terlalu mepet menu sebelumnya */
+                margin-top: 10px;
+
+                /* Pastikan background mengikuti tema agar bantalan tidak terlihat belang */
+                background-color: transparent;
+            }
+        }
+    </style>
+
 </head>
 
-<body class="flex flex-col h-screen overflow-hidden bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
+<body
+    class="flex flex-col h-screen overflow-hidden bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
 
     <!-- HEADER -->
-    <header class="h-16 w-full bg-[#f0f0f0] dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 transition-colors duration-300">
+    <header
+        class="h-16 w-full bg-[#f0f0f0] dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 transition-colors duration-300">
         <div class="flex items-center gap-4">
             <button id="toggleBtn" class="p-1 rounded-md hover:bg-gray-200 focus:outline-none transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256" class="text-black font-bold">
-                    <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"
+                    class="text-black font-bold">
+                    <path
+                        d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z">
+                    </path>
                 </svg>
             </button>
         </div>
         <div class="flex items-center">
-            <button id="darkModeToggle" type="button" class="relative inline-flex items-center h-7 rounded-full w-12 border border-gray-400 dark:border-gray-500 bg-gray-200 dark:bg-gray-700 focus:outline-none transition-colors duration-300">
-                <span id="darkModeKnob" class="translate-x-1 dark:translate-x-6 inline-block w-5 h-5 transform bg-white dark:bg-gray-300 rounded-full transition-transform duration-300 items-center justify-center flex shadow-md">
+            <button id="darkModeToggle" type="button"
+                class="relative inline-flex items-center h-7 rounded-full w-12 border border-gray-400 dark:border-gray-500 bg-gray-200 dark:bg-gray-700 focus:outline-none transition-colors duration-300">
+                <span id="darkModeKnob"
+                    class="translate-x-1 dark:translate-x-6 inline-block w-5 h-5 transform bg-white dark:bg-gray-300 rounded-full transition-transform duration-300 items-center justify-center flex shadow-md">
                     <!-- Sun Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 256 256" class="text-orange-500 block dark:hidden">
-                        <path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32Zm139.32-116.68a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32Zm0,116.68l16,16a8,8,0,0,0,11.32-11.32l-16-16a8,8,0,0,0-11.32,11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm-128,0a8,8,0,0,0,5.66-13.66l-16-16a8,8,0,0,0-11.32,11.32l16,16A8,8,0,0,0,64,72ZM128,216a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V224A8,8,0,0,0,128,216ZM216,120h24a8,8,0,0,0,0-16H216a8,8,0,0,0,0,16ZM16,120H40a8,8,0,0,0,0-16H16a8,8,0,0,0,0,16Z"></path>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                        viewBox="0 0 256 256" class="text-orange-500 block dark:hidden">
+                        <path
+                            d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32Zm139.32-116.68a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32Zm0,116.68l16,16a8,8,0,0,0,11.32-11.32l-16-16a8,8,0,0,0-11.32,11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm-128,0a8,8,0,0,0,5.66-13.66l-16-16a8,8,0,0,0-11.32,11.32l16,16A8,8,0,0,0,64,72ZM128,216a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V224A8,8,0,0,0,128,216ZM216,120h24a8,8,0,0,0,0-16H216a8,8,0,0,0,0,16ZM16,120H40a8,8,0,0,0,0-16H16a8,8,0,0,0,0,16Z">
+                        </path>
                     </svg>
                     <!-- Moon Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 256 256" class="text-blue-500 hidden dark:block">
-                        <path d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.11,104.11,0,1,0,129.75,129.75A8,8,0,0,0,233.54,142.23ZM128,216a88.13,88.13,0,0,1-73.49-136.66,104.05,104.05,0,0,0,128.74,128.74A87.59,87.59,0,0,1,128,216Z"></path>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                        viewBox="0 0 256 256" class="text-blue-500 hidden dark:block">
+                        <path
+                            d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.11,104.11,0,1,0,129.75,129.75A8,8,0,0,0,233.54,142.23ZM128,216a88.13,88.13,0,0,1-73.49-136.66,104.05,104.05,0,0,0,128.74,128.74A87.59,87.59,0,0,1,128,216Z">
+                        </path>
                     </svg>
                 </span>
             </button>

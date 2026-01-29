@@ -20,10 +20,18 @@ class UserSeeder extends Seeder
 
         // Data User Staff/Gudang
         User::create([
-            'nama_user' => 'Staff Gudang',
-            'username'  => 'staff',
-            'password'  => Hash::make('staff123'),
-            'role'      => 'staff',
+            'nama_user' => 'Pegawai',
+            'username'  => 'pegawai',
+            'password'  => Hash::make('pegawai123'),
+            'role'      => 'pegawai',
+        ]);
+
+        // Data User Kepala Sekolah
+        User::create([
+            'nama_user' => 'Kepala Sekolah',
+            'username'  => 'kepsek',
+            'password'  => Hash::make('kepsek123'),
+            'role'      => 'kepsek',
         ]);
 
         // Data User Supervisor

@@ -4,11 +4,85 @@
 
 @section('content')
 
-    <script src="https://code.highcharts.com/12/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* --- STYLE ASLI (DESKTOP) --- */
+        /* STYLE HYTAM */
+        /* --- DARK MODE STYLES --- */
+
+        /* Background utama */
+        .dark body {
+            background-color: #121212;
+            /* Warna hitam elegan */
+        }
+
+        /* Box Container di Mode Gelap */
+        .dark .box-container {
+            background-color: #3C4446;
+            /* Hitam abu-abu */
+            color: #E0E0E0;
+            /* Teks putih redup */
+        }
+
+        .dark .box-container span {
+            color: #B0B0B0;
+        }
+
+        /* Chart Container di Mode Gelap */
+        .dark .chart-main,
+        .dark .chart-side {
+            background-color: #3C4446;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Filter & Teks Title */
+        .dark .title {
+            color: #FFFFFF;
+        }
+
+        .dark .filter {
+            background: linear-gradient(135deg, #2D3748, #1A202C);
+            border-color: #4A5568;
+        }
+
+        .dark .filter:hover {
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+
+        .dark .filter label,
+        .dark .filter select {
+            color: #E2E8F0;
+        }
+
+        /* Warna teks untuk dropdown select di Dark Mode */
+        .dark .filter select {
+            color: #E2E8F0;
+            /* Teks putih keabu-abuan */
+            background-color: transparent;
+            /* Biar nyatu sama container filter */
+        }
+
+        /* Memperbaiki warna background dropdown menu (option) */
+        .dark .filter select option {
+            background-color: #1A202C;
+            /* Warna gelap yang senada dengan filter */
+            color: #E2E8F0;
+            /* Pastikan teksnya kelihatan */
+        }
+
+        /* Biar lebih rapi, hilangkan border default browser pada select */
+        .dark .filter select:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+
+
+        /* --- STYLE ASLI PUTIH --- */
         /* Saya biarkan 100% sama dengan kodemu sebelumnya */
         body {
             margin: 0;
@@ -21,11 +95,15 @@
             display: flex;
             justify-content: center;
             gap: 20px;
-            padding-top: 20px;
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .box-container {
-            width: 310px;
+            flex: 1;
+            min-width: 250px;
+            max-width: 450px;
             /* Ukuran FIX sesuai keinginanmu */
             height: 152px;
             position: relative;
@@ -206,17 +284,17 @@
         <div class="wrapper">
             <div class="box-container">
                 <span>Total Pack</span>
-                <h3 id="totalPack">0</h3>
+                <h3 id="totalPack"></h3>
             </div>
 
             <div class="box-container">
                 <span>Total Pcs</span>
-                <h3 id="totalPcs">0</h3>
+                <h3 id="totalPcs"></h3>
             </div>
 
             <div class="box-container">
                 <span>Total User</span>
-                <h3 id="totalUser">0</h3>
+                <h3 id="totalUser"></h3>
             </div>
         </div>
 
@@ -244,165 +322,201 @@
         </div>
 
 
-        <script>
-            // Saya tambahkan credits: false sesuai request sebelumnya biar rapi
-            // Sisanya SAMA PERSIS dengan kodemu
-            Highcharts.chart('chartMasukKeluar', {
-                chart: {
-                    type: 'column',
-                    backgroundColor: 'transparent',
-                    spacing: [20, 20, 20, 20],
-                },
-                credits: {
-                    enabled: false
-                },
-                title: {
-                    text: 'Statistik Barang Masuk & Keluar'
-                },
-                xAxis: {
-                    categories: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: 'Jumlah'
-                    }
-                },
-                plotOptions: {
-                    column: {
-                        borderRadius: 6,
-                        pointPadding: 0.1,
-                        groupPadding: 0.15,
-                        clipping: true,
-                    }
-                },
-                tooltip: {
-                    outside: false,
-                },
-                series: [
-                    {
-                        name: 'Barang Masuk',
-                        data: [12, 19, 8, 15, 22, 10, 5],
-                        color: '#1C3AFF'
-                    },
-                    {
-                        name: 'Barang Keluar',
-                        data: [7, 14, 6, 8, 18, 9, 4],
-                        color: '#FF2929'
-                    }
-                ]
-            });
-        </script>
+        {{-- ///////////// FUNGSI AMBIL DATA DARI API \\\\\\\\\\\\\\\ --}}
 
+        <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.js"></script>
         <script>
-            Highcharts.chart('chartDistribusi', {
-                chart: {
-                    type: 'column',
-                    backgroundColor: 'transparent',
-                    spacing: [20, 20, 20, 20],
-                },
-                credits: {
-                    enabled: false
-                },
-                title: {
-                    text: 'Distribusi Barang'
-                },
-                xAxis: {
-                    categories: ['Buku Tulis', 'Alat Tulis', 'Seragam']
-                },
-                yAxis: {
-                    min: 0,
+            // Inisialisasi variabel global agar bisa diakses fungsi load
+            let chartMasukKeluar;
+            let chartDistribusi;
+            // Simpan instance di luar fungsi supaya bisa di-reset kalau filter diganti
+            let countUpInstances = {};
+
+            function animateValue(id, value) {
+                const targetEl = document.getElementById(id);
+                if (!targetEl) return;
+
+                // Pastikan kita menggunakan konstruktor yang benar dari window.countUp
+                const CountUpClass = window.countUp ? window.countUp.CountUp : null;
+
+                if (CountUpClass) {
+                    // Jika sebelumnya sudah ada animasi di ID ini, kita reset
+                    if (countUpInstances[id]) {
+                        countUpInstances[id].update(value);
+                        return;
+                    }
+
+                    const options = {
+                        duration: 2,
+                        useEasing: true,
+                        separator: '.',
+                        startVal: 0
+                    };
+
+                    // Simpan instance ke dalam object global kita
+                    countUpInstances[id] = new CountUpClass(id, value, options);
+
+                    if (!countUpInstances[id].error) {
+                        countUpInstances[id].start();
+                    } else {
+                        console.error("Error CountUp:", countUpInstances[id].error);
+                        targetEl.innerText = value;
+                    }
+                } else {
+                    // Fallback jika library belum siap
+                    targetEl.innerText = value;
+                }
+            }
+
+            // Fungsi untuk mengambil data dari API
+            async function loadDashboardData(range) {
+                try {
+                    const response = await fetch(`/api/dashboard/stats?filter=${range}`);
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // 1. Update Box Angka
+                        animateValue('totalPack', result.summary.total_pack);
+                        animateValue('totalPcs', result.summary.total_pcs);
+                        animateValue('totalUser', result.summary.total_user);
+
+                        // 2. Update Grafik Batang
+                        const stats = result.charts.statistik_masuk_keluar;
+                        chartMasukKeluar.xAxis[0].setCategories(stats.labels);
+
+                        // Tambahkan parameter 'true' agar ada animasi saat data berubah
+                        chartMasukKeluar.series[0].setData(stats.masuk, true, { duration: 1000 });
+                        chartMasukKeluar.series[1].setData(stats.keluar, true, { duration: 1000 });
+
+                        // 3. Update Grafik Pie (Distribusi)
+                        const pieData = result.charts.distribusi_barang.map(item => ({
+                            name: item.label,
+                            y: item.jumlah
+                        }));
+
+                        // Tambahkan parameter 'true' juga di sini
+                        chartDistribusi.series[0].setData(pieData, true, { duration: 1000 });
+
+                    }
+                } catch (error) {
+                    console.error('Gagal memuat data:', error);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                Highcharts.setOptions({
+                    lang: {
+                        months: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+                            'November', 'Desember'],
+                        shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                        weekdays: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
+                    },
+                    plotOptions: {
+                        series: {
+                            animation: {
+                                duration: 1200 // Beri durasi 1.5 detik agar terlihat jelas animasinya
+                            }
+                        }
+                    }
+                });
+
+                // Inisialisasi Chart Batang
+                chartMasukKeluar = Highcharts.chart('chartMasukKeluar', {
+                    chart: {
+                        type: 'column',
+                        backgroundColor: 'transparent',
+                        events: {
+                            render: function () {
+                                this.reflow;
+                            }
+                        }
+                    },
                     title: {
-                        text: 'Jumlah'
-                    }
-                },
-                plotOptions: {
-                    column: {
-                        borderRadius: 6
-                    }
-                },
-                series: [
-                    {
-                        name: 'Jumlah',
-                        data: [40, 25, 15],
-                        color: '#1C3AFF'
-                    }
-                ]
+                        text: 'Statistik Barang Masuk & Keluar',
+                        style: { color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#333333' }
+                    },
+                    xAxis: {
+                        categories: [],
+                        labels: {
+                            rotation: 0,
+                            style: {
+                                fontSize: '11px',
+                                color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#333333'
+                            },
+                        }
+                    },
+                    yAxis: {
+                        title: { text: 'Jumlah (Pcs)' },
+                        allowDecimals: false,
+                        labels: {
+                            style: { color: document.documentElement.classList.contains('dark') ? '#B0B0B0' : '#666666' }
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    legend: {
+                        itemStyle: {
+                            color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#333333'
+                        },
+                        itemHoverStyle: {
+                            color: '#1C3AFF' // Biar tetep keren pas di-hover
+                        }
+                    },
+                    series: [
+                        {
+                            name: 'Barang Masuk',
+                            color: '#1C3AFF',
+                            data: []
+                        },
+                        {
+                            name: 'Barang Keluar',
+                            color: '#FF2929',
+                            data: []
+                        }
+                    ]
+                });
+
+                // Inisialisasi Chart Pie
+                chartDistribusi = Highcharts.chart('chartDistribusi', {
+                    chart: { type: 'pie', backgroundColor: 'transparent' },
+                    title: {
+                        text: 'Distribusi Barang',
+                        style: { color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#333333' }
+                    },
+                    legend: {
+                        itemStyle: {
+                            color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#333333'
+                        },
+                        itemHoverStyle: {
+                            color: '#1C3AFF' // Biar tetep keren pas di-hover
+                        }
+                    },
+                    credits: { enabled: false },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: { enabled: false },
+                            showInLegend: true,
+                        }
+                    },
+                    series: [{ name: 'Total', colorByPoint: true, data: [] }]
+                });
+
+                // Load data awal (Mingguan)
+                loadDashboardData('mingguan');
+
+                // Listener Filter Dropdown
+                document.getElementById('range').addEventListener('change', function () {
+                    let val = this.value;
+                    // Sinkronisasi value dropdown dengan parameter controller
+                    if (val === 'minggu') val = 'mingguan';
+                    if (val === 'bulan') val = 'bulanan';
+                    if (val === 'tahun') val = 'tahunan';
+                    loadDashboardData(val);
+                });
             });
         </script>
 
 @endsection
-
-    @section('script')
-        <script>
-            // Inisialisasi Chart Global agar bisa diupdate
-            let chartMasukKeluar;
-            let chartDistribusi;
-
-            // Fungsi untuk mengambil data dari API
-            async function loadDashboardData(filter = 'mingguan') {
-                try {
-                    const response = await fetch(`/api/dashboard/stats?filter=${filter}`);
-                    const res = await response.json();
-
-                    if (res.success) {
-                        // 1. Update Summary Cards
-                        document.getElementById('totalPack').innerText = res.summary.total_pack;
-                        document.getElementById('totalPcs').innerText = res.summary.total_pcs;
-                        document.getElementById('totalUser').innerText = res.summary.total_user;
-
-                        // 2. Update Chart Statistik (Masuk & Keluar)
-                        chartMasukKeluar.update({
-                            xAxis: { categories: res.charts.statistik_masuk_keluar.labels },
-                            series: [
-                                { name: 'Barang Masuk', data: res.charts.statistik_masuk_keluar.masuk },
-                                { name: 'Barang Keluar', data: res.charts.statistik_masuk_keluar.keluar }
-                            ]
-                        });
-
-                        // 3. Update Chart Distribusi (Berdasarkan Kategori)
-                        const kategoriLabels = res.charts.distribusi_barang.map(item => item.label);
-                        const kategoriData = res.charts.distribusi_barang.map(item => item.jumlah);
-
-                        chartDistribusi.update({
-                            xAxis: { categories: kategoriLabels },
-                            series: [{ data: kategoriData }]
-                        });
-                    }
-                } catch (error) {
-                    console.error("Gagal mengambil data dashboard:", error);
-                }
-            }
-
-            // Inisialisasi Chart saat halaman pertama kali dibuka
-            document.addEventListener('DOMContentLoaded', function () {
-                chartMasukKeluar = Highcharts.chart('chartMasukKeluar', {
-                    chart: { type: 'column' },
-                    title: { text: 'Statistik Barang Masuk & Keluar' },
-                    credits: { enabled: false },
-                    xAxis: { categories: [] },
-                    series: [
-                        { name: 'Barang Masuk', color: '#1C3AFF', data: [] },
-                        { name: 'Barang Keluar', color: '#FF2929', data: [] }
-                    ]
-                });
-
-                chartDistribusi = Highcharts.chart('chartDistribusi', {
-                    chart: { type: 'column' },
-                    title: { text: 'Distribusi Barang per Kategori' },
-                    credits: { enabled: false },
-                    xAxis: { categories: [] },
-                    series: [{ name: 'Jumlah Barang', color: '#1C3AFF', data: [] }]
-                });
-
-                // Load data pertama kali (default mingguan)
-                loadDashboardData('mingguan');
-
-                // Event listener untuk Filter Dropdown
-                document.getElementById('range').addEventListener('change', function () {
-                    loadDashboardData(this.value);
-                });
-            });
-        </script>
-
-    @endsection
