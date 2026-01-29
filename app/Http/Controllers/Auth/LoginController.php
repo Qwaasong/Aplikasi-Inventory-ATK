@@ -32,16 +32,42 @@ class LoginController extends Controller
             // Jika berhasil, regenerate session
             $request->session()->regenerate();
 
-            // 3. Redirect ke dashboard yang sesuai berdasarkan role (jika ada)
-            //    Ini adalah contoh sederhana, Anda bisa membuatnya lebih kompleks
-            //    jika Anda memiliki kolom 'role' di tabel users.
-            //    Untuk sekarang, kita arahkan ke dashboard admin.
-            return redirect()->intended('admin/dashboard');
+            // 3. Redirect ke dashboard yang sesuai berdasarkan role
+            return $this->redirectToRoleDashboard(Auth::user()->role);
         }
 
         // 4. Jika autentikasi gagal
         return back()->withErrors([
             'username' => 'Username atau password yang diberikan salah.',
         ])->onlyInput('username');
+    }
+
+    /**
+     * Logout user.
+     */
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/login');
+    }
+
+    /**
+     * Redirect berdasarkan role user.
+     */
+    private function redirectToRoleDashboard($role)
+    {
+        switch ($role) {
+            case 'admin':
+                return redirect()->route('admin.dashboard');
+            case 'staff':
+                return redirect()->route('staff.barang');
+            case 'supervisor':
+                return redirect()->route('supervisor.dashboard');
+            default:
+                return redirect()->route('admin.dashboard');
+        }
     }
 }

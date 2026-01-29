@@ -51,49 +51,69 @@
     <!-- WRAPPER -->
     <div class="flex flex-1 overflow-hidden relative">
 
-        <!-- SIDEBAR -->
-        <aside id="sidebar" class="hidden sm:flex flex-col justify-between h-full bg-[#f0f0f0] dark:bg-gray-800 w-64 transition-all duration-300 ease-in-out border-r border-gray-300 dark:border-gray-700 overflow-y-auto overflow-x-hidden">
+<aside id="sidebar" class="hidden sm:flex flex-col justify-between h-full bg-[#f0f0f0] dark:bg-gray-800 w-64 transition-all duration-300 ease-in-out border-r border-gray-300 dark:border-gray-700 overflow-y-auto overflow-x-hidden">
 
-            <!-- 
-                NAV CONTAINER 
-            -->
-            <nav class="pt-4 px-3 space-y-2">
+    <div class="p-2 flex flex-col gap-1">
+    @auth
+        @if(auth()->user()->role === 'admin')
+            <a href="{{ route('admin.dashboard') }}" class="nav-item group flex items-center justify-start px-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.dashboard') ? 'active bg-gray-200/50 dark:bg-gray-700/50' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
+                    <path d="M219.31,108.68l-80-73.34a16,16,0,0,0-22.62,0l-80,73.34A15.82,15.82,0,0,0,32,120.42V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V120.42A15.82,15.82,0,0,0,219.31,108.68ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V120.42l80-73.34,80,73.34Z"></path>
+                </svg>
+                <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Dashboard</span>
+            </a>
 
-                <!-- Nav Item -->
-                <a href="{{ route('admin.dashboard') }}" class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.dashboard') ? 'active' : '' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
-                        <path d="M219.31,108.68l-80-73.34a16,16,0,0,0-22.62,0l-80,73.34A15.82,15.82,0,0,0,32,120.42V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V120.42A15.82,15.82,0,0,0,219.31,108.68ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V120.42l80-73.34,80,73.34Z"></path>
-                    </svg>
-                    <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Dashboard</span>
-                </a>
+            <a href="{{ route('admin.barang') }}" class="nav-item group flex items-center justify-start px-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.barang') ? 'active bg-gray-200/50 dark:bg-gray-700/50' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
+                    <path d="M223.68,66.15,135.68,18a15.88,15.88,0,0,0-15.36,0l-88,48.15a16,16,0,0,0-8.32,14V173.9a16,16,0,0,0,8.32,14l88,48.15a15.88,15.88,0,0,0,15.36,0l88-48.15a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,33.51l80,43.78-31.57,17.27L96.43,51.09ZM40,80.18l80-43.78V124.6L40,80.89Zm80,142.31L40,178.71V99.11L120,142.8Zm16-142.31V142.8l80-43.69v79.6Z"></path>
+                </svg>
+                <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Barang</span>
+            </a>
 
-                <a href="{{ route('admin.barang') }}" class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.barang') ? 'active' : '' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
-                        <path d="M223.68,66.15,135.68,18a15.88,15.88,0,0,0-15.36,0l-88,48.15a16,16,0,0,0-8.32,14V173.9a16,16,0,0,0,8.32,14l88,48.15a15.88,15.88,0,0,0,15.36,0l88-48.15a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,33.51l80,43.78-31.57,17.27L96.43,51.09ZM40,80.18l80-43.78V124.6L40,80.89Zm80,142.31L40,178.71V99.11L120,142.8ZM136,222.49V142.8l80-43.69v79.6Z"></path>
-                    </svg>
-                    <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Barang</span>
-                </a>
+            <a href="{{ route('admin.user') }}" class="nav-item group flex items-center justify-start px-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.user') ? 'active bg-gray-200/50 dark:bg-gray-700/50' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
+                    <path d="M231.39,212.46A104,104,0,0,0,36.07,176.84a8,8,0,1,0,12.83,9.54,88,88,0,0,1,164.44,30.3,8,8,0,0,0,15.79-2.61ZM128,152a64,64,0,1,0-64-64A64.07,64.07,0,0,0,128,152Zm0-112a48,48,0,1,1-48,48A48.05,48.05,0,0,1,128,40Z"></path>
+                </svg>
+                <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">User</span>
+            </a>
 
-                <a href="{{ route('admin.user') }}" class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.user') ? 'active' : '' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
-                        <path d="M231.39,212.46A104,104,0,0,0,36.07,176.84a8,8,0,1,0,12.83,9.54,88,88,0,0,1,164.44,30.3,8,8,0,0,0,15.79-2.61ZM128,152a64,64,0,1,0-64-64A64.07,64.07,0,0,0,128,152Zm0-112a48,48,0,1,1-48,48A48.05,48.05,0,0,1,128,40Z"></path>
-                    </svg>
-                    <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">User</span>
-                </a>
-            </nav>
+        @elseif(auth()->user()->role === 'staff')
+            <a href="{{ route('staff.barang') }}" class="nav-item group flex items-center justify-start px-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('staff.barang') ? 'active bg-gray-200/50 dark:bg-gray-700/50' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
+                    <path d="M223.68,66.15,135.68,18a15.88,15.88,0,0,0-15.36,0l-88,48.15a16,16,0,0,0-8.32,14V173.9a16,16,0,0,0,8.32,14l88,48.15a15.88,15.88,0,0,0,15.36,0l88-48.15a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,33.51l80,43.78-31.57,17.27L96.43,51.09ZM40,80.18l80-43.78V124.6L40,80.89Zm80,142.31L40,178.71V99.11L120,142.8Zm16-142.31V142.8l80-43.69v79.6Z"></path>
+                </svg>
+                <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Barang</span>
+            </a>
 
-            <!-- Logout -->
-            <div class="p-3 mb-2">
-                <form action="" method="POST">
-                    @csrf
-                    <button type="submit" class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0 rotate-180">
-                            <path d="M112,216a8,8,0,0,1-8,8H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h56a8,8,0,0,1,0,16H48V208h56A8,8,0,0,1,112,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L196.69,120H104a8,8,0,0,0,0,16h92.69l-28.35,28.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,221.66,122.34Z"></path>
-                        </svg>
-                        <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Logout</span>
-                    </button>
-                </form>
-            </div>
+        @elseif(auth()->user()->role === 'supervisor')
+            <a href="{{ route('supervisor.dashboard') }}" class="nav-item group flex items-center justify-start px-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('supervisor.dashboard') ? 'active bg-gray-200/50 dark:bg-gray-700/50' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
+                    <path d="M219.31,108.68l-80-73.34a16,16,0,0,0-22.62,0l-80,73.34A15.82,15.82,0,0,0,32,120.42V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V120.42A15.82,15.82,0,0,0,219.31,108.68ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V120.42l80-73.34,80,73.34Z"></path>
+                </svg>
+                <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Dashboard</span>
+            </a>
+        @endif
+
+    @else
+        <a href="{{ route('login') }}" class="nav-item group flex items-center justify-start px-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
+                <path d="M224,128a8,8,0,0,1-8,8H112a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128Zm-101.66,42.34a8,8,0,0,0,11.32-11.32L108.69,128l25.17-25.17a8,8,0,0,0-11.32-11.32l-32,32a8,8,0,0,0,0,11.32ZM136,208a8,8,0,0,1-8,8H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h80a8,8,0,0,1,0,16H48V208h80A8,8,0,0,1,136,208Z"></path>
+            </svg>
+            <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Login</span>
+        </a>
+    @endauth
+    </div>
+          <!-- Logout -->
+                   
+           <form method="POST" action="{{ route('logout') }}" class="w-full">
+               @csrf
+               <button type="submit" class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-all duration-200 w-full">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="shrink-0">
+                       <path d="M120,216a8,8,0,0,1-8,8H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h64a8,8,0,0,1,0,16H48V208h64A8,8,0,0,1,120,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L204.69,120H112a8,8,0,0,0,0,16h92.69l-26.35,26.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,229.66,122.34Z"></path>
+                   </svg>
+                   <span class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Logout</span>
+               </button>
+           </form>
         </aside>
         <!-- MAIN CONTENT -->
         <div class="flex-1 flex flex-col overflow-y-auto">
