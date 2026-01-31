@@ -201,18 +201,18 @@
 
         <!-- Header Konten -->
         <div class="flex flex-col space-y-4">
-            <div class="flex items-center text-sm text-gray-500">
-                <span>Admin</span>
-                <svg class="h-4 w-4 mx-1" fill="currentColor" viewBox="0 0 20 20">
+            <div class="dark:text-white flex items-center text-sm text-gray-500">
+                <span class="text-gray-500 dark:text-gray-500">Admin</span>
+                <svg class="h-4 w-4 mx-1 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
                         d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                         clip-rule="evenodd"></path>
                 </svg>
-                <span>Daftar Barang</span>
+                <span class="text-gray-500 dark:text-white-500 font-medium">Daftar Barang</span>
             </div>
 
             <div class="flex items-center justify-between">
-                <h2 class="text-3xl font-bold text-gray-900 m-0">Daftar Barang</h2>
+                <h2 class="text-3xl font-bold text-gray-900 m-0 dark:text-white">Daftar Barang</h2>
                 <div class="hidden md:flex gap-2">
 
                     {{-- Barang Masuk --}}
