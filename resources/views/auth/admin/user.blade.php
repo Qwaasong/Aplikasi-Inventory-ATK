@@ -45,8 +45,124 @@
             background-color: var(--nav-hover-bg);
             color: var(--text-main);
         }
+
+        /* 1. WRAPPER UTAMA FAB */
+        .fab {
+            z-index: 9999;
+            /* KUNCI: Buat container selebar tombol utama (56px) & ratakan tengah */
+            width: 56px !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            /* Semua tombol dipaksa ke tengah as */
+            right: 24px !important;
+            /* Jarak dari kanan layar (right-6) */
+        }
+
+        /* 2. ITEM LIST (ANAK-ANAK) */
+        .fab-items {
+            width: 100%;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            /* Pastikan anak-anak juga rata tengah */
+            gap: 12px;
+            padding-bottom: 12px;
+            /* Jarak antara tombol kecil & tombol utama */
+        }
+
+        .fab-item-wrapper {
+            /* Wrapper memenuhi lebar 56px, tombol ditaruh di tengah */
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Tombol kecil dipaksa ke tengah */
+            position: relative;
+            /* Jangkar untuk label absolute */
+
+            /* Animasi */
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            visibility: visible;
+            height: 48px;
+            /* Tinggi fix sesuai tombol kecil */
+        }
+
+        /* Kondisi Tersembunyi */
+        .fab-item-wrapper.hidden-space {
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+            visibility: hidden;
+            height: 0;
+        }
+
+        /* Tombol Bulat Anak (48px) */
+        .fab-item {
+            width: 48px;
+            height: 48px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            border-radius: 9999px;
+            /* Tidak perlu margin aneh-aneh lagi */
+        }
+
+        /* 3. LABEL TEKS (POSISI ABSOLUTE) */
+        /* Label menempel melayang di sebelah kiri tombol */
+        .fab-label {
+            position: absolute;
+            right: 56px;
+            /* Geser ke kiri sejauh lebar container */
+            top: 50%;
+            transform: translateY(-50%);
+            /* Trik CSS biar lurus vertikal tengah */
+
+            font-family: 'Inter', sans-serif;
+            background-color: #1f2937;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-right: 12px;
+            /* Jarak label ke tombol */
+            white-space: nowrap;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        /* 4. TOMBOL UTAMA (TRIGGER) */
+        #fabMain {
+            width: 56px;
+            height: 56px;
+            position: relative;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            transform: none !important;
+            transition: background-color 0.2s;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            /* Otomatis rata tengah karena parent align-items: center */
+        }
+
+        /* ICON X */
+        #iconX {
+            position: static !important;
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #fabMain[aria-expanded="true"] #iconX {
+            transform: rotate(135deg) !important;
+        }
     </style>
 
+    {{-- HEADER --}}
     <div class="px-8 py-6 space-y-4">
         <div class="dark:text-white flex items-center text-sm text-gray-500">
             <span class="text-gray-500 dark:text-gray-500">Admin</span>
@@ -58,7 +174,7 @@
             <span class="text-gray-500 dark:text-white-500 font-medium">Daftar User</span>
         </div>
 
-
+        {{-- HEADER TAMBAH USER --}}
         <div class="flex flex-col space-y-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-3xl font-bold text-gray-800 dark:text-white m-0">Daftar User</h2>
@@ -73,11 +189,38 @@
 
         <hr class="my-6 border-gray-200">
 
-        <x-table :data-table="['Nama User' => 'nama_user', 'Username' => 'username', 'Role' => 'role']"
+        <x-table :data-table="['Nama Lengkap' => 'nama_user', 'Username' => 'username', 'Role' => 'role']"
             data-url="{{ route('api.user.index') }}" primary_key="id_user">
         </x-table>
     </div>
 
+    {{-- FAB MOBILE --}}
+    <!-- FAB Container (Mobile) -->
+    <div class="md:hidden fab fixed bottom-6 right-6 flex flex-col z-50">
+        <div class="fab-items">
+
+            {{-- Tambah User Baru --}}
+            <div class="fab-item-wrapper hidden-space">
+                <span class="fab-label" onclick="openModal('modalTambahUser')">
+                    Tambah User
+                </span>
+                <button onclick="openModal('modalTambahUser')"
+                    class="fab-item shadow-lg flex items-center justify-center text-white bg-[#1e5bb5] hover:opacity-90">
+                    <i class="fa-solid fa-user-plus"></i>
+                </button>
+            </div>
+        </div>
+
+        <button id="fabMain"
+            class="fab-main rounded-full shadow-xl bg-[var(--accent-primary)] hover:opacity-90 text-white z-50"
+            aria-expanded="false" aria-label="Open FAB">
+
+            <span id="iconX" class="fab-icon visible text-xl">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </button>
+
+    </div>
 
     <!-- Modal Tambah User -->
     <div id="modalTambahUser" class="fixed inset-0 bg-black/30 hidden justify-center items-center z-50 p-4">
@@ -90,13 +233,14 @@
                     <h3 class="text-lg mb-6 text-black">Tambah User Baru</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <input type="text" name="nama_user" placeholder="Nama User" class="input-field" required>
+                            <input type="text" name="nama_user" placeholder="Nama Lengkap" class="input-field" required>
                         </div>
                         <div>
                             <select name="role" class="input-field text-gray-700" required>
                                 <option value="">Pilih Role</option>
                                 <option value="admin">Admin</option>
                                 <option value="staff">Staff</option>
+                                <option value="supervisor">Supervisor</option>
                             </select>
                         </div>
                         <div>
@@ -129,7 +273,7 @@
                     <h3 class="text-lg mb-6 text-black font-semibold">Edit Data User</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="text-xs text-gray-500">Nama User</label>
+                            <label class="text-xs text-gray-500">Nama Lengkap</label>
                             <input type="text" id="edit_nama_user" name="nama_user" class="input-field" required>
                         </div>
                         <div>
