@@ -18,7 +18,8 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors">
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors">
         <div class="overflow-x-auto">
             <div class="hidden sm:table w-full">
                 <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -26,24 +27,32 @@
                         <tr>
                             {{-- LOOPING KOLOM HEADER --}}
                             @foreach (array_keys($dataTable) as $header)
-                            <th scope="col" class="px-6 py-4 font-bold text-gray-900 dark:text-gray-200 uppercase tracking-wider text-xs">{{ $header }}</th>
+                                <th scope="col"
+                                    class="px-6 py-4 font-bold text-gray-900 dark:text-gray-200 uppercase tracking-wider text-xs">
+                                    {{ $header }}
+                                </th>
                             @endforeach
                             {{-- Kolom Aksi --}}
                             @if($showAction)
-                            <th scope="col" class="px-6 py-4">
-                                <span class="sr-only">Actions</span>
-                            </th>
+                                <th scope="col" class="px-6 py-4">
+                                    <span class="sr-only">Actions</span>
+                                </th>
                             @endif
                         </tr>
                     </thead>
                     {{-- ISI TABEL AKAN DI-INJECT OLEH AJAX/JQUERY --}}
                     <tbody id="table-body" class="divide-y divide-gray-100">
                         <tr>
-                            <td colspan="{{ count($dataTable) + ($showAction ? 1 : 0) }}" class="text-center py-10 text-gray-400">
+                            <td colspan="{{ count($dataTable) + ($showAction ? 1 : 0) }}"
+                                class="text-center py-10 text-gray-400">
                                 <div class="flex flex-col items-center">
-                                    <svg class="animate-spin h-8 w-8 text-blue-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    <svg class="animate-spin h-8 w-8 text-blue-500 mb-2"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
                                     </svg>
                                     <span>Memuat data...</span>
                                 </div>
@@ -59,13 +68,15 @@
         </div>
 
         {{-- Pagination terintegrasi (Modern & Minimalist) --}}
-        <div id="pagination-links" class="border-t border-gray-100 dark:border-gray-700 bg-gray-50/30 dark:bg-gray-900/30 transition-colors"></div>
+        <div id="pagination-links"
+            class="border-t border-gray-100 dark:border-gray-700 bg-gray-50/30 dark:bg-gray-900/30 transition-colors">
+        </div>
     </div>
 
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Mendapatkan URL data dari properti component PHP
         const dataUrl = "{{ $dataUrl }}";
         const primaryKey = "{{ $primaryKey }}";
@@ -126,9 +137,8 @@
                 <button
                     data-page="${pageNum}"
                     class="pagination-link flex items-center justify-center min-w-[32px] h-8 mx-0.5 text-sm font-medium rounded-lg transition-all 
-                        ${isActive 
-                            ? 'bg-blue-600 text-white shadow-sm' 
-                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'}"
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-[var(--nav-hover-bg)]'}"
                 >
                     ${pageNum}
                 </button>
@@ -148,9 +158,9 @@
             data-page="${page}"
             ${disabled ? 'disabled' : ''}
             class="pagination-link flex items-center px-3 h-8 text-sm font-medium rounded-lg transition-all
-                ${disabled 
-                    ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed' 
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600'}"
+                ${disabled
+                    ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-[var(--nav-hover-bg)] hover:text-blue-600'}"
         >
             ${icon && iconPosition === 'left' ? icon : ''}
             <span class="${icon ? (iconPosition === 'left' ? 'ml-1.5' : 'mr-1.5') : ''}">
@@ -264,7 +274,7 @@
                 type: 'GET',
                 data: requestData,
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     console.log('API Response:', response); // Debugging line
 
                     // Safely extract data with multiple fallbacks
@@ -321,7 +331,7 @@
                     console.log('Is Array:', Array.isArray(data));
                     if (data && Array.isArray(data) && data.length > 0) {
                         console.log('Processing data items:', data);
-                        $.each(data, function(i, item) {
+                        $.each(data, function (i, item) {
                             // Membuat tombol aksi yang reusable (gunakan slot untuk isi)
                             let actionsHtml = '';
                             if (showAction) {
@@ -341,7 +351,7 @@
                             // MEMBUAT BARIS SECARA DINAMIS
                             let dataCells = '';
                             // Di dalam fungsi fetchData, ubah bagian ini:
-                            $.each(fieldKeys, function(j, key) {
+                            $.each(fieldKeys, function (j, key) {
                                 let value = getNestedValue(item, key);
                                 // Format tanggal jika field adalah created_at atau updated_at
                                 if (key === 'created_at' || key === 'updated_at' || key === 'email_verified_at' || key.endsWith('.created_at') || key.endsWith('.updated_at') || key.endsWith('.email_verified_at')) {
@@ -373,7 +383,7 @@
                     let cardHtml = '';
                     console.log('Rendering cards with data length:', data.length);
                     if (data && Array.isArray(data) && data.length > 0) {
-                        $.each(data, function(i, item) {
+                        $.each(data, function (i, item) {
                             // Sama seperti di desktop, gunakan item.id untuk dropdown
                             let actionsHtml = '';
                             if (showAction) {
@@ -393,7 +403,7 @@
                             // MEMBUAT BARIS DETAIL CARD SECARA DINAMIS
                             let cardDetails = '';
                             // Dan di bagian card view:
-                            $.each(fields, function(header, key) {
+                            $.each(fields, function (header, key) {
                                 let value = getNestedValue(item, key);
                                 // Format tanggal jika field adalah created_at atau updated_at
                                 if (key === 'created_at' || key === 'updated_at' || key === 'email_verified_at' || key.endsWith('.created_at') || key.endsWith('.updated_at') || key.endsWith('.email_verified_at')) {
@@ -431,7 +441,7 @@
                     // Re-attach event listeners untuk dropdown menu
                     attachMenuDropdownListeners();
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('API Error:', {
                         xhr,
                         status,
@@ -449,10 +459,10 @@
 
         // 4. Implementasi Search dengan Debounce
         let searchTimeout = null;
-        searchInput.on('keyup', function() {
+        searchInput.on('keyup', function () {
             clearTimeout(searchTimeout);
             const query = $(this).val();
-            searchTimeout = setTimeout(function() {
+            searchTimeout = setTimeout(function () {
                 currentSearch = query;
                 currentPage = 1;
                 fetchData(currentPage, currentSearch, currentFilters);
@@ -460,7 +470,7 @@
         });
 
         // 5. Implementasi Pindah Halaman
-        $(document).on('click', '.pagination-link', function(e) {
+        $(document).on('click', '.pagination-link', function (e) {
             e.preventDefault();
             const page = $(this).data('page');
             if (!$(this).prop('disabled')) {
@@ -470,7 +480,7 @@
         });
 
         // 6. Implementasi Tombol Aksi (Delete Example)
-        $(document).on('click', '.delete-btn', function(e) {
+        $(document).on('click', '.delete-btn', function (e) {
             e.preventDefault();
             const itemId = $(this).data('id');
             console.log('Delete clicked for item ID:', itemId);
@@ -492,13 +502,13 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         console.log('Delete success:', response);
                         $(`#row-${itemId}`).remove();
                         $(`#card-${itemId}`).remove();
                         alert('Item berhasil dihapus!');
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error('Delete error:', {
                             xhr,
                             status,
@@ -512,7 +522,7 @@
         });
 
         // Tambahkan Implementasi Tombol Edit untuk Modal
-        $(document).on('click', '.edit-btn', function(e) {
+        $(document).on('click', '.edit-btn', function (e) {
             e.preventDefault();
             const itemId = $(this).data('id');
             showEditModal(itemId);
@@ -524,13 +534,13 @@
             $.ajax({
                 url: `${dataUrl}/${id}`,
                 type: 'GET',
-                success: function(data) {
+                success: function (data) {
                     // Emit custom event dengan data item untuk ditangkap oleh halaman parent
                     window.dispatchEvent(new CustomEvent('edit-data', {
                         detail: data
                     }));
                 },
-                error: function() {
+                error: function () {
                     alert('Gagal memuat data untuk edit.');
                 }
             });
@@ -633,7 +643,7 @@
 
         function throttle(func, limit) {
             let inThrottle;
-            return function() {
+            return function () {
                 const args = arguments;
                 const context = this;
                 if (!inThrottle) {
@@ -674,7 +684,7 @@
         // 8. Implementasi Form Filter
         const filterForm = $('#filter-form');
 
-        filterForm.on('submit', function(e) {
+        filterForm.on('submit', function (e) {
             e.preventDefault();
             const formData = $(this).serializeArray();
             let filters = {};
@@ -697,7 +707,7 @@
         });
 
         // Tombol Reset Filter
-        $('#reset-filter-btn').on('click', function() {
+        $('#reset-filter-btn').on('click', function () {
             filterForm[0].reset(); // Reset form
             currentFilters = {}; // Hapus state filter
             currentPage = 1;

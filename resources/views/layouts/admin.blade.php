@@ -7,11 +7,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('assets/css/inter-font.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/admin-layout.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
     <script>
-        // Check for dark mode preference
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -21,29 +24,127 @@
     <title>@yield('title')</title>
 
     <style>
-        /* Di dalam <style> pada admin.blade.php */
-        @media (max-width: 991px) {
-            .logout-section {
-                /* Memberikan bantalan bawah yang tebal agar tombol naik dari dasar layar */
-                padding: 12px 12px 880px 12px !important;
+        :root {
+            /* Light Mode Variables */
+            --bg-main: #f1f5f9;
+            --bg-sidebar: #f8fafc;
+            --bg-header: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #ffffff;
+            --bg-modal: #ffffff;
+            --border-primary: #e2e8f0;
+            --border-input: #d1d5db;
+            --border-focus: #3b82f6;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --text-heading: #0f172a;
+            --accent-primary: #3b82f6;
+            --accent-danger: #ef4444;
+            --accent-success: #22c55e;
+            --accent-info: #3b82f6;
+            --nav-active-bg: #eff6ff;
+            --nav-active-text: #2563eb;
+            --nav-hover-bg: #f1f5f9;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
 
-                /* Memberikan jarak atas agar tidak terlalu mepet menu sebelumnya */
-                margin-top: 10px;
+        .dark {
+            /* Dark Mode Variables */
+            --bg-main: #0f172a;
+            --bg-sidebar: #1e293b;
+            --bg-header: #1e293b;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --bg-modal: #1e293b;
+            --border-primary: #334155;
+            --border-input: #475569;
+            --border-focus: #60a5fa;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-heading: #f8fafc;
+            --accent-primary: #60a5fa;
+            --accent-danger: #f87171;
+            --accent-success: #4ade80;
+            --accent-info: #60a5fa;
+            --nav-active-bg: #334155;
+            --nav-active-text: #60a5fa;
+            --nav-hover-bg: #334155;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
 
-                /* Pastikan background mengikuti tema agar bantalan tidak terlihat belang */
-                background-color: transparent;
-            }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+        }
+
+        #sidebar {
+            background-color: var(--bg-sidebar);
+            border-color: var(--border-primary);
+        }
+
+        #header {
+            background-color: var(--bg-header);
+            border-color: var(--border-primary);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            color: var(--text-heading);
+        }
+
+        label {
+            color: var(--text-muted);
+        }
+
+        .nav-item.active {
+            background-color: var(--nav-active-bg) !important;
+            color: var(--nav-active-text) !important;
+        }
+
+        .nav-item:hover {
+            background-color: var(--nav-hover-bg) !important;
+        }
+
+        .input-field {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-input);
+            color: var(--text-main);
+        }
+
+        .input-field:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Sidebar Scrollbar */
+        #sidebar-nav-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #sidebar-nav-container::-webkit-scrollbar-thumb {
+            background: var(--border-primary);
+            border-radius: 10px;
+        }
+
+        #sidebar-nav-container::-webkit-scrollbar-track {
+            background: transparent;
         }
     </style>
 
 </head>
 
-<body
-    class="flex flex-col h-screen overflow-hidden bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
 
     <!-- HEADER -->
-    <header
-        class="h-16 w-full bg-[#f0f0f0] dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 transition-colors duration-300">
+    <header id="header"
+        class="fixed top-0 left-0 right-0 h-16 bg-[#f0f0f0] dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 flex items-center justify-between px-4 sm:px-6 z-40 transition-all duration-300">
         <div class="flex items-center gap-4">
             <button id="toggleBtn" class="p-1 rounded-md hover:bg-gray-200 focus:outline-none transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"
@@ -78,100 +179,91 @@
         </div>
     </header>
 
-    <!-- WRAPPER -->
-    <div class="flex flex-1 overflow-hidden relative">
+    <!-- SIDEBAR -->
+    <aside id="sidebar"
+        class="fixed top-16 left-0 bottom-0 w-64 bg-[#f0f0f0] dark:bg-gray-800 border-r border-gray-300 dark:border-gray-700 transition-all duration-300 ease-in-out z-30 flex flex-col -translate-x-full sm:translate-x-0">
 
-        <!-- SIDEBAR -->
-        <aside id="sidebar"
-            class="hidden sm:flex flex-col justify-between h-full bg-[#f0f0f0] dark:bg-gray-800 w-64 transition-all duration-300 ease-in-out border-r border-gray-300 dark:border-gray-700 overflow-y-auto overflow-x-hidden">
+        <!-- NAV CONTAINER (Scrollable) -->
+        <nav id="sidebar-nav-container" class="flex-grow pt-4 px-3 space-y-2 overflow-y-auto overflow-x-hidden">
 
-            <!-- 
-                NAV CONTAINER 
-            -->
-            <nav class="pt-4 px-3 space-y-2">
-
-                <!-- Nav Item -->
-                 @can('admin-only')
+            <!-- Nav Item -->
+            @can('admin-only')
                 <a href="{{ route('admin.dashboard') }}"
                     class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.dashboard') ? 'active' : '' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 256 256" class="shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                        fill="currentColor" class="shrink-0">
                         <path
-                            d="M219.31,108.68l-80-73.34a16,16,0,0,0-22.62,0l-80,73.34A15.82,15.82,0,0,0,32,120.42V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V120.42A15.82,15.82,0,0,0,219.31,108.68ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V120.42l80-73.34,80,73.34Z">
-                        </path>
+                            d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z" />
                     </svg>
                     <span
                         class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Dashboard</span>
                 </a>
-                @endcan
+            @endcan
 
-                 @can('akses-laporan')
+            @can('akses-laporan')
                 <a href="{{ route('kepsek.laporan') }}"
-                    class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.dashboard') ? 'active' : '' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 256 256" class="shrink-0">
+                    class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('kepsek.laporan') ? 'active' : '' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                        fill="currentColor" class="shrink-0">
                         <path
-                            d="M219.31,108.68l-80-73.34a16,16,0,0,0-22.62,0l-80,73.34A15.82,15.82,0,0,0,32,120.42V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V120.42A15.82,15.82,0,0,0,219.31,108.68ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V120.42l80-73.34,80,73.34Z">
-                        </path>
+                            d="M280-280h80v-200h-80v200Zm320 0h80v-400h-80v400Zm-160 0h80v-120h-80v120Zm0-200h80v-80h-80v80ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z" />
                     </svg>
                     <span
                         class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Dashboard</span>
                 </a>
-                @endcan
+            @endcan
 
-                @can('akses-barang')
+            @can('akses-barang')
                 <a href="{{ auth()->user()->role === 'admin' ? route('admin.barang') : route('pegawai.barang')}}"
-                    class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.barang') ? 'active' : '' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 256 256" class="shrink-0">
+                    class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.barang') || Route::is('pegawai.barang') ? 'active' : '' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                        fill="currentColor" class="shrink-0">
                         <path
-                            d="M223.68,66.15,135.68,18a15.88,15.88,0,0,0-15.36,0l-88,48.15a16,16,0,0,0-8.32,14V173.9a16,16,0,0,0,8.32,14l88,48.15a15.88,15.88,0,0,0,15.36,0l88-48.15a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,33.51l80,43.78-31.57,17.27L96.43,51.09ZM40,80.18l80-43.78V124.6L40,80.89Zm80,142.31L40,178.71V99.11L120,142.8ZM136,222.49V142.8l80-43.69v79.6Z">
-                        </path>
+                            d="m400-570 80-40 80 40v-190H400v190ZM280-280v-80h200v80H280Zm-80 160q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-640v560-560Zm0 560h560v-560H640v320l-160-80-160 80v-320H200v560Z" />
                     </svg>
                     <span
                         class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Barang</span>
                 </a>
-                @endcan
+            @endcan
 
-                @can('admin-only')
+            @can('admin-only')
                 <a href="{{ route('admin.user') }}"
                     class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.user') ? 'active' : '' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 256 256" class="shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                        fill="currentColor" class="shrink-0">
                         <path
-                            d="M231.39,212.46A104,104,0,0,0,36.07,176.84a8,8,0,1,0,12.83,9.54,88,88,0,0,1,164.44,30.3,8,8,0,0,0,15.79-2.61ZM128,152a64,64,0,1,0-64-64A64.07,64.07,0,0,0,128,152Zm0-112a48,48,0,1,1-48,48A48.05,48.05,0,0,1,128,40Z">
-                        </path>
+                            d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
                     </svg>
                     <span
                         class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">User</span>
                 </a>
-                @endcan
-            </nav>
+            @endcan
+        </nav>
 
-            <!-- Logout -->
-            <div class="flex-grow"></div>
-            <div class="logout-section">
-                <form action="" method="POST">
-                    @csrf
-                    <button type="submit"
-                        class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                            viewBox="0 0 256 256" class="shrink-0 rotate-180">
-                            <path
-                                d="M112,216a8,8,0,0,1-8,8H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h56a8,8,0,0,1,0,16H48V208h56A8,8,0,0,1,112,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L196.69,120H104a8,8,0,0,0,0,16h92.69l-28.35,28.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,221.66,122.34Z">
-                            </path>
-                        </svg>
-                        <span
-                            class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Logout</span>
-                    </button>
-                </form>
-            </div>
-        </aside>
-        <!-- MAIN CONTENT -->
-        <div class="flex-1 flex flex-col overflow-y-auto">
+        <!-- Logout (Fixed at Bottom) -->
+        <div class="px-3 pb-4 pt-4 border-t border-gray-300 dark:border-gray-700 bg-[#f0f0f0] dark:bg-gray-800">
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit"
+                    class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                        fill="currentColor" class="shrink-0">
+                        <path
+                            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+                    </svg>
+                    <span
+                        class="ml-3 whitespace-nowrap font-medium sidebar-text transition-opacity duration-200">Logout</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content" class="pt-16 sm:pl-64 transition-all duration-300 ease-in-out min-h-screen">
+        <div class="p-4 sm:p-6">
             @yield('content')
         </div>
-    </div>
+    </main>
     <script src="{{ asset('assets/js/admin-layout.js') }}"></script>
     <script src="{{ asset('assets/js/fab.js') }}"></script>
     @yield('script')
