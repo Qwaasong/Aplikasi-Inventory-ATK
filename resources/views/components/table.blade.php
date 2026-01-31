@@ -1,11 +1,17 @@
 @props(['dataTable' => [], 'showAction' => true])
 <div class="max-w-7xl mx-auto">
-    <div class="flex sm:flex-row items-center sm:justify-between gap-4 mb-6">
-        <div class="sm:w-auto relative">
-            {{-- Slot untuk Tombol Filter Custom (Opsional) --}}
-            {{ $filter ?? '' }}
-        </div>
-        <div class="relative sm:w-64 w-full">
+    <div
+        class="flex flex-row items-center gap-2 sm:gap-4 mb-6 w-full {{ isset($filter) && $filter != '' ? 'justify-between' : 'justify-end' }}">
+
+        @if(isset($filter) && $filter != '')
+            <div
+                class="flex-none relative z-10 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none transition-colors">
+                {{ $filter }}
+            </div>
+        @endif
+
+        <div
+            class="relative z-0 {{ isset($filter) && $filter != '' ? 'flex-1 sm:flex-none sm:w-64' : 'w-full sm:w-64' }}">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -14,7 +20,7 @@
                 </svg>
             </div>
             <input type="text" id="table-search-input" placeholder="Search"
-                class="w-full pl-10 pr-4 py-3 sm:py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 transition-colors">
+                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 transition-colors shadow-sm text-sm sm:text-base">
         </div>
     </div>
 
@@ -337,12 +343,14 @@
                             if (showAction) {
                                 actionsHtml = `
                                     <div class="inline-block text-left relative">
-                                        <button class="menu-button p-2 text-gray-500 rounded-full hover:bg-gray-100 focus:outline-none" data-id="${item[primaryKey]}">
-                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+                                       <button class="menu-button p-2 text-gray-500 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-400 focus:outline-none" data-id="${item[primaryKey]}">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
+                                            </svg>
                                         </button>
                                         <div id="dropdown-${item[primaryKey]}" class="menu-dropdown hidden absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-30">
                                             <button type="button" class="edit-btn block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" data-id="${item[primaryKey]}">Edit</button>
-                                            <a href="" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 delete-btn" data-id="${item[primaryKey]}" data-url="${entityBaseUrl}">Delete</a>
+                                            <a href="" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 delete-btn" data-id="${item[primaryKey]}" data-url="${entityBaseUrl}">Delete</a>
                                         </div>
                                     </div>
                                 `;
@@ -389,7 +397,7 @@
                             if (showAction) {
                                 actionsHtml = `
                                     <div class="relative">
-                                        <button class="menu-button p-1 text-gray-500 rounded-full hover:bg-gray-100" data-id="${item[primaryKey]}">
+                                        <button class="menu-button p-1 text-gray-500 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none transition-colors" data-id="${item[primaryKey]}">
                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
                                         </button>
                                         <div id="dropdown-mobile-${item[primaryKey]}" class="menu-dropdown hidden absolute right-0 mt-1 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-10">
