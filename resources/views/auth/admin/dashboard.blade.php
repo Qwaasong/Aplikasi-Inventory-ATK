@@ -129,13 +129,12 @@
             align-items: center;
             margin: 12px;
             gap: 10px;
-            padding: 8px 14px;
             border-radius: 10px;
             background: var(--bg-card);
             border: 1px solid var(--border-primary);
             font-size: 13px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: background-color 0.2s, border-color 0.2s;
         }
 
         .filter i {
@@ -191,243 +190,271 @@
             }
         }
     </style>
+
     <body>
-            <div class="wrapper">
-                <div class="box-container">
-                    <span>Total Pack</span>
-                    <h3 id="totalPack"></h3>
-                </div>
-
-                <div class="box-container">
-                    <span>Total Pcs</span>
-                    <h3 id="totalPcs"></h3>
-                </div>
-
-                <div class="box-container">
-                    <span>Total User</span>
-                    <h3 id="totalUser"></h3>
-                </div>
+        <div class="wrapper">
+            <div class="box-container">
+                <span>Total Pack</span>
+                <h3 id="totalPack"></h3>
             </div>
 
-            <div class="header-bar">
-                <div class="title">
-                    Filter Statistik
-                </div>
-
-                <div class="filter">
-                    <select id="range">
-                        <option value="minggu">Mingguan</option>
-                        <option value="bulan">Bulanan</option>
-                        <option value="tahun">Tahunan</option>
-                    </select>
-                </div>
+            <div class="box-container">
+                <span>Total Pcs</span>
+                <h3 id="totalPcs"></h3>
             </div>
 
-            <div class="dashboard-charts">
-                <div class="chart-main">
-                    <div id="chartMasukKeluar"></div>
-                </div>
-                <div class="chart-side">
-                    <div id="chartDistribusi"></div>
-                </div>
+            <div class="box-container">
+                <span>Total User</span>
+                <h3 id="totalUser"></h3>
+            </div>
+        </div>
+
+        <div class="header-bar">
+            <div class="title">
+                Filter Statistik
             </div>
 
+            <div class="filter">
+                <select id="range" class="appearance-none w-full rounded-md border border-gray-300 bg-white
+                                                                        text-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 
+                                                                        dark:border-gray-600 dark:text-white">
+                    <option value="minggu">Mingguan</option>
+                    <option value="bulan">Bulanan</option>
+                    <option value="tahun">Tahunan</option>
+                </select>
+            </div>
+        </div>
 
-            {{-- ///////////// FUNGSI AMBIL DATA DARI API \\\\\\\\\\\\\\\ --}}
+        <div class="dashboard-charts">
+            <div class="chart-main">
+                <div id="chartMasukKeluar"></div>
+            </div>
+            <div class="chart-side">
+                <div id="chartDistribusi"></div>
+            </div>
+        </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.js"></script>
-            <script>
-                // Inisialisasi variabel global agar bisa diakses fungsi load
-                let chartMasukKeluar;
-                let chartDistribusi;
-                // Simpan instance di luar fungsi supaya bisa di-reset kalau filter diganti
-                let countUpInstances = {};
+    </body>
 
-                function animateValue(id, value) {
-                    const targetEl = document.getElementById(id);
-                    if (!targetEl) return;
+    {{-- ///////////// FUNGSI AMBIL DATA DARI API \\\\\\\\\\\\\\\ --}}
 
-                    // Pastikan kita menggunakan konstruktor yang benar dari window.countUp
-                    const CountUpClass = window.countUp ? window.countUp.CountUp : null;
+    <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.js"></script>
+    <script>
+        // Inisialisasi variabel global agar bisa diakses fungsi load
+        let chartMasukKeluar;
+        let chartDistribusi;
+        // Simpan instance di luar fungsi supaya bisa di-reset kalau filter diganti
+        let countUpInstances = {};
 
-                    if (CountUpClass) {
-                        // Jika sebelumnya sudah ada animasi di ID ini, kita reset
-                        if (countUpInstances[id]) {
-                            countUpInstances[id].update(value);
-                            return;
-                        }
+        function animateValue(id, value) {
+            const targetEl = document.getElementById(id);
+            if (!targetEl) return;
 
-                        const options = {
-                            duration: 2,
-                            useEasing: true,
-                            separator: '.',
-                            startVal: 0
-                        };
+            // Pastikan kita menggunakan konstruktor yang benar dari window.countUp
+            const CountUpClass = window.countUp ? window.countUp.CountUp : null;
 
-                        // Simpan instance ke dalam object global kita
-                        countUpInstances[id] = new CountUpClass(id, value, options);
-
-                        if (!countUpInstances[id].error) {
-                            countUpInstances[id].start();
-                        } else {
-                            console.error("Error CountUp:", countUpInstances[id].error);
-                            targetEl.innerText = value;
-                        }
-                    } else {
-                        // Fallback jika library belum siap
-                        targetEl.innerText = value;
-                    }
+            if (CountUpClass) {
+                // Jika sebelumnya sudah ada animasi di ID ini, kita reset
+                if (countUpInstances[id]) {
+                    countUpInstances[id].update(value);
+                    return;
                 }
 
-                // Fungsi untuk mengambil data dari API
-                async function loadDashboardData(range) {
-                    try {
-                        const response = await fetch(`/api/dashboard/stats?filter=${range}`);
-                        const result = await response.json();
+                const options = {
+                    duration: 2,
+                    useEasing: true,
+                    separator: '.',
+                    startVal: 0
+                };
 
-                        if (result.success) {
-                            // 1. Update Box Angka
-                            animateValue('totalPack', result.summary.total_pack);
-                            animateValue('totalPcs', result.summary.total_pcs);
-                            animateValue('totalUser', result.summary.total_user);
+                // Simpan instance ke dalam object global kita
+                countUpInstances[id] = new CountUpClass(id, value, options);
 
-                            // 2. Update Grafik Batang
-                            const stats = result.charts.statistik_masuk_keluar;
-                            chartMasukKeluar.xAxis[0].setCategories(stats.labels);
+                if (!countUpInstances[id].error) {
+                    countUpInstances[id].start();
+                } else {
+                    console.error("Error CountUp:", countUpInstances[id].error);
+                    targetEl.innerText = value;
+                }
+            } else {
+                // Fallback jika library belum siap
+                targetEl.innerText = value;
+            }
+        }
 
-                            // Tambahkan parameter 'true' agar ada animasi saat data berubah
-                            chartMasukKeluar.series[0].setData(stats.masuk, true, { duration: 1000 });
-                            chartMasukKeluar.series[1].setData(stats.keluar, true, { duration: 1000 });
+        // Fungsi untuk mengambil data dari API
+        async function loadDashboardData(range) {
+            try {
+                const response = await fetch(`/api/dashboard/stats?filter=${range}`);
+                const result = await response.json();
 
-                            // 3. Update Grafik Pie (Distribusi)
-                            const pieData = result.charts.distribusi_barang.map(item => ({
-                                name: item.label,
-                                y: item.jumlah
-                            }));
+                if (result.success) {
+                    // 1. Update Box Angka
+                    animateValue('totalPack', result.summary.total_pack);
+                    animateValue('totalPcs', result.summary.total_pcs);
+                    animateValue('totalUser', result.summary.total_user);
 
-                            // Tambahkan parameter 'true' juga di sini
-                            chartDistribusi.series[0].setData(pieData, true, { duration: 1000 });
+                    // 2. Update Grafik Batang
+                    const stats = result.charts.statistik_masuk_keluar;
+                    chartMasukKeluar.xAxis[0].setCategories(stats.labels);
 
+                    // Tambahkan parameter 'true' agar ada animasi saat data berubah
+                    chartMasukKeluar.series[0].setData(stats.masuk, true, { duration: 1000 });
+                    chartMasukKeluar.series[1].setData(stats.keluar, true, { duration: 1000 });
+
+                    // 3. Update Grafik Pie (Distribusi)
+                    const pieData = result.charts.distribusi_barang.map(item => ({
+                        name: item.label,
+                        y: item.jumlah
+                    }));
+
+                    // Tambahkan parameter 'true' juga di sini
+                    chartDistribusi.series[0].setData(pieData, true, { duration: 1000 });
+
+                }
+            } catch (error) {
+                console.error('Gagal memuat data:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            Highcharts.setOptions({
+                lang: {
+                    months: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+                        'November', 'Desember'],
+                    shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                    weekdays: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
+                },
+                plotOptions: {
+                    series: {
+                        animation: {
+                            duration: 1200 // Beri durasi 1.5 detik agar terlihat jelas animasinya
                         }
-                    } catch (error) {
-                        console.error('Gagal memuat data:', error);
                     }
                 }
+            });
 
-                document.addEventListener('DOMContentLoaded', function () {
-                    Highcharts.setOptions({
-                        lang: {
-                            months: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
-                                'November', 'Desember'],
-                            shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-                            weekdays: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
+
+            // Inisialisasi Chart Batang
+            chartMasukKeluar = Highcharts.chart('chartMasukKeluar', {
+                chart: {
+                    type: 'column',
+                    backgroundColor: 'transparent',
+                },
+                title: {
+                    text: 'Statistik Barang Masuk & Keluar',
+                    style: { color: 'var(--text-main)' }
+                },
+                xAxis: {
+                    categories: [],
+                    labels: {
+                        rotation: 0,
+                        style: {
+                            fontSize: '11px',
+                            color: 'var(--text-main)'
                         },
-                        plotOptions: {
-                            series: {
-                                animation: {
-                                    duration: 1200 // Beri durasi 1.5 detik agar terlihat jelas animasinya
-                                }
-                            }
-                        }
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Jumlah (Pcs)',
+                        style: { color: 'var(--text-main)' }
+                    },
+                    allowDecimals: false,
+                    labels: {
+                        style: { color: 'var(--text-muted)' }
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                legend: {
+                    itemStyle: {
+                        color: 'var(--text-main)'
+                    },
+                    itemHoverStyle: {
+                        color: '#1C3AFF' // Biar tetep keren pas di-hover
+                    }
+                },
+                series: [
+                    {
+                        name: 'Barang Masuk',
+                        color: '#1C3AFF',
+                        data: []
+                    },
+                    {
+                        name: 'Barang Keluar',
+                        color: '#FF2929',
+                        data: []
+                    }
+                ]
+            });
+
+            let debounceTimer; // Wadah untuk menahan eksekusi
+
+            const observer = new MutationObserver(() => {
+                clearTimeout(debounceTimer);
+
+                debounceTimer = setTimeout(() => {
+                    // Gunakan requestIdleCallback agar tidak mengganggu proses lain
+                    (window.requestIdleCallback || window.requestAnimationFrame)(() => {
+                        console.time("⏱️ TemaDiubah");
+
+                        // Cukup panggil redraw tanpa update options yang berat
+                        if (chartMasukKeluar) chartMasukKeluar.redraw(false);
+                        if (chartDistribusi) chartDistribusi.redraw(false);
+
+                        console.timeEnd("⏱️ TemaDiubah");
                     });
+                }, 300); // Beri jeda lebih lama (300ms) agar transisi tema selesai total
+            });
 
-                    // Inisialisasi Chart Batang
-                    chartMasukKeluar = Highcharts.chart('chartMasukKeluar', {
-                        chart: {
-                            type: 'column',
-                            backgroundColor: 'transparent',
-                            events: {
-                                render: function () {
-                                    this.reflow;
-                                }
-                            }
-                        },
-                        title: {
-                            text: 'Statistik Barang Masuk & Keluar',
-                            style: { color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#333333' }
-                        },
-                        xAxis: {
-                            categories: [],
-                            labels: {
-                                rotation: 0,
-                                style: {
-                                    fontSize: '11px',
-                                    color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#333333'
-                                },
-                            }
-                        },
-                        yAxis: {
-                            title: { text: 'Jumlah (Pcs)' },
-                            allowDecimals: false,
-                            labels: {
-                                style: { color: document.documentElement.classList.contains('dark') ? '#B0B0B0' : '#666666' }
-                            }
-                        },
-                        credits: {
-                            enabled: false
-                        },
-                        legend: {
-                            itemStyle: {
-                                color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#333333'
-                            },
-                            itemHoverStyle: {
-                                color: '#1C3AFF' // Biar tetep keren pas di-hover
-                            }
-                        },
-                        series: [
-                            {
-                                name: 'Barang Masuk',
-                                color: '#1C3AFF',
-                                data: []
-                            },
-                            {
-                                name: 'Barang Keluar',
-                                color: '#FF2929',
-                                data: []
-                            }
-                        ]
-                    });
+            observer.observe(document.documentElement, {
+                attributes: true,
+                attributeFilter: ['class']
+            });
 
-                    // Inisialisasi Chart Pie
-                    chartDistribusi = Highcharts.chart('chartDistribusi', {
-                        chart: { type: 'pie', backgroundColor: 'transparent' },
-                        title: {
-                            text: 'Distribusi Barang',
-                            style: { color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#333333' }
-                        },
-                        legend: {
-                            itemStyle: {
-                                color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#333333'
-                            },
-                            itemHoverStyle: {
-                                color: '#1C3AFF' // Biar tetep keren pas di-hover
-                            }
-                        },
-                        credits: { enabled: false },
-                        plotOptions: {
-                            pie: {
-                                allowPointSelect: true,
-                                cursor: 'pointer',
-                                dataLabels: { enabled: false },
-                                showInLegend: true,
-                            }
-                        },
-                        series: [{ name: 'Total', colorByPoint: true, data: [] }]
-                    });
 
-                    // Load data awal (Mingguan)
-                    loadDashboardData('mingguan');
+            // Inisialisasi Chart Pie
+            chartDistribusi = Highcharts.chart('chartDistribusi', {
+                chart: { type: 'pie', backgroundColor: 'transparent' },
+                title: {
+                    text: 'Distribusi Barang',
+                    style: { color: 'var(--text-main)' }
+                },
+                legend: {
+                    itemStyle: {
+                        color: 'var(--text-main)'
+                    },
+                    itemHoverStyle: {
+                        color: '#1C3AFF' // Biar tetep keren pas di-hover
+                    }
+                },
+                credits: { enabled: false },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: { enabled: false },
+                        showInLegend: true,
+                    }
+                },
+                series: [{ name: 'Total', colorByPoint: true, data: [] }]
+            });
 
-                    // Listener Filter Dropdown
-                    document.getElementById('range').addEventListener('change', function () {
-                        let val = this.value;
-                        // Sinkronisasi value dropdown dengan parameter controller
-                        if (val === 'minggu') val = 'mingguan';
-                        if (val === 'bulan') val = 'bulanan';
-                        if (val === 'tahun') val = 'tahunan';
-                        loadDashboardData(val);
-                    });
-                });
-            </script>
+            // Load data awal (Mingguan)
+            loadDashboardData('mingguan');
+
+            // Listener Filter Dropdown
+            document.getElementById('range').addEventListener('change', function () {
+                let val = this.value;
+                // Sinkronisasi value dropdown dengan parameter controller
+                if (val === 'minggu') val = 'mingguan';
+                if (val === 'bulan') val = 'bulanan';
+                if (val === 'tahun') val = 'tahunan';
+                loadDashboardData(val);
+            });
+        });
+    </script>
 
 @endsection
