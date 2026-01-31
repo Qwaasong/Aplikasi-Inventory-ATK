@@ -9,6 +9,8 @@ use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Exports\RekapBarangExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DashboardController extends Controller
 {
@@ -37,7 +39,7 @@ class DashboardController extends Controller
             'success' => true,
             'summary' => [
                 'total_pack' => $totalPack,
-                'total_pcs' => $totalPcs,
+                'total_pcs'  => $totalPcs,
                 'total_user' => $totalUser,
             ],
             'charts' => [
@@ -52,16 +54,14 @@ class DashboardController extends Controller
         $labels = [];
         $dataMasuk = [];
         $dataKeluar = [];
-        
-        // Tambahkan baris ini agar nama hari/bulan otomatis Bahasa Indonesia
+
         \Carbon\Carbon::setLocale('id');
 
         if ($filter == 'mingguan') {
             for ($i = 6; $i >= 0; $i--) {
                 $date = Carbon::now()->subDays($i);
-                // 'l' akan menghasilkan Senin, Selasa, dst karena locale sudah 'id'
                 $labels[] = $date->translatedFormat('l');
-
+                
                 $dataMasuk[] = (int) DB::table('riwayat_stok')
                     ->where('jenis', 'masuk')
                     ->whereDate('created_at', $date->toDateString())
@@ -73,46 +73,175 @@ class DashboardController extends Controller
                     ->sum('jumlah_pcs');
             }
         } elseif ($filter == 'bulanan') {
-            // Loop 12 bulan dari Januari sampai Desember tahun ini
-            for ($m = 1; $m <= 12; $m++) {
-                $date = Carbon::create(Carbon::now()->year, $m, 1);
-                $labels[] = $date->translatedFormat('M'); // Jan, Feb, Mar...
+            for ($i = 3; $i >= 0; $i--) {
+                $start = Carbon::now()->subWeeks($i)->startOfWeek();
+                $end = Carbon::now()->subWeeks($i)->endOfWeek();
+                $labels[] = "Minggu " . (4 - $i);
 
                 $dataMasuk[] = (int) DB::table('riwayat_stok')
                     ->where('jenis', 'masuk')
-                    ->whereMonth('created_at', $m)
-                    ->whereYear('created_at', Carbon::now()->year)
+                    ->whereBetween('created_at', [
+                        $start->startOfDay()->toDateTimeString(), 
+                        $end->endOfDay()->toDateTimeString()
+                    ])
                     ->sum('jumlah_pcs');
 
                 $dataKeluar[] = (int) DB::table('riwayat_stok')
                     ->where('jenis', 'keluar')
-                    ->whereMonth('created_at', $m)
-                    ->whereYear('created_at', Carbon::now()->year)
+                    ->whereBetween('created_at', [
+                        $start->startOfDay()->toDateTimeString(), 
+                        $end->endOfDay()->toDateTimeString()
+                    ])
                     ->sum('jumlah_pcs');
             }
-        } elseif ($filter == 'tahunan') {
-            // PERBAIKAN: Loop 5 Tahun (Contoh: 2024 sampai 2028)
-            $tahunSekarang = Carbon::now()->year;
-            for ($i = 0; $i < 5; $i++) {
-                $tahun = $tahunSekarang + $i;
-                $labels[] = (string) $tahun;
+        } else {
+            for ($i = 5; $i >= 0; $i--) {
+                $date = Carbon::now()->subMonths($i);
+                $labels[] = $date->translatedFormat('M');
 
                 $dataMasuk[] = (int) DB::table('riwayat_stok')
                     ->where('jenis', 'masuk')
-                    ->whereYear('created_at', $tahun)
+                    ->whereMonth('created_at', $date->month)
+                    ->whereYear('created_at', $date->year)
                     ->sum('jumlah_pcs');
 
                 $dataKeluar[] = (int) DB::table('riwayat_stok')
                     ->where('jenis', 'keluar')
-                    ->whereYear('created_at', $tahun)
+                    ->whereMonth('created_at', $date->month)
+                    ->whereYear('created_at', $date->year)
                     ->sum('jumlah_pcs');
             }
         }
 
         return [
-            'labels' => !empty($labels) ? $labels : ['No Data'],
-            'masuk' => !empty($dataMasuk) ? $dataMasuk : [0],
-            'keluar' => !empty($dataKeluar) ? $dataKeluar : [0],
+            'labels' => $labels,
+            'masuk'  => $dataMasuk,
+            'keluar' => $dataKeluar,
         ];
+    }
+
+    /**
+     * Export rekap barang dengan filter
+     */
+    public function exportRekap(Request $request)
+    {
+        try {
+            // Debug log
+            \Log::info('Export request received:', $request->all());
+            
+            // Get parameters with defaults
+            $tahun = $request->get('tahun', date('Y'));
+            $bulan = $request->get('bulan', null);
+            $startDate = $request->get('start_date', null);
+            $endDate = $request->get('end_date', null);
+            $fileName = $request->get('file_name', 'rekap-barang.xlsx');
+            
+            // Jika start_date dan end_date ada, gunakan custom export
+            if ($startDate && $endDate) {
+                // Validasi custom date range
+                if ($startDate > $endDate) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Tanggal mulai tidak boleh lebih besar dari tanggal akhir'
+                    ], 400);
+                }
+                
+                // Export data custom range
+                $export = new \App\Exports\RekapCustomExport($startDate, $endDate);
+            } else {
+                // Export data bulanan/tahunan
+                $export = new \App\Exports\RekapBarangExport($tahun, $bulan);
+            }
+            
+            // Generate file name if not provided
+            if ($fileName === 'rekap-barang.xlsx') {
+                if ($startDate && $endDate) {
+                    $start = Carbon::parse($startDate)->format('Ymd');
+                    $end = Carbon::parse($endDate)->format('Ymd');
+                    $fileName = "rekap-barang-{$start}-{$end}.xlsx";
+                } elseif ($bulan) {
+                    $monthName = Carbon::create($tahun, $bulan, 1)->translatedFormat('F');
+                    $fileName = "rekap-barang-{$monthName}-{$tahun}.xlsx";
+                } else {
+                    $fileName = "rekap-barang-tahun-{$tahun}.xlsx";
+                }
+            }
+            
+            // Pastikan ekstensi .xlsx
+            if (!str_ends_with($fileName, '.xlsx')) {
+                $fileName .= '.xlsx';
+            }
+            
+            \Log::info('Exporting file:', ['fileName' => $fileName]);
+            
+            return Excel::download($export, $fileName);
+            
+        } catch (\Exception $e) {
+            \Log::error('Export error: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengekspor data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Preview data sebelum export
+     */
+    public function previewExportData(Request $request)
+    {
+        try {
+            $tahun = $request->get('tahun', date('Y'));
+            $bulan = $request->get('bulan', null);
+            $startDate = $request->get('start_date', null);
+            $endDate = $request->get('end_date', null);
+            
+            // Query data berdasarkan filter
+            $query = DB::table('riwayat_stok')
+                ->select(
+                    DB::raw("DATE_FORMAT(created_at, '%Y-%m') as periode"),
+                    DB::raw("DATE_FORMAT(created_at, '%M %Y') as bulan_tahun"),
+                    DB::raw("SUM(CASE WHEN jenis = 'masuk' THEN jumlah_pcs ELSE 0 END) as total_masuk"),
+                    DB::raw("SUM(CASE WHEN jenis = 'keluar' THEN jumlah_pcs ELSE 0 END) as total_keluar"),
+                    DB::raw("COUNT(DISTINCT id_barang) as jumlah_barang"),
+                    DB::raw("COUNT(CASE WHEN jenis = 'masuk' THEN 1 END) as transaksi_masuk"),
+                    DB::raw("COUNT(CASE WHEN jenis = 'keluar' THEN 1 END) as transaksi_keluar")
+                );
+
+            // Terapkan filter
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            } else {
+                $query->whereYear('created_at', $tahun);
+                if ($bulan) {
+                    $query->whereMonth('created_at', $bulan);
+                }
+            }
+
+            $data = $query->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m')"), DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
+                ->orderBy('periode', 'desc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+                'periode' => [
+                    'tahun' => $tahun,
+                    'bulan' => $bulan,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                    'jumlah_data' => $data->count()
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('Preview export error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data preview'
+            ], 500);
+        }
     }
 }

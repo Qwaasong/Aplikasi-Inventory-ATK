@@ -5,11 +5,22 @@ use App\Http\Controllers\Api\BarangApiController;
 use App\Http\Controllers\Api\UserApiController;
 use App\Http\Controllers\Api\KategoriApiController; // Jika ada controller kategori
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\LaporanController;
 
 // --- Route Baru Anda ---
 
-//index dashboard
-Route::get('/dashboard/stats', [DashboardController::class, 'index']);
+Route::prefix('dashboard')->group(function () {
+    // Dashboard stats
+    Route::get('/stats', [DashboardController::class, 'index']);
+    
+    // Export rekap barang (Excel)
+    Route::get('/export/rekap', [DashboardController::class, 'exportRekap']);
+    
+    // Preview data sebelum export
+    Route::get('/export/preview', [DashboardController::class, 'previewExportData']);
+    // routes/api.php
+Route::get('/dashboard/export/rekap', [LaporanController::class, 'export']);
+});
 
 // Barang (ATK) API Routes
 Route::get('/barang', [BarangApiController::class, 'index'])->name('api.barang.index');

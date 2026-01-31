@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/user', function () {
         return view('auth.admin.user');
     })->name('user');
+<<<<<<< Updated upstream
+=======
+
+    // Route untuk Export Excel
+    Route::get('/laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
+    
+>>>>>>> Stashed changes
 });
 
 /*
