@@ -143,12 +143,11 @@
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
 
     <!-- HEADER -->
-    <header id="header"
-        class="fixed top-0 left-0 right-0 h-16 bg-[#f0f0f0] dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 flex items-center justify-between px-4 sm:px-6 z-40 transition-all duration-300">
+    <header id="header" class="fixed top-0 left-0 right-0 h-16 bg-[#f0f0f0] dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 flex items-center justify-between px-4 sm:px-6 z-40 transition-all duration-300">
         <div class="flex items-center gap-4">
-            <button id="toggleBtn" class="p-1 rounded-md hover:bg-gray-200 focus:outline-none transition-colors">
+            <button id="toggleBtn" class="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"
-                    class="text-black font-bold">
+                    class="dark:text-white font-bold">
                     <path
                         d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z">
                     </path>
