@@ -47,10 +47,21 @@
         }
     </style>
 
-    <div class="px-8 py-6">
+    <div class="px-8 py-6 space-y-4">
+        <div class="dark:text-white flex items-center text-sm text-gray-500">
+            <span class="text-gray-500 dark:text-gray-500">Admin</span>
+            <svg class="h-4 w-4 mx-1 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            <span class="text-gray-500 dark:text-white-500 font-medium">Daftar User</span>
+        </div>
+
+
         <div class="flex flex-col space-y-4">
             <div class="flex items-center justify-between">
-                <h2 class="text-3xl font-bold text-gray-900 m-0">Daftar User</h2>
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-white m-0">Daftar User</h2>
                 <div class="hidden md:flex gap-2">
                     <button onclick="openModal('modalTambahUser')"
                         class="bg-[#1e5bb5] hover:bg-blue-800 text-white px-4 py-2 rounded text-sm font-semibold transition shadow-sm">
