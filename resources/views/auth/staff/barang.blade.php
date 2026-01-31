@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Admin | Barang')
+@section('title', 'staff | Barang')
 
 @section('content')
     <main class="px-8 py-6">
@@ -212,6 +212,12 @@
                 <h2 class="text-3xl font-bold text-gray-900 m-0">Daftar Barang</h2>
                 <div class="hidden md:flex gap-2">
 
+                    {{-- Barang Masuk --}}
+                    <button onclick="openModal('modalMasuk')"
+                        class="bg-[#1C3AFF] hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-md">
+                        Barang Masuk <i class="fa-regular fa-square-plus"></i>
+                    </button>
+
                     {{-- Barang Keluar --}}
                     <button onclick="openModal('modalKeluar')"
                         class="bg-[#d32f2f] hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-md">
@@ -233,6 +239,17 @@
                     <button onclick="openModal('modalKeluar')"
                         class="fab-item shadow-lg flex items-center justify-center text-white bg-[#d32f2f] hover:bg-red-700">
                         <i class="fa-regular fa-square-minus"></i>
+                    </button>
+                </div>
+
+                {{-- Barang Masuk --}}
+                <div class="fab-item-wrapper hidden-space">
+                    <span class="fab-label" onclick="openModal('modalMasuk')">
+                        Barang Masuk
+                    </span>
+                    <button onclick="openModal('modalMasuk')"
+                        class="fab-item shadow-lg flex items-center justify-center text-white bg-[#1e5bb5] hover:bg-blue-800">
+                        <i class="fa-regular fa-square-plus"></i>
                     </button>
                 </div>
             </div>
@@ -308,7 +325,87 @@
         </x-slot:filter>
     </x-table>
 
-        <!-- ================= MODAL 1: BARANG KELUAR ================= -->
+
+        <!-- ================= MODAL 1: TAMBAH BARANG MASUK ================= -->
+        <div id="modalMasuk"
+            class="fixed inset-0 bg-black bg-opacity-30 hidden flex justify-center items-center z-50 p-4 transition-opacity duration-300">
+            <div class="modal-bg rounded-lg shadow-lg w-full max-w-2xl relative">
+                <div class="flex justify-between items-start p-6 pb-2">
+                    <h2 class="text-xl font-normal text-black hidden">Pop Up Tambah Barang Masuk</h2>
+                    <button onclick="closeModal('modalMasuk')"
+                        class="absolute top-4 right-4 text-gray-800 hover:text-red-600 text-3xl font-light">
+                        &times;
+                    </button>
+                </div>
+                <form id="formBarangMasuk" onsubmit="submitBarangMasuk(event)">
+                    <div class="p-8 pt-6">
+                        <h3 class="text-lg font-medium mb-6 text-gray-900">Masukkan Barang Masuk</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            {{-- Nama Barang Masuk --}}
+                            <div>
+                                <label class="block text-xs mb-1">Nama Barang</label>
+                                <input type="text" name="nama_barang" id="nama_barang" placeholder="Nama Barang..."
+                                    class="input-field placeholder-gray-500" required>
+                            </div>
+
+                            {{-- Jumlah Pack Masuk --}}
+                            <div>
+                                <label class="block text-xs mb-1">Jumlah Pack</label>
+                                <input type="number" name="jumlah_pack" id="jumlah_pack" placeholder="Jumlah Pack...."
+                                    class="input-field placeholder-gray-500" required>
+                            </div>
+
+                            {{-- Kategori Masuk --}}
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Kategori</label>
+
+                                <div class="flex items-center gap-2">
+                                    <select id="masuk_id_kategori_display" class="input-field bg-gray-100 flex-1">
+                                        <option value="">Pilih Kategori</option>
+                                    </select>
+
+                                    <button type="button" onclick="tambahKategori()"
+                                        class="w-9 h-9 flex items-center justify-center rounded-md bg-blue-500 hover:bg-blue-600 transition shadow-sm">
+                                        <img src="{{ asset('assets/icon/tambah.svg') }}" class="w-4 h-4">
+                                    </button>
+
+                                    <button type="button" onclick="hapusKategori('masuk_id_kategori_display')"
+                                        class="w-9 h-9 flex items-center justify-center rounded-md bg-red-500 hover:bg-red-600 transition shadow-sm">
+                                        <img src="{{ asset('assets/icon/kurang.svg') }}" class="w-4 h-4">
+                                    </button>
+                                </div>
+
+                                <input type="hidden" name="id_kategori" id="masuk_id_kategori">
+                            </div>
+
+                            {{-- Nama Pack Masuk --}}
+                            <div>
+                                <label class="block text-xs mb-1">Nama Pack</label>
+                                <input type="text" name="nama_pack" id="nama_pack"
+                                    placeholder="Satuan Pack (Contoh: Dus, Box, Karton)"
+                                    class="input-field placeholder-gray-500">
+                            </div>
+
+                            {{-- Jumlah Pcs Masuk --}}
+                            <div>
+                                <label class="block text-xs mb-1">Jumlah Pcs</label>
+                                <input type="number" name="jumlah_pcs" id="jumlah_pcs" placeholder="Jumlah Pcs"
+                                    class="input-field placeholder-gray-500" required>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 mt-10">
+                            <button type="submit" class="btn-modal-action text-blue-500 border-blue-400 hover:bg-blue-50">
+                                Simpan Data
+                            </button>
+                            <!-- Opsi 'Simpan Dan Buat Lagi' bisa ditambahkan nanti jika diperlukan logika khusus -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ================= MODAL 2: BARANG KELUAR ================= -->
         <div id="modalKeluar"
             class="fixed inset-0 bg-black bg-opacity-30 hidden flex justify-center items-center z-50 p-4 transition-opacity duration-300">
             <div class="modal-bg rounded-lg shadow-lg w-full max-w-2xl relative">
@@ -354,6 +451,81 @@
         </div>
         </div>
         </div>
+
+        <!-- ================= MODAL 3: EDIT BARANG ================= -->
+        <div id="modalEdit"
+            class="fixed inset-0 bg-black bg-opacity-30 hidden flex justify-center items-center z-50 p-4 transition-opacity duration-300">
+            <div class="modal-bg rounded-lg shadow-lg w-full max-w-2xl relative">
+                <div class="flex justify-between items-start p-6 pb-2">
+                    <button onclick="closeModal('modalEdit')"
+                        class="absolute top-4 right-4 text-gray-800 hover:text-red-600 text-3xl font-light">&times;</button>
+                </div>
+                <form id="formBarangEdit" onsubmit="submitBarangEdit(event)">
+                    <input type="hidden" name="id_barang" id="edit_id_barang">
+
+                    <div class="p-8 pt-4">
+                        <h3 class="text-lg mb-6 text-black">Edit Barang</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            {{-- Nama Barang Edit --}}
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Nama Barang</label>
+                                <input type="text" name="nama_barang" id="edit_nama_barang" class="input-field bg-gray-100">
+                            </div>
+
+                            {{-- Jumlah Pack Edit --}}
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Jumlah Pack</label>
+                                <input type="number" name="jumlah_pack" id="edit_jumlah_pack" class="input-field" required>
+                            </div>
+
+                            {{-- Kategori Edit --}}
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Kategori</label>
+
+                                <div class="flex items-center gap-2">
+                                    <select id="edit_id_kategori_display" class="input-field bg-gray-100 flex-1">
+                                        <option value="">Pilih Kategori</option>
+                                    </select>
+
+                                    <button type="button" onclick="tambahKategori()"
+                                        class="w-9 h-9 flex items-center justify-center rounded-md bg-blue-500 hover:bg-blue-600 transition">
+                                        <img src="{{ asset('assets/icon/tambah.svg') }}" class="w-4 h-4">
+                                    </button>
+
+                                    <button type="button" onclick="hapusKategori('edit_id_kategori_display')"
+                                        class="w-9 h-9 flex items-center justify-center rounded-md bg-red-500 hover:bg-red-600 transition">
+                                        <img src="{{ asset('assets/icon/kurang.svg') }}" class="w-4 h-4">
+                                    </button>
+                                </div>
+
+                                <input type="hidden" name="id_kategori" id="edit_id_kategori">
+                            </div>
+
+                            {{-- Nama Pack Edit --}}
+                            <div>
+                                <label class="block text-xs mb-1">Nama Pack</label>
+                                <input type="text" name="nama_pack" id="edit_nama_pack"
+                                    placeholder="Satuan Pack (Contoh: Dus, Box, Karton)"
+                                    class="input-field placeholder-gray-500">
+                            </div>
+
+                            {{-- Jumlah Pcs Edit --}}
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Jumlah Pcs</label>
+                                <input type="number" name="jumlah_pcs" id="edit_jumlah_pcs" class="input-field" required>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 mt-10">
+                            <button type="submit"
+                                class="btn-modal-action text-blue-500 border-blue-400 hover:bg-blue-50">Simpan
+                                Perubahan</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
 
 @endsection
 

@@ -33,5 +33,13 @@ class UserSeeder extends Seeder
             'password'  => Hash::make('kepsek123'),
             'role'      => 'kepsek',
         ]);
+
+        // Data User Supervisor
+        User::create([
+            'nama_user' => 'Supervisor',
+            'username'  => 'mr joco',
+            'password'  => Hash::make('supervisor123'),
+            'role'      => 'supervisor',
+        ]);
     }
 }

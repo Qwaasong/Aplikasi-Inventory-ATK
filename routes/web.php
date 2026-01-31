@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-// Pastikan namespace ini sesuai dengan lokasi file Controller Anda
 use App\Http\Controllers\Auth\LoginController;
-use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +15,6 @@ Route::get('/', function () {
 });
 
 // Route GET: Menampilkan Halaman Login
-// PENTING: Nama route harus 'login' agar middleware 'auth' tahu kemana harus melempar user yang belum login.
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 
 // Route POST: Memproses data form login
@@ -26,16 +23,16 @@ Route::post('/login', [LoginController::class, 'login']);
 // Route POST: Logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-
 /*
 |--------------------------------------------------------------------------
-| 2. Route Admin (Middleware Auth)
+| 2. Route Admin (Middleware Auth + Role Admin)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     
     Route::get('/dashboard', function () {
-        return view('auth.admin.dashboard'); // Pastikan file view ini ada
+        // View berada di: resources/views/admin/dashboard.blade.php
+        return view('auth.admin.dashboard');
     })->name('dashboard');
 
     Route::get('/barang', function () {
@@ -50,25 +47,38 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
 /*
 |--------------------------------------------------------------------------
-| 3. Route Role 2 (Contoh: Staff Gudang)
+| 3. Route Staff (Middleware Auth + Role Staff)
 |--------------------------------------------------------------------------
 */
-// Sebaiknya tambahkan middleware auth juga di sini
-Route::middleware(['auth'])->prefix('pegawai')->name('pegawai.')->group(function () {
+Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->group(function () {
 
-    Route::get('/barang', function(){
-        return view('auth.pegawai.barang');
+    Route::get('/barang', function() {
+        // View berada di: resources/views/staff/barang.blade.php
+        return view('auth.staff.barang');
     })->name('barang');
+
+    // Jika staff hanya boleh akses barang, hapus dashboard untuk staff
+    // Atau tambahkan jika diperlukan
+    // Route::get('/dashboard', function(){
+    //     return view('staff.dashboard');
+    // })->name('dashboard');
 
 });
 
 /*
 |--------------------------------------------------------------------------
-| 4. Route Role 3 (Contoh: User Biasa)
+| 4. Route Supervisor (Middleware Auth + Role Supervisor)
 |--------------------------------------------------------------------------
 */
-// Sebaiknya tambahkan middleware auth juga di sini
-Route::middleware(['auth'])->prefix('kepsek')->name('kepsek.')->group(function () {
+Route::middleware(['auth', 'role:supervisor'])->prefix('supervisor')->name('supervisor.')->group(function () {
+
+    Route::get('/dashboard', function() {
+        // View berada di: resources/views/supervisor/dashboard.blade.php
+        return view('auth.supervisor.dashboard');
+    })->name('dashboard');
+
+    // Supervisor hanya memiliki akses ke dashboard untuk laporan
+    // Jika perlu route lain, tambahkan di sini
 
     Route::get('/laporan', function(){
         return view('auth.kepsek.laporan');

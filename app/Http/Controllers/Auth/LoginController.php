@@ -23,16 +23,11 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            $user = Auth::user();
-
-            return match ($user->role) {
-                'admin' => redirect()->intended(route('admin.dashboard')),
-                'pegawai' => redirect()->intended(route('pegawai.barang')),
-                'kepsek'  => redirect()->intended(route('kepsek.laporan')),
-                default => redirect()->intended('/'),
-            };
+            // 3. Redirect ke dashboard yang sesuai berdasarkan role
+            return $this->redirectToRoleDashboard(Auth::user()->role);
         }
 
+        // 4. Jika autentikasi gagal
         return back()->withErrors([
             'username' => 'Username atau password yang diberikan salah.',
         ])->onlyInput('username');
