@@ -20,8 +20,14 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                // Redirect ke beranda.index jika pengguna sudah login
-                return redirect()->route('beranda.index');
+                $user = Auth::user();
+
+                return match ($user->role) {
+                    'admin' => redirect()->route('admin.dashboard'),
+                    'staff' => redirect()->route('staff.barang'),
+                    'supervisor' => redirect()->route('supervisor.dashboard'),
+                    default => redirect('/'),
+                };
             }
         }
 

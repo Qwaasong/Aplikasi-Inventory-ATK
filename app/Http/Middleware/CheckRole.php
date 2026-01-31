@@ -5,39 +5,31 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    public function handle(Request $request, Closure $closure, ...$roles)
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next, string $role): Response
     {
-        // Pastikan user sudah login
-        if (!Auth::check()) {
+        if (!$request->user()) {
             return redirect()->route('login');
         }
 
-        $user = Auth::user();
-        
-        // Cek apakah user memiliki role yang diizinkan
-        // Asumsi: Model User memiliki kolom 'role' dengan nilai: 'admin', 'staff', 'supervisor'
-        if (in_array($user->role, $roles)) {
-            return $closure($request);
+        if ($request->user()->role === $role) {
+            return $next($request);
         }
 
-        // Jika tidak memiliki akses, redirect ke dashboard sesuai role
-        return $this->redirectToRoleDashboard($user->role);
-    }
-
-    private function redirectToRoleDashboard($role)
-    {
-        switch ($role) {
-            case 'admin':
-                return redirect()->route('admin.dashboard');
-            case 'staff':
-                return redirect()->route('staff.barang');
-            case 'supervisor':
-                return redirect()->route('supervisor.dashboard');
-            default:
-                return redirect()->route('login');
-        }
+        // Jika user memiliki role yang berbeda, arahkan ke dashboard masing-masing
+        return match ($request->user()->role) {
+            'admin' => redirect()->route('admin.dashboard'),
+            'staff' => redirect()->route('staff.barang'),
+            'supervisor' => redirect()->route('supervisor.dashboard'),
+            default => redirect()->route('login')->with('error', 'Unauthorized access.'),
+        };
     }
 }

@@ -13,33 +13,26 @@ class UserSeeder extends Seeder
         // Data User Admin
         User::create([
             'nama_user' => 'Administrator',
-            'username'  => 'admin',
-            'password'  => Hash::make('admin123'), // Password disandikan
-            'role'      => 'admin',
+            'username' => 'admin',
+            'password' => Hash::make('admin123'), // Password disandikan
+            'role' => 'admin',
         ]);
 
         // Data User Staff/Gudang
         User::create([
-            'nama_user' => 'Pegawai',
-            'username'  => 'pegawai',
-            'password'  => Hash::make('pegawai123'),
-            'role'      => 'pegawai',
-        ]);
-
-        // Data User Kepala Sekolah
-        User::create([
-            'nama_user' => 'Kepala Sekolah',
-            'username'  => 'kepsek',
-            'password'  => Hash::make('kepsek123'),
-            'role'      => 'kepsek',
+            'nama_user' => 'Staff',
+            'username' => 'staff',
+            'password' => Hash::make('staff123'),
+            'role' => 'staff',
         ]);
 
         // Data User Supervisor
         User::create([
             'nama_user' => 'Supervisor',
-            'username'  => 'mr joco',
-            'password'  => Hash::make('supervisor123'),
-            'role'      => 'supervisor',
+            'username' => 'supervisor',
+            'password' => Hash::make('supervisor123'),
+            'role' => 'supervisor',
         ]);
+
     }
 }

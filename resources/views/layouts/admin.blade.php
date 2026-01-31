@@ -201,8 +201,8 @@
             @endcan
 
             @can('akses-laporan')
-                <a href="{{ route('kepsek.laporan') }}"
-                    class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('kepsek.laporan') ? 'active' : '' }}">
+                <a href="{{ route('supervisor.dashboard') }}"
+                    class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('supervisor.dashboard') ? 'active' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                         fill="currentColor" class="shrink-0">
                         <path
@@ -214,8 +214,8 @@
             @endcan
 
             @can('akses-barang')
-                <a href="{{ auth()->user()->role === 'admin' ? route('admin.barang') : route('pegawai.barang')}}"
-                    class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.barang') || Route::is('pegawai.barang') ? 'active' : '' }}">
+                <a href="{{ auth()->user()->role === 'admin' ? route('admin.barang') : route('staff.barang')}}"
+                    class="nav-item group flex items-center justify-start pl-3 pr-3 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 w-full {{ Route::is('admin.barang') || Route::is('staff.barang') ? 'active' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                         fill="currentColor" class="shrink-0">
                         <path

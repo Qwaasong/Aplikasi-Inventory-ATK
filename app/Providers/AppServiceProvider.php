@@ -21,11 +21,11 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('akses-barang', function (User $user) {
-            return in_array($user->role, ['admin', 'pegawai']);
+            return in_array($user->role, ['admin', 'staff']);
         });
 
         Gate::define('akses-laporan', function (User $user) {
-            return $user->role === 'kepsek';
+            return in_array($user->role, ['supervisor']);
         });
     }
 }
