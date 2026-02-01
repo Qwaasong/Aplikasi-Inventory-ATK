@@ -22,6 +22,7 @@ class RedirectIfAuthenticated
             if (Auth::guard($guard)->check()) {
                 $user = Auth::user();
 
+                // Redirect berdasarkan role pengguna jika pengguna sudah mencentang "Ingat saya"
                 return match ($user->role) {
                     'admin' => redirect()->route('admin.dashboard'),
                     'staff' => redirect()->route('staff.barang'),

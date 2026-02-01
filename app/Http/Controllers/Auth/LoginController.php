@@ -24,18 +24,27 @@ class LoginController extends Controller
      */
     public function login(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        // $request->authenticate();
+        $credentials = $request->only('username', 'password');
+        $remember = $request->has('remember');
 
-        $request->session()->regenerate();
+        if (Auth::attempt($credentials, $remember)) {
+            $user = Auth::user();
+            $request->session()->regenerate();
 
-        $user = Auth::user();
+            return match ($user->role) {
+                'admin' => redirect()->route('admin.dashboard'),
+                'staff' => redirect()->route('staff.barang'),
+                'supervisor' => redirect()->route('supervisor.dashboard'),
+                default => Auth::logout() || redirect()->route('login') -> with('error', 'Role pengguna tidak dikenali.'),
+            };
+        }
 
-        return match ($user->role) {
-            'admin' => redirect()->intended(route('admin.dashboard')),
-            'staff' => redirect()->intended(route('staff.barang')),
-            'supervisor' => redirect()->intended(route('supervisor.dashboard')),
-            default => redirect()->intended('/'),
-        };
+        return back()->withErrors([
+            'username' => 'Username Tidak Cocok',
+            'password' => 'Password Tidak Cocok',
+        ]);
+
     }
 
     /**
