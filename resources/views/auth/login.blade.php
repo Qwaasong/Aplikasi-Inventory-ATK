@@ -239,7 +239,7 @@
 
     <div class="form-container">
         <div class="form-login">
-            <form action="{{ route('login') }}" method="POST">
+            <form action="{{ route('login.submit') }}" method="POST">
                 @csrf
 
                 <div class="form-group">

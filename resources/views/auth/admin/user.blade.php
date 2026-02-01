@@ -230,7 +230,7 @@
 
             <form id="formTambahUser" onsubmit="submitTambahUser(event)">
                 <div class="p-8 pt-4">
-                    <h3 class="text-lg mb-6 text-black">Tambah User Baru</h3>
+                    <h3 class="text-lg mb-6 dark:text-white text-black">Tambah User Baru</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <input type="text" name="nama_user" placeholder="Nama Lengkap" class="input-field" required>
@@ -270,7 +270,7 @@
             <form id="formEditUser" onsubmit="submitEditUser(event)">
                 <input type="hidden" id="edit_id_user" name="id_user">
                 <div class="p-8 pt-4">
-                    <h3 class="text-lg mb-6 text-black font-semibold">Edit Data User</h3>
+                    <h3 class="text-lg mb-6 dark:text-white text-black font-semibold">Edit Data User</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="text-xs text-gray-500">Nama Lengkap</label>

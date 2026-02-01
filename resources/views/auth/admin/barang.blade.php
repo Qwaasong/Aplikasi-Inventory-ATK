@@ -257,7 +257,8 @@
                 </div>
             </div>
 
-            <button id="fabMain" class="fab-main rounded-full shadow-xl bg-[var(--accent-primary)] hover:opacity-90 text-white z-50"
+            <button id="fabMain"
+                class="fab-main rounded-full shadow-xl bg-[var(--accent-primary)] hover:opacity-90 text-white z-50"
                 aria-expanded="false" aria-label="Open FAB">
 
                 <span id="iconX" class="fab-icon visible text-xl">
@@ -272,13 +273,13 @@
 
         <!-- Tabel Data Menggunakan Component -->
         <x-table :data-table="[
-                                'Nama Barang' => 'nama_barang',
-                                'Kategori' => 'kategori.nama_kategori',
-                                'Nama Pack' => 'nama_pack',
-                                'Jumlah Pack' => 'jumlah_pack',
-                                'Pcs per pack' => 'jumlah_pcs',
-                                'Total Pcs' => 'total_pcs',
-                                ]" data-url="{{ route('api.barang.index') }}" primary-key="id_barang">
+                                            'Nama Barang' => 'nama_barang',
+                                            'Kategori' => 'kategori.nama_kategori',
+                                            'Nama Pack' => 'nama_pack',
+                                            'Jumlah Pack' => 'jumlah_pack',
+                                            'Pcs per pack' => 'jumlah_pcs',
+                                            'Total Pcs' => 'total_pcs',
+                                            ]" data-url="{{ route('api.barang.index') }}" primary-key="id_barang">
 
             {{-- ================= FILTER ================= --}}
             <x-slot:filter>
@@ -367,13 +368,13 @@
                                     </select>
 
                                     <button type="button" onclick="tambahKategori()"
-                                        class="w-9 h-9 flex items-center justify-center rounded-md bg-blue-500 hover:bg-blue-600 transition shadow-sm">
-                                        <img src="{{ asset('assets/icon/tambah.svg') }}" class="w-4 h-4">
+                                        class="w-9 h-9 flex items-center justify-center rounded-md text-white bg-blue-500 hover:bg-blue-600 transition shadow-sm">
+                                        <i class="fa-solid fa-circle-plus text-lg leading-none"></i>
                                     </button>
 
                                     <button type="button" onclick="hapusKategori('masuk_id_kategori_display')"
-                                        class="w-9 h-9 flex items-center justify-center rounded-md bg-red-500 hover:bg-red-600 transition shadow-sm">
-                                        <img src="{{ asset('assets/icon/kurang.svg') }}" class="w-4 h-4">
+                                        class="w-9 h-9 flex items-center justify-center rounded-md text-white bg-red-500 hover:bg-red-600 transition shadow-sm">
+                                        <i class="fa-solid fa-circle-minus text-lg leading-none"></i>
                                     </button>
                                 </div>
 
@@ -411,8 +412,8 @@
             class="fixed inset-0 bg-black bg-opacity-30 hidden justify-center items-center z-50 p-4 transition-opacity duration-300">
             <div class="modal-bg rounded-lg shadow-lg w-full max-w-2xl relative">
                 <div class="flex justify-between items-start p-6 pb-2">
-                    <button onclick="closeModal('modalKeluar')"
-                    {{-- text-gray-800 dark:text-gray-300 text-gray-800 hover:text-red-600 --}}
+                    <button onclick="closeModal('modalKeluar')" {{-- text-gray-800 dark:text-gray-300 text-gray-800
+                        hover:text-red-600 --}}
                         class="absolute top-4 right-4 text-gray-800 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 text-3xl font-light transition-colors">
                         &times;
                     </button>
@@ -460,13 +461,13 @@
             <div class="modal-bg rounded-lg shadow-lg w-full max-w-2xl relative">
                 <div class="flex justify-between items-start p-6 pb-2">
                     <button onclick="closeModal('modalEdit')"
-                        class="absolute top-4 right-4 text-gray-800 hover:text-red-600 text-3xl font-light">&times;</button>
+                        class="absolute top-4 right-4 text-gray-800 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 text-3xl font-light transition-colors duration-200">&times;</button>
                 </div>
                 <form id="formBarangEdit" onsubmit="submitBarangEdit(event)">
                     <input type="hidden" name="id_barang" id="edit_id_barang">
 
                     <div class="p-8 pt-4">
-                        <h3 class="text-lg mb-6 text-black">Edit Barang</h3>
+                        <h3 class="text-lg mb-6 dark:text-white text-black">Edit Barang</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             {{-- Nama Barang Edit --}}
@@ -491,13 +492,13 @@
                                     </select>
 
                                     <button type="button" onclick="tambahKategori()"
-                                        class="w-9 h-9 flex items-center justify-center rounded-md bg-blue-500 hover:bg-blue-600 transition">
-                                        <img src="{{ asset('assets/icon/tambah.svg') }}" class="w-4 h-4">
+                                        class="w-9 h-9 flex items-center text-white justify-center rounded-md bg-blue-500 hover:bg-blue-600 transition">
+                                        <i class="fa-solid fa-circle-plus text-lg leading-none"></i>
                                     </button>
 
                                     <button type="button" onclick="hapusKategori('edit_id_kategori_display')"
-                                        class="w-9 h-9 flex items-center justify-center rounded-md bg-red-500 hover:bg-red-600 transition">
-                                        <img src="{{ asset('assets/icon/kurang.svg') }}" class="w-4 h-4">
+                                        class="w-9 h-9 flex items-center text-white justify-center rounded-md bg-red-500 hover:bg-red-600 transition">
+                                        <i class="fa-solid fa-circle-minus text-lg leading-none"></i>
                                     </button>
                                 </div>
 
