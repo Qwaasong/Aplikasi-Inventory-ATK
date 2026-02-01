@@ -149,222 +149,216 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-<<<<<<< Updated upstream
+        <<<<<<< Updated upstream
         /* --- MOBILE ADAPTATION --- */
-=======
+        =======
+
         /* Style untuk Tombol Export */
-.export-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    background: linear-gradient(135deg, #10B981, #059669);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-left: auto;
-}
+        .export-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: auto;
+        }
 
-.export-btn:hover {
-    background: linear-gradient(135deg, #059669, #047857);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-}
+        .export-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
 
-.export-btn i {
-    font-size: 16px;
-}
+        .export-btn i {
+            font-size: 16px;
+        }
 
-/* Modal Overlay */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
-}
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
 
-.modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
 
-/* Modal Content */
-.modal-content {
-    background: white;
-    border-radius: 12px;
-    padding: 24px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    transform: translateY(20px);
-    transition: transform 0.3s;
-}
+        /* Modal Content */
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
 
-.modal-overlay.active .modal-content {
-    transform: translateY(0);
-}
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-.modal-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-}
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+        }
 
-.btn-close {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #6B7280;
-    transition: color 0.2s;
-}
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6B7280;
+            transition: color 0.2s;
+        }
 
-.btn-close:hover {
-    color: #111827;
-}
+        .btn-close:hover {
+            color: #111827;
+        }
 
-/* Form Styles */
-.form-group {
-    margin-bottom: 20px;
-}
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-.form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #374151;
-    font-size: 14px;
-}
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+        }
 
-.form-control {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #D1D5DB;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: border-color 0.2s;
-}
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
 
-.form-control:focus {
-    outline: none;
-    border-color: #10B981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-}
+        .form-control:focus {
+            outline: none;
+            border-color: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
 
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-}
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
 
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid #E5E7EB;
-}
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #E5E7EB;
+        }
 
-.btn {
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-}
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
 
-.btn-secondary {
-    background: #F3F4F6;
-    color: #374151;
-}
+        .btn-secondary {
+            background: #F3F4F6;
+            color: #374151;
+        }
 
-.btn-secondary:hover {
-    background: #E5E7EB;
-}
+        .btn-secondary:hover {
+            background: #E5E7EB;
+        }
 
-.btn-primary {
-    background: #10B981;
-    color: white;
-}
+        .btn-primary {
+            background: #10B981;
+            color: white;
+        }
 
-.btn-primary:hover {
-    background: #059669;
-}
+        .btn-primary:hover {
+            background: #059669;
+        }
 
-/* Dark Mode Support */
-.dark .modal-content {
-    background: #1F2937;
-}
+        /* Dark Mode Support */
+        .dark .modal-content {
+            background: #1F2937;
+        }
 
-.dark .modal-title {
-    color: #F9FAFB;
-}
+        .dark .modal-title {
+            color: #F9FAFB;
+        }
 
-.dark .form-label {
-    color: #E5E7EB;
-}
+        .dark .form-label {
+            color: #E5E7EB;
+        }
 
-.dark .form-control {
-    background: #374151;
-    border-color: #4B5563;
-    color: #F9FAFB;
-}
+        .dark .form-control {
+            background: #374151;
+            border-color: #4B5563;
+            color: #F9FAFB;
+        }
 
-.dark .form-control:focus {
-    border-color: #10B981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-}
+        .dark .form-control:focus {
+            border-color: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
 
-.dark .btn-secondary {
-    background: #4B5563;
-    color: #E5E7EB;
-}
+        .dark .btn-secondary {
+            background: #4B5563;
+            color: #E5E7EB;
+        }
 
-.dark .btn-secondary:hover {
-    background: #6B7280;
-}
+        .dark .btn-secondary:hover {
+            background: #6B7280;
+        }
 
-.dark .modal-footer {
-    border-top-color: #4B5563;
-}
+        .dark .modal-footer {
+            border-top-color: #4B5563;
+        }
 
-/* Responsive */
-@media (max-width: 640px) {
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-}
 
         /* --------------------------------------------------------- */
         /* --- BAGIAN MOBILE (MEDIA QUERY) --- */
         /* "Kalau layar kurang dari 991px (Tablet/HP), abaikan aturan atas, pakai aturan ini" */
         /* --------------------------------------------------------- */
 
->>>>>>> Stashed changes
-        @media (max-width: 991px) {
+         @media (max-width: 991px) {
             body {
                 overflow-y: auto !important;
                 height: auto !important;
@@ -429,9 +423,10 @@
             </div>
 
             <div class="filter">
-                <select id="range" class="appearance-none w-full rounded-md border border-gray-300 bg-white
-                                                                        text-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 
-                                                                        dark:border-gray-600 dark:text-white">
+                <select id="range"
+                    class="appearance-none w-full rounded-md border border-gray-300 bg-white
+                                                                                                text-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 
+                                                                                                dark:border-gray-600 dark:text-white">
                     <option value="minggu">Mingguan</option>
                     <option value="bulan">Bulanan</option>
                     <option value="tahun">Tahunan</option>
@@ -453,96 +448,92 @@
                 <div id="chartDistribusi"></div>
             </div>
         </div>
-
-<<<<<<< Updated upstream
     </body>
-=======
-        <div class="modal-overlay" id="exportModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title">Export Data Rekap</h3>
-            <button class="btn-close" id="closeModal">&times;</button>
-        </div>
-        
-        <div class="modal-body">
-            <div class="form-group">
-                <label class="form-label">Pilih Periode</label>
-                <select class="form-control" id="exportPeriod">
-                    <option value="bulanan">Bulanan</option>
-                    <option value="tahunan">Tahunan</option>
-                    <option value="custom">Rentang Tanggal Custom</option>
-                </select>
+
+    {{-- =================
+    EXPORT Modal
+    ================== --}}
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Export Data Rekap</h3>
+                <button class="btn-close" id="closeModal">&times;</button>
             </div>
 
-            <div class="form-group" id="monthYearGroup">
-                <div class="form-row">
-                    <div>
-                        <label class="form-label">Bulan</label>
-                        <select class="form-control" id="exportMonth">
-                            <option value="">Semua Bulan</option>
-                            <option value="01">Januari</option>
-                            <option value="02">Februari</option>
-                            <option value="03">Maret</option>
-                            <option value="04">April</option>
-                            <option value="05">Mei</option>
-                            <option value="06">Juni</option>
-                            <option value="07">Juli</option>
-                            <option value="08">Agustus</option>
-                            <option value="09">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="form-label">Tahun</label>
-                        <select class="form-control" id="exportYear">
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
-                            <option value="2028">2028</option>
-                            <option value="2029">2029</option>
-                            <option value="2030">2030</option>
-                            <option value="2031">2031</option>
-                        
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Pilih Periode</label>
+                    <select class="form-control" id="exportPeriod">
+                        <option value="bulanan">Bulanan</option>
+                        <option value="tahunan">Tahunan</option>
+                        <option value="custom">Rentang Tanggal Custom</option>
+                    </select>
+                </div>
 
-                        </select>
+                <div class="form-group" id="monthYearGroup">
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Bulan</label>
+                            <select class="form-control" id="exportMonth">
+                                <option value="">Semua Bulan</option>
+                                <option value="01">Januari</option>
+                                <option value="02">Februari</option>
+                                <option value="03">Maret</option>
+                                <option value="04">April</option>
+                                <option value="05">Mei</option>
+                                <option value="06">Juni</option>
+                                <option value="07">Juli</option>
+                                <option value="08">Agustus</option>
+                                <option value="09">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Tahun</label>
+                            <select class="form-control" id="exportYear">
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                                <option value="2031">2031</option>
+                            </select>
+                        </div>
                     </div>
+                </div>
+
+                <div class="form-group" id="customDateGroup" style="display: none;">
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Tanggal Mulai</label>
+                            <input type="date" class="form-control" id="startDate">
+                        </div>
+                        <div>
+                            <label class="form-label">Tanggal Akhir</label>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nama File</label>
+                    <input type="text" class="form-control" id="fileName" placeholder="Contoh: rekap-barang-2024"
+                        value="rekap-barang-{{ date('Y-m-d') }}">
                 </div>
             </div>
 
-            <div class="form-group" id="customDateGroup" style="display: none;">
-                <div class="form-row">
-                    <div>
-                        <label class="form-label">Tanggal Mulai</label>
-                        <input type="date" class="form-control" id="startDate">
-                    </div>
-                    <div>
-                        <label class="form-label">Tanggal Akhir</label>
-                        <input type="date" class="form-control" id="endDate">
-                    </div>
-                </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelExport">Batal</button>
+                <button class="btn btn-primary" id="confirmExport">
+                    <i class="fas fa-download"></i> Download Excel
+                </button>
             </div>
-
-            <div class="form-group">
-                <label class="form-label">Nama File</label>
-                <input type="text" class="form-control" id="fileName" 
-                       placeholder="Contoh: rekap-barang-2024" 
-                       value="rekap-barang-{{ date('Y-m-d') }}">
-            </div>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-secondary" id="cancelExport">Batal</button>
-            <button class="btn btn-primary" id="confirmExport">
-                <i class="fas fa-download"></i> Download Excel
-            </button>
         </div>
     </div>
-</div>
-
->>>>>>> Stashed changes
 
     {{-- ///////////// FUNGSI AMBIL DATA DARI API \\\\\\\\\\\\\\\ --}}
 
@@ -642,7 +633,6 @@
                 }
             });
 
-<<<<<<< Updated upstream
 
             // Inisialisasi Chart Batang
             chartMasukKeluar = Highcharts.chart('chartMasukKeluar', {
@@ -764,277 +754,274 @@
                 loadDashboardData(val);
             });
         });
-    </script>
-=======
-            // Fungsi untuk mengisi tahun di dropdown
-            function populateYears() {
+        // Fungsi untuk mengisi tahun di dropdown
+        function populateYears() {
             const yearSelect = document.getElementById('exportYear');
             const currentYear = new Date().getFullYear();
-    
+
             yearSelect.innerHTML = '';
-    
-        // Tambahkan 5 tahun ke belakang dan 1 tahun ke depan
-        for (let i = currentYear - 5; i <= currentYear + 1; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = i;
-            if (i === currentYear) {
-                option.selected = true;
+
+            // Tambahkan 5 tahun ke belakang dan 1 tahun ke depan
+            for (let i = currentYear - 5; i <= currentYear + 1; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                if (i === currentYear) {
+                    option.selected = true;
+                }
+                yearSelect.appendChild(option);
             }
-            yearSelect.appendChild(option);
         }
-}
 
-// Fungsi untuk toggle tampilan form berdasarkan periode
-function togglePeriodForms() {
-    const period = document.getElementById('exportPeriod').value;
-    const monthYearGroup = document.getElementById('monthYearGroup');
-    const customDateGroup = document.getElementById('customDateGroup');
-    
-    if (period === 'custom') {
-        monthYearGroup.style.display = 'none';
-        customDateGroup.style.display = 'block';
-        
-        // Set tanggal default untuk custom range (bulan ini)
-        const today = new Date();
-        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-        
-        document.getElementById('startDate').value = firstDay.toISOString().split('T')[0];
-        document.getElementById('endDate').value = lastDay.toISOString().split('T')[0];
-    } else {
-        monthYearGroup.style.display = 'block';
-        customDateGroup.style.display = 'none';
-        
-        // Set bulan saat ini sebagai default jika periode bulanan
-        if (period === 'bulanan') {
-            const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
-            document.getElementById('exportMonth').value = currentMonth;
-        } else {
-            document.getElementById('exportMonth').value = '';
-        }
-    }
-}
+        // Fungsi untuk toggle tampilan form berdasarkan periode
+        function togglePeriodForms() {
+            const period = document.getElementById('exportPeriod').value;
+            const monthYearGroup = document.getElementById('monthYearGroup');
+            const customDateGroup = document.getElementById('customDateGroup');
 
-// Fungsi untuk membuka modal
-function openModal() {
-    const modal = document.getElementById('exportModal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    // Set tanggal saat ini di nama file
-    const now = new Date();
-    const currentDate = now.toISOString().split('T')[0];
-    document.getElementById('fileName').value = `rekap-barang-${currentDate}`;
-    
-    // Populate tahun jika belum
-    if (!document.getElementById('exportYear').options.length) {
-        populateYears();
-    }
-    
-    // Tampilkan form sesuai periode yang dipilih
-    togglePeriodForms();
-}
+            if (period === 'custom') {
+                monthYearGroup.style.display = 'none';
+                customDateGroup.style.display = 'block';
 
-// Fungsi untuk menutup modal
-function closeModal() {
-    const modal = document.getElementById('exportModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-}
+                // Set tanggal default untuk custom range (bulan ini)
+                const today = new Date();
+                const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+                const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
-// Fungsi untuk validasi form
-function validateExportForm() {
-    const period = document.getElementById('exportPeriod').value;
-    
-    if (period === 'custom') {
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-        
-        if (!startDate || !endDate) {
-            alert('Harap isi tanggal mulai dan tanggal akhir');
-            return false;
-        }
-        
-        if (new Date(startDate) > new Date(endDate)) {
-            alert('Tanggal mulai tidak boleh lebih besar dari tanggal akhir');
-            return false;
-        }
-    }
-    
-    const fileName = document.getElementById('fileName').value.trim();
-    if (!fileName) {
-        alert('Harap isi nama file');
-        return false;
-    }
-    
-    return true;
-}
+                document.getElementById('startDate').value = firstDay.toISOString().split('T')[0];
+                document.getElementById('endDate').value = lastDay.toISOString().split('T')[0];
+            } else {
+                monthYearGroup.style.display = 'block';
+                customDateGroup.style.display = 'none';
 
-// Fungsi untuk export data
-async function exportData() {
-    if (!validateExportForm()) {
-        return;
-    }
-    
-    const period = document.getElementById('exportPeriod').value;
-    const fileName = document.getElementById('fileName').value.trim();
-    let url = '/api/dashboard/export/rekap?';
-    
-    // Build parameter berdasarkan periode
-    if (period === 'custom') {
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-        url += `start_date=${startDate}&end_date=${endDate}`;
-    } else {
-        const month = document.getElementById('exportMonth').value;
-        const year = document.getElementById('exportYear').value;
-        
-        if (period === 'bulanan' && month) {
-            url += `tahun=${year}&bulan=${month}`;
-        } else {
-            url += `tahun=${year}`;
-        }
-    }
-    
-    // Tambahkan nama file jika diperlukan (sesuaikan dengan backend)
-    // url += `&file_name=${encodeURIComponent(fileName)}`;
-    
-    try {
-        // Tampilkan loading jika perlu
-        // setLoading(true);
-        
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                // Set bulan saat ini sebagai default jika periode bulanan
+                if (period === 'bulanan') {
+                    const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
+                    document.getElementById('exportMonth').value = currentMonth;
+                } else {
+                    document.getElementById('exportMonth').value = '';
+                }
             }
+        }
+
+        // Fungsi untuk membuka modal
+        function openModal() {
+            const modal = document.getElementById('exportModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Set tanggal saat ini di nama file
+            const now = new Date();
+            const currentDate = now.toISOString().split('T')[0];
+            document.getElementById('fileName').value = `rekap-barang-${currentDate}`;
+
+            // Populate tahun jika belum
+            if (!document.getElementById('exportYear').options.length) {
+                populateYears();
+            }
+
+            // Tampilkan form sesuai periode yang dipilih
+            togglePeriodForms();
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            const modal = document.getElementById('exportModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Fungsi untuk validasi form
+        function validateExportForm() {
+            const period = document.getElementById('exportPeriod').value;
+
+            if (period === 'custom') {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+
+                if (!startDate || !endDate) {
+                    alert('Harap isi tanggal mulai dan tanggal akhir');
+                    return false;
+                }
+
+                if (new Date(startDate) > new Date(endDate)) {
+                    alert('Tanggal mulai tidak boleh lebih besar dari tanggal akhir');
+                    return false;
+                }
+            }
+
+            const fileName = document.getElementById('fileName').value.trim();
+            if (!fileName) {
+                alert('Harap isi nama file');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Fungsi untuk export data
+        async function exportData() {
+            if (!validateExportForm()) {
+                return;
+            }
+
+            const period = document.getElementById('exportPeriod').value;
+            const fileName = document.getElementById('fileName').value.trim();
+            let url = '/api/dashboard/export/rekap?';
+
+            // Build parameter berdasarkan periode
+            if (period === 'custom') {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                url += `start_date=${startDate}&end_date=${endDate}`;
+            } else {
+                const month = document.getElementById('exportMonth').value;
+                const year = document.getElementById('exportYear').value;
+
+                if (period === 'bulanan' && month) {
+                    url += `tahun=${year}&bulan=${month}`;
+                } else {
+                    url += `tahun=${year}`;
+                }
+            }
+
+            // Tambahkan nama file jika diperlukan (sesuaikan dengan backend)
+            // url += `&file_name=${encodeURIComponent(fileName)}`;
+
+            try {
+                // Tampilkan loading jika perlu
+                // setLoading(true);
+
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Dapatkan blob dari response
+                const blob = await response.blob();
+
+                // Buat URL untuk blob
+                const blobUrl = window.URL.createObjectURL(blob);
+
+                // Buat link untuk download
+                const link = document.createElement('a');
+                link.href = blobUrl;
+
+                // Dapatkan nama file dari header atau gunakan yang diinput
+                const contentDisposition = response.headers.get('content-disposition');
+                let finalFileName = fileName;
+
+                if (contentDisposition) {
+                    const matches = contentDisposition.match(/filename="?(.+)"?/);
+                    if (matches && matches[1]) {
+                        finalFileName = matches[1];
+                    }
+                } else {
+                    // Tambahkan ekstensi jika belum ada
+                    if (!finalFileName.endsWith('.xlsx')) {
+                        finalFileName += '.xlsx';
+                    }
+                }
+
+                link.download = finalFileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // Cleanup URL
+                window.URL.revokeObjectURL(blobUrl);
+
+                // Tampilkan notifikasi sukses
+                alert('Data berhasil diunduh!');
+
+                // Tutup modal
+                closeModal();
+
+            } catch (error) {
+                console.error('Export error:', error);
+                alert('Gagal mengunduh data: ' + error.message);
+            } finally {
+                // setLoading(false);
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function () {
+            // Event listeners untuk export functionality
+            document.getElementById('exportButton').addEventListener('click', openModal);
+            document.getElementById('closeModal').addEventListener('click', closeModal);
+            document.getElementById('cancelExport').addEventListener('click', closeModal);
+            document.getElementById('exportPeriod').addEventListener('change', togglePeriodForms);
+            document.getElementById('confirmExport').addEventListener('click', exportData);
+
+            // Close modal ketika klik di luar konten modal
+            document.getElementById('exportModal').addEventListener('click', function (e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+
+            // Close modal dengan tombol ESC
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+
+            // Format nama file saat bulan/tahun berubah
+            document.getElementById('exportMonth').addEventListener('change', function () {
+                const month = this.value;
+                const year = document.getElementById('exportYear').value;
+                const period = document.getElementById('exportPeriod').value;
+
+                if (period === 'bulanan') {
+                    const monthNames = {
+                        '01': 'Januari', '02': 'Februari', '03': 'Maret',
+                        '04': 'April', '05': 'Mei', '06': 'Juni',
+                        '07': 'Juli', '08': 'Agustus', '09': 'September',
+                        '10': 'Oktober', '11': 'November', '12': 'Desember'
+                    };
+
+                    if (month) {
+                        document.getElementById('fileName').value =
+                            `rekap-barang-${monthNames[month]}-${year}`;
+                    } else {
+                        document.getElementById('fileName').value =
+                            `rekap-barang-tahunan-${year}`;
+                    }
+                }
+            });
+
+            document.getElementById('exportYear').addEventListener('change', function () {
+                const month = document.getElementById('exportMonth').value;
+                const year = this.value;
+                const period = document.getElementById('exportPeriod').value;
+
+                if (period === 'bulanan' || period === 'tahunan') {
+                    if (month && period === 'bulanan') {
+                        const monthNames = {
+                            '01': 'Januari', '02': 'Februari', '03': 'Maret',
+                            '04': 'April', '05': 'Mei', '06': 'Juni',
+                            '07': 'Juli', '08': 'Agustus', '09': 'September',
+                            '10': 'Oktober', '11': 'November', '12': 'Desember'
+                        };
+                        document.getElementById('fileName').value =
+                            `rekap-barang-${monthNames[month]}-${year}`;
+                    } else {
+                        document.getElementById('fileName').value =
+                            `rekap-barang-tahunan-${year}`;
+                    }
+                }
+            });
         });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        // Dapatkan blob dari response
-        const blob = await response.blob();
-        
-        // Buat URL untuk blob
-        const blobUrl = window.URL.createObjectURL(blob);
-        
-        // Buat link untuk download
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        
-        // Dapatkan nama file dari header atau gunakan yang diinput
-        const contentDisposition = response.headers.get('content-disposition');
-        let finalFileName = fileName;
-        
-        if (contentDisposition) {
-            const matches = contentDisposition.match(/filename="?(.+)"?/);
-            if (matches && matches[1]) {
-                finalFileName = matches[1];
-            }
-        } else {
-            // Tambahkan ekstensi jika belum ada
-            if (!finalFileName.endsWith('.xlsx')) {
-                finalFileName += '.xlsx';
-            }
-        }
-        
-        link.download = finalFileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        // Cleanup URL
-        window.URL.revokeObjectURL(blobUrl);
-        
-        // Tampilkan notifikasi sukses
-        alert('Data berhasil diunduh!');
-        
-        // Tutup modal
-        closeModal();
-        
-    } catch (error) {
-        console.error('Export error:', error);
-        alert('Gagal mengunduh data: ' + error.message);
-    } finally {
-        // setLoading(false);
-    }
-}
-
-// Event Listeners
-document.addEventListener('DOMContentLoaded', function() {
-    // Event listeners untuk export functionality
-    document.getElementById('exportButton').addEventListener('click', openModal);
-    document.getElementById('closeModal').addEventListener('click', closeModal);
-    document.getElementById('cancelExport').addEventListener('click', closeModal);
-    document.getElementById('exportPeriod').addEventListener('change', togglePeriodForms);
-    document.getElementById('confirmExport').addEventListener('click', exportData);
-    
-    // Close modal ketika klik di luar konten modal
-    document.getElementById('exportModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeModal();
-        }
-    });
-    
-    // Close modal dengan tombol ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeModal();
-        }
-    });
-    
-    // Format nama file saat bulan/tahun berubah
-    document.getElementById('exportMonth').addEventListener('change', function() {
-        const month = this.value;
-        const year = document.getElementById('exportYear').value;
-        const period = document.getElementById('exportPeriod').value;
-        
-        if (period === 'bulanan') {
-            const monthNames = {
-                '01': 'Januari', '02': 'Februari', '03': 'Maret',
-                '04': 'April', '05': 'Mei', '06': 'Juni',
-                '07': 'Juli', '08': 'Agustus', '09': 'September',
-                '10': 'Oktober', '11': 'November', '12': 'Desember'
-            };
-            
-            if (month) {
-                document.getElementById('fileName').value = 
-                    `rekap-barang-${monthNames[month]}-${year}`;
-            } else {
-                document.getElementById('fileName').value = 
-                    `rekap-barang-tahunan-${year}`;
-            }
-        }
-    });
-    
-    document.getElementById('exportYear').addEventListener('change', function() {
-        const month = document.getElementById('exportMonth').value;
-        const year = this.value;
-        const period = document.getElementById('exportPeriod').value;
-        
-        if (period === 'bulanan' || period === 'tahunan') {
-            if (month && period === 'bulanan') {
-                const monthNames = {
-                    '01': 'Januari', '02': 'Februari', '03': 'Maret',
-                    '04': 'April', '05': 'Mei', '06': 'Juni',
-                    '07': 'Juli', '08': 'Agustus', '09': 'September',
-                    '10': 'Oktober', '11': 'November', '12': 'Desember'
-                };
-                document.getElementById('fileName').value = 
-                    `rekap-barang-${monthNames[month]}-${year}`;
-            } else {
-                document.getElementById('fileName').value = 
-                    `rekap-barang-tahunan-${year}`;
-            }
-        }
-    });
-});
 
 
-        </script>
->>>>>>> Stashed changes
+    </script>
 
 @endsection
