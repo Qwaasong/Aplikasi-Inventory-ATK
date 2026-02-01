@@ -334,13 +334,13 @@
                 <div class="flex justify-between items-start p-6 pb-2">
                     <h2 class="text-xl font-normal text-black hidden">Pop Up Tambah Barang Masuk</h2>
                     <button onclick="closeModal('modalMasuk')"
-                        class="absolute top-4 right-4 text-gray-800 hover:text-red-600 text-3xl font-light">
+                        class="absolute top-4 right-4 text-gray-800 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 text-3xl font-light transition-colors">
                         &times;
                     </button>
                 </div>
                 <form id="formBarangMasuk" onsubmit="submitBarangMasuk(event)">
                     <div class="p-8 pt-6">
-                        <h3 class="text-lg font-medium mb-6 text-gray-900">Masukkan Barang Masuk</h3>
+                        <h3 class="text-lg font-medium mb-6 dark:text-white text-gray-900">Masukkan Barang Masuk</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             {{-- Nama Barang Masuk --}}
@@ -412,13 +412,14 @@
             <div class="modal-bg rounded-lg shadow-lg w-full max-w-2xl relative">
                 <div class="flex justify-between items-start p-6 pb-2">
                     <button onclick="closeModal('modalKeluar')"
-                        class="absolute top-4 right-4 text-gray-800 hover:text-red-600 text-3xl font-light">
+                    {{-- text-gray-800 dark:text-gray-300 text-gray-800 hover:text-red-600 --}}
+                        class="absolute top-4 right-4 text-gray-800 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 text-3xl font-light transition-colors">
                         &times;
                     </button>
                 </div>
                 <form id="formBarangKeluar" onsubmit="submitBarangKeluar(event)">
                     <div class="p-8 pt-4">
-                        <h3 class="text-lg mb-6 text-black">Keluarkan Barang</h3>
+                        <h3 class="text-lg mb-6 text-black dark:text-white">Keluarkan Barang</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             {{-- Nama Barang --}}
