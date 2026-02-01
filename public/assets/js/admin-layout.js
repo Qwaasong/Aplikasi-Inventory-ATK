@@ -128,6 +128,30 @@ function checkScreenSize() {
 window.addEventListener("resize", checkScreenSize);
 checkScreenSize();
 
+let lastScrollY = window.scrollY;
+let scrollTimeout = null;
+
+window.addEventListener("scroll", () => {
+    // Only for mobile
+    if (window.innerWidth >= 640) return;
+
+    // Debounce to avoid spam
+    if (scrollTimeout) return;
+
+    scrollTimeout = setTimeout(() => {
+        const isSidebarOpen = sidebar.classList.contains("translate-x-0");
+
+        if (isSidebarOpen && window.scrollY !== lastScrollY) {
+            sidebar.classList.add("-translate-x-full");
+            sidebar.classList.remove("translate-x-0");
+        }
+
+        lastScrollY = window.scrollY;
+        scrollTimeout = null;
+    }, 80);
+});
+
+
 // Dark Mode Toggle Logic
 const darkModeToggle = document.getElementById("darkModeToggle");
 if (darkModeToggle) {

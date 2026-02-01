@@ -17,24 +17,27 @@ class BarangApiController extends Controller
     public function index(Request $request)
     {
         // 1. Ambil parameter dari request
-        $perPage = $request->get('per_page', 10); // Default 10 data per halaman
+        $perPage = $request->get('per_page', 10);
         $search = $request->get('search', '');
+        $filters = $request->get('filter', []); // Ambil array filter
 
         // 2. Query data barang dengan relasi kategori
         $barang = Barang::with('kategori')
             // Logika Pencarian
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
-                    // Cari berdasarkan nama barang
                     $q->where('nama_barang', 'like', '%' . $search . '%')
-                        // ATAU cari berdasarkan nama kategori (relasi)
                         ->orWhereHas('kategori', function ($qKategori) use ($search) {
-                        $qKategori->where('nama_kategori', 'like', '%' . $search . '%');
-                    });
+                            $qKategori->where('nama_kategori', 'like', '%' . $search . '%');
+                        });
                 });
             })
-            ->latest() // Urutkan dari yang terbaru
-            ->paginate($perPage); // Gunakan paginate, bukan get()
+            // Logika Filter Kategori
+            ->when(isset($filters['kategori']) && $filters['kategori'], function ($query) use ($filters) {
+                return $query->where('id_kategori', $filters['kategori']);
+            })
+            ->latest()
+            ->paginate($perPage);
 
         // 3. Kembalikan respon JSON
         return response()->json([
@@ -52,15 +55,15 @@ class BarangApiController extends Controller
         return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
     }
 
-   public function store(Request $request)
-{
-    $request->validate([
-        'nama_barang' => 'required',
-        'id_kategori' => 'required',
-        'nama_pack'   => 'nullable|string',
-        'jumlah_pack' => 'required|numeric',
-        'jumlah_pcs'  => 'required|numeric', // Kapasitas per pack
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_barang' => 'required',
+            'id_kategori' => 'required',
+            'nama_pack' => 'nullable|string',
+            'jumlah_pack' => 'required|numeric',
+            'jumlah_pcs' => 'required|numeric', // Kapasitas per pack
+        ]);
 
         try {
             return DB::transaction(function () use ($request) {

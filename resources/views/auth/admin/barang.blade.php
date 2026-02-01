@@ -34,6 +34,7 @@
 
             .input-field:focus {
                 border-color: #2563eb;
+                outline: none;
                 box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
             }
 
@@ -273,13 +274,13 @@
 
         <!-- Tabel Data Menggunakan Component -->
         <x-table :data-table="[
-                                            'Nama Barang' => 'nama_barang',
-                                            'Kategori' => 'kategori.nama_kategori',
-                                            'Nama Pack' => 'nama_pack',
-                                            'Jumlah Pack' => 'jumlah_pack',
-                                            'Pcs per pack' => 'jumlah_pcs',
-                                            'Total Pcs' => 'total_pcs',
-                                            ]" data-url="{{ route('api.barang.index') }}" primary-key="id_barang">
+                        'Nama Barang' => 'nama_barang',
+                        'Kategori' => 'kategori.nama_kategori',
+                        'Nama Pack' => 'nama_pack',
+                        'Jumlah Pack' => 'jumlah_pack',
+                        'Pcs per pack' => 'jumlah_pcs',
+                        'Total Pcs' => 'total_pcs',
+                    ]" data-url="{{ route('api.barang.index') }}" primary-key="id_barang">
 
             {{-- ================= FILTER ================= --}}
             <x-slot:filter>
@@ -298,17 +299,12 @@
                         <form id="filter-form" class="p-6 space-y-4">
 
                             <div>
-                                <label for="filter_tanggal_awal" class="block text-sm font-medium text-gray-700">Tanggal
-                                    Awal</label>
-                                <input type="date" name="filter[tanggal_awal]" id="filter_tanggal_awal"
+                                <label for="filter_kategori"
+                                    class="block text-sm font-medium text-gray-700">Kategori</label>
+                                <select id="filter_kategori" name="filter[kategori]"    
                                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            </div>
-
-                            <div>
-                                <label for="filter_tanggal_akhir" class="block text-sm font-medium text-gray-700">Tanggal
-                                    Akhir</label>
-                                <input type="date" name="filter[tanggal_akhir]" id="filter_tanggal_akhir"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <option value="">Semua</option>
+                                </select>
                             </div>
 
                             <div class="flex justify-end space-x-2 pt-4">
@@ -535,66 +531,94 @@
 @section('script')
     <script src="{{ asset('assets/js/fab.js') }}"></script>
     <script>
+        /**
+         * ==========================================
+         * CONFIG & STATE MANAGEMENT
+         * ==========================================
+         * Kumpulkan semua Route Laravel di sini agar kode logic di bawah bersih
+         */
+        const APP_CONFIG = {
+            routes: {
+                kategoriIndex: "{{ route('api.kategori.index') }}",
+                kategoriStore: "{{ route('api.kategori.store') }}",
+                kategoriDelete: "{{ url('api/kategori') }}", // Base URL untuk delete
+                barangIndex: "{{ route('api.barang.index') }}",
+                barangStore: "{{ route('api.barang.store') }}",
+                barangKeluar: "{{ route('api.barang.keluar') }}",
+                barangUpdate: "{{ url('api/barang') }}", // Base URL untuk update
+            },
+            csrfToken: '{{ csrf_token() }}'
+        };
 
-        // Jalankan kode ini setelah DOM selesai dimuat
-        document.addEventListener('change', function (e) {
-            if (e.target.id === 'masuk_id_kategori_display') {
-                document.getElementById('masuk_id_kategori').value = e.target.value;
-            }
+        // Variabel global untuk state
+        let debounceTimer;
 
-            if (e.target.id === 'edit_id_kategori_display') {
-                document.getElementById('edit_id_kategori').value = e.target.value;
-            }
+        /**
+         * ==========================================
+         * INITIALIZATION (DOM READY)
+         * ==========================================
+         */
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inisialisasi event listener global
+            initEventListeners();
         });
 
-        document.addEventListener('change', function (e) {
-            // Jika dropdown kategori diubah
-            if (e.target && e.target.id === 'edit_id_kategori_display') {
-                const selectedValue = e.target.value;
-                // Masukkan nilainya ke hidden input agar terbaca oleh FormData
-                document.getElementById('edit_id_kategori').value = selectedValue;
-                console.log("ID Kategori terpilih:", selectedValue);
-            }
-        });
+        /**
+         * ==========================================
+         * CATEGORY LOGIC
+         * ==========================================
+         */
+        async function loadKategori(targetId, defaultText = 'Pilih Kategori') {
+            const selectElement = document.getElementById(targetId);
+            if (!selectElement) return;
 
-        // Fungsi tambah kategori
-        async function tambahKategori() {
-            const namaBaru = prompt('Masukkan Nama Kategori Baru:');
+            try {
+                const response = await fetch(APP_CONFIG.routes.kategoriIndex);
+                const result = await response.json();
 
-            if (namaBaru) {
-                try {
-                    const response = await fetch("{{ route('api.kategori.store') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({ nama_kategori: namaBaru }) // Kirim nama_kategori ke controller
+                if (result.success) {
+                    selectElement.innerHTML = `<option value="">${defaultText}</option>`;
+                    result.data.forEach(kat => {
+                        const option = document.createElement('option');
+                        option.value = kat.id_kategori;
+                        option.textContent = kat.nama_kategori;
+                        selectElement.appendChild(option);
                     });
-
-                    const result = await response.json();
-                    if (result.success) {
-                        alert('Kategori "' + namaBaru + '" Berhasil Ditambahkan');
-                        // Refresh dropdown kategori agar data baru muncul
-                        await loadKategori('masuk_id_kategori_display');
-                        await loadKategori('edit_id_kategori_display');
-
-                        // window.location.reload();
-
-                    } else {
-                        alert('Gagal' + (result.message || 'Terjadi kesalahan'));
-                    }
-                } catch (error) {
-                    console.error('Gagal menambah kategori:', error);
-                    alert('Sistem Sedang Bermasalah Coba Lagi Nanti');
                 }
+            } catch (error) {
+                console.error('Gagal memuat kategori:', error);
             }
         }
 
-        // Fungsi hapus kategori
-        // Ganti fungsi hapusKategori yang lama dengan ini
-        async function hapusKategori(targetId) {
-            const select = document.getElementById(targetId); // Sekarang dinamis berdasarkan targetId
+        async function tambahKategori() {
+            const namaBaru = prompt('Masukkan Nama Kategori Baru:');
+            if (!namaBaru) return;
+
+            try {
+                const response = await fetch(APP_CONFIG.routes.kategoriStore, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': APP_CONFIG.csrfToken
+                    },
+                    body: JSON.stringify({ nama_kategori: namaBaru })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(`Kategori "${namaBaru}" Berhasil Ditambahkan`);
+                    await refreshAllKategoriDropdowns();
+                } else {
+                    alert('Gagal: ' + (result.message || 'Terjadi kesalahan'));
+                }
+            } catch (error) {
+                console.error('Error tambah kategori:', error);
+                alert('Sistem Sedang Bermasalah Coba Lagi Nanti');
+            }
+        }
+
+        async function hapusKategori(targetSelectId) {
+            const select = document.getElementById(targetSelectId);
             const idTerpilih = select.value;
 
             if (!idTerpilih) {
@@ -603,153 +627,121 @@
             }
 
             const teksTerpilih = select.options[select.selectedIndex].text;
-
-            if (confirm(`Peringatan..!! Apakah Anda Yakin Menghapus ${teksTerpilih}?`)) {
-                try {
-                    const response = await fetch(`{{ url('api/kategori') }}/${idTerpilih}`, {
-                        method: 'DELETE',
-                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                        accept: 'application/json'
-                    });
-
-                    const result = await response.json();
-
-                    if (result.success) {
-                        alert('Kategori Berhasil Dihapus');
-
-                        // PERBAIKAN: Jangan akses result.data.id_kategori
-                        // Cukup refresh dropdown dan arahkan ke pilihan kosong
-                        await loadKategori('masuk_id_kategori_display');
-                        await loadKategori('edit_id_kategori_display');
-
-                        // Reset nilai select ke default agar tidak error
-                        document.getElementById(targetId).value = "";
-
-                        // Jika kamu ingin otomatis refresh halaman sesuai keinginanmu sebelumnya:
-                        // window.location.reload();
-                    }
-                } catch (error) {
-                    console.error('Error saat menghapus:', error);
-                }
-            }
-        }
-
-        // Fungsi Membuka Modal
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-
-            // Jika membuka modal masuk, load kategori
-            if (modalId === 'modalMasuk') {
-                loadKategori('masuk_id_kategori_display');
-            }
-        }
-
-        // Fungsi Menutup Modal
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        // Menutup modal jika user klik di area gelap (backdrop)
-        ['modalMasuk', 'modalKeluar', 'modalEdit'].forEach(id => {
-            const modal = document.getElementById(id);
-            if (!modal) return;
-
-            modal.addEventListener('click', function (e) {
-                if (e.target === modal) {
-                    closeModal(id);
-                }
-            });
-        });
-
-
-        // Load Kategori (Reusable)
-        async function loadKategori(targetId) {
-            const selectKategori = document.getElementById(targetId);
-            // if (!selectKategori) return; // Mencegah error 'null'
+            if (!confirm(`Peringatan..!! Apakah Anda Yakin Menghapus ${teksTerpilih}?`)) return;
 
             try {
-                const response = await fetch("{{ route('api.kategori.index') }}");
+                const response = await fetch(`${APP_CONFIG.routes.kategoriDelete}/${idTerpilih}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': APP_CONFIG.csrfToken,
+                        'Accept': 'application/json'
+                    }
+                });
+
                 const result = await response.json();
-
                 if (result.success) {
-                    // Kosongkan dulu pilihan yang ada kecuali baris pertama (Pilih Kategori)
-                    selectKategori.innerHTML = '<option value="">Pilih Kategori</option>';
-
-                    result.data.forEach(kat => {
-                        const option = document.createElement('option');
-                        option.value = kat.id_kategori; // Sesuaikan dengan primary key di tabel kategori
-                        option.textContent = kat.nama_kategori;
-                        selectKategori.appendChild(option);
-                    });
+                    alert('Kategori Berhasil Dihapus');
+                    select.value = ""; // Reset pilihan
+                    await refreshAllKategoriDropdowns();
                 }
             } catch (error) {
-                console.error('Gagal memuat kategori:', error);
+                console.error('Error hapus kategori:', error);
             }
         }
 
-        // Submit Form
+        async function refreshAllKategoriDropdowns() {
+            await loadKategori('masuk_id_kategori_display');
+            await loadKategori('edit_id_kategori_display');
+        }
+
+        /**
+         * ==========================================
+         * ITEM (BARANG) LOGIC - MASUK & EDIT
+         * ==========================================
+         */
         async function submitBarangMasuk(e) {
             e.preventDefault();
+
+            // Sinkronisasi manual sebelum submit
+            syncSelectToHidden('masuk_id_kategori_display', 'masuk_id_kategori');
+
             const form = e.target;
-
-            // Paksa sinkronisasi sekali lagi sebelum kirim
-            document.getElementById('masuk_id_kategori').value = document.getElementById('masuk_id_kategori_display').value;
-
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
+            await handleFormSubmit(APP_CONFIG.routes.barangStore, 'POST', data, () => {
+                alert('Barang Berhasil Ditambahkan');
+                location.reload();
+            });
+        }
+
+        async function submitBarangEdit(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit_id_barang').value;
+            if (!id) return alert('ID Barang tidak ditemukan!');
+
+            const form = document.getElementById('formBarangEdit');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            const url = `${APP_CONFIG.routes.barangUpdate}/${id}`;
+
+            await handleFormSubmit(url, 'PUT', data, () => {
+                alert('Data berhasil diperbarui!');
+                closeModal('modalEdit');
+                window.location.reload();
+            });
+        }
+
+        // Fungsi Helper Generik untuk Submit Form
+        async function handleFormSubmit(url, method, data, onSuccess) {
             try {
-                const response = await fetch("{{ route('api.barang.store') }}", {
-                    method: 'POST',
+                const response = await fetch(url, {
+                    method: method,
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json', // Wajib agar dpt respon JSON jika error 422
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': APP_CONFIG.csrfToken
                     },
                     body: JSON.stringify(data)
                 });
 
                 const result = await response.json();
                 if (response.ok && result.success) {
-                    alert('Barang Berhasil Ditambahkan');
-                    location.reload();
+                    onSuccess(result);
                 } else {
-                    alert('Gagal: ' + (result.message || 'Cek kembali inputan Anda'));
+                    alert('Gagal: ' + (result.message || 'Cek inputan Anda'));
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error submit:', error);
+                alert('Terjadi kesalahan sistem.');
             }
         }
 
-        // --- LOGIKA BARANG KELUAR (AUTOCOMPLETE) ---
-
-        let debounceTimer;
-        const searchInput = document.getElementById('search_barang_keluar');
-        const resultsContainer = document.getElementById('search_results_container');
-        const idBarangInput = document.getElementById('id_barang_keluar');
-
-        searchInput.addEventListener('input', function () {
+        /**
+         * ==========================================
+         * ITEM (BARANG) LOGIC - KELUAR & SEARCH
+         * ==========================================
+         */
+        function handleSearchInput(e) {
             clearTimeout(debounceTimer);
-            const query = this.value;
+            const query = e.target.value;
+            const resultsContainer = document.getElementById('search_results_container');
 
             if (query.length < 2) {
                 resultsContainer.classList.add('hidden');
                 return;
             }
 
-            debounceTimer = setTimeout(() => {
-                fetchBarang(query);
-            }, 300); // Tunggu 300ms sebelum request
-        });
+            debounceTimer = setTimeout(() => fetchBarangAutocomplete(query), 300);
+        }
 
-        async function fetchBarang(query) {
+        async function fetchBarangAutocomplete(query) {
+            const resultsContainer = document.getElementById('search_results_container');
+            const searchInput = document.getElementById('search_barang_keluar');
+            const idBarangInput = document.getElementById('id_barang_keluar');
+
             try {
-                // Gunakan endpoint index yang sudah ada dengan param search
-                const response = await fetch(`{{ route('api.barang.index') }}?search=${query}`);
+                const response = await fetch(`${APP_CONFIG.routes.barangIndex}?search=${query}`);
                 const result = await response.json();
 
                 resultsContainer.innerHTML = '';
@@ -758,15 +750,17 @@
                     resultsContainer.classList.remove('hidden');
                     result.data.data.forEach(item => {
                         const div = document.createElement('div');
-                        div.classList.add('search-item');
+                        div.classList.add('search-item'); // Pastikan ada CSS untuk class ini
                         div.textContent = `${item.nama_barang} (Stok: ${item.jumlah_pcs})`;
+                        div.style.cursor = 'pointer';
+                        div.style.padding = '8px';
+                        div.style.borderBottom = '1px solid #eee';
 
-                        div.onclick = function () {
+                        div.onclick = () => {
                             searchInput.value = item.nama_barang;
-                            idBarangInput.value = item.id_barang; // Simpan ID
+                            idBarangInput.value = item.id_barang;
                             resultsContainer.classList.add('hidden');
                         };
-
                         resultsContainer.appendChild(div);
                     });
                 } else {
@@ -777,163 +771,144 @@
             }
         }
 
-        // Sembunyikan dropdown jika klik di luar
-        document.addEventListener('click', function (e) {
-            if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
-                resultsContainer.classList.add('hidden');
-            }
-        });
-
-        // Submit Barang Keluar
         async function submitBarangKeluar(e) {
             e.preventDefault();
+            const id_barang = document.getElementById('id_barang_keluar').value;
+            const jumlah_keluar = parseInt(document.getElementById('jumlah_pcs_keluar').value);
 
-            // Ambil elemen input
-            const idBarangInput = document.getElementById('id_barang_keluar');
-            const jumlahInput = document.getElementById('jumlah_pcs_keluar');
+            if (!id_barang) return alert('Silakan cari dan pilih barang terlebih dahulu.');
+            if (!jumlah_keluar || jumlah_keluar <= 0) return alert('Jumlah tidak valid.');
 
-            // Validasi sederhana
-            const id_barang = idBarangInput.value;
-            const jumlah_keluar = parseInt(jumlahInput.value);
-
-            if (!id_barang) {
-                alert('ID Barang kosong. Silakan cari barang ulang.');
-                return;
-            }
-
-            if (!jumlah_keluar || jumlah_keluar <= 0) {
-                alert('Masukkan jumlah barang yang valid (minimal 1).');
-                return;
-            }
-
-            // Siapkan data
-            const payload = {
-                id_barang: id_barang,
-                jumlah_pcs_keluar: jumlah_keluar
-            };
-
-            console.log('Mengirim data:', payload); // Cek di Console
-
-            try {
-                const response = await fetch("{{ route('api.barang.keluar') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                // Cek status HTTP (200 OK, 404 Not Found, 500 Server Error)
-                if (!response.ok) {
-                    // Jika error dari server (misal stok kurang), ambil pesan errornya
-                    const errorResult = await response.json();
-                    throw new Error(errorResult.message || 'Terjadi kesalahan di server (Status ' + response.status + ')');
-                }
-
-                const result = await response.json();
-
-                if (result.success) {
-                    alert('Sukses! Stok berhasil dikurangi.');
-                    closeModal('modalKeluar');
-                    document.getElementById('formBarangKeluar').reset();
-                    window.location.reload();
-                } else {
-                    alert('Gagal: ' + result.message);
-                }
-
-            } catch (error) {
-                console.error('Error Detail:', error);
-                alert('Gagal: ' + error.message);
-            }
-        }
-
-        // --- LISTENER EDIT DATA (Dari Component Table) ---
-        window.addEventListener('edit-data', function (e) {
-            // 1. Ambil raw data dari event
-            const rawData = e.detail.row || e.detail;
-
-            // 2. DETEKSI STRUKTUR DATA (Perbaikan Utama)
-            // Jika ada properti .data di dalamnya, kita masuk ke situ.
-            // Jika tidak, kita pakai rawData itu sendiri.
-            const data = (rawData.data) ? rawData.data : rawData;
-
-            console.log('Data Final untuk Edit:', data); // Cek ini di console, harusnya langsung objek barang
-
-            // 3. Buka Modal
-            openModal('modalEdit');
-
-            // 4. Isi Form Input Teks
-            document.getElementById('edit_id_barang').value = data.id_barang || '';
-
-            // Debugging visual: jika nama barang masih kosong, kita beri pesan error di inputnya
-            document.getElementById('edit_nama_barang').value = data.nama_barang || '(Nama tidak terbaca)';
-
-            document.getElementById('edit_jumlah_pack').value = data.jumlah_pack || 0;
-            document.getElementById('edit_nama_pack').value = data.nama_pack || 0;
-            document.getElementById('edit_jumlah_pcs').value = data.jumlah_pcs || 0;
-
-            // 5. Isi Kategori
-            // Dari log Anda, id_kategori ada langsung di root (id_kategori: 3), tidak perlu masuk object kategori
-            const idKat = data.id_kategori;
-
-            loadKategori('edit_id_kategori_display').then(() => {
-                const selectDisplay = document.getElementById('edit_id_kategori_display');
-                const inputHidden = document.getElementById('edit_id_kategori');
-
-                if (idKat) {
-                    selectDisplay.value = idKat;
-                    inputHidden.value = idKat;
-                }
-                // } else {
-                //     // Jika kategori kosong/null
-                //     selectDisplay.value = "";
-                // }
+            await handleFormSubmit(APP_CONFIG.routes.barangKeluar, 'POST', { id_barang, jumlah_pcs_keluar: jumlah_keluar }, () => {
+                alert('Stok berhasil dikurangi.');
+                closeModal('modalKeluar');
+                document.getElementById('formBarangKeluar').reset();
+                window.location.reload();
             });
-        });
+        }
 
-        // Submit Edit
-        async function submitBarangEdit(e) {
-            e.preventDefault();
-
-            const form = document.getElementById('formBarangEdit');
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-
-            // Ambil ID dari hidden input
-            const id = document.getElementById('edit_id_barang').value;
-
-            if (!id) {
-                alert('ID Barang tidak ditemukan!');
-                return;
-            }
-
-            try {
-                // Gunakan URL update yang benar. Perhatikan method PUT/PATCH
-                // Laravel Resource Route biasanya menggunakan PUT/PATCH untuk update
-                const response = await fetch(`{{ url('api/barang') }}/${id}`, {
-                    method: 'PUT', // Fetch support PUT directly
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (response.ok && result.success) {
-                    alert('Data berhasil diperbarui!');
-                    closeModal('modalEdit');
-                    window.location.reload();
-                } else {
-                    alert('Gagal update: ' + (result.message || 'Unknown error'));
-                }
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan sistem saat update');
+        /**
+         * Reset filter kembali ke default
+         */
+        function resetFilter() {
+            const filterForm = document.getElementById('filter-form');
+            if (filterForm) {
+                filterForm.reset();
+                // Trigger click on reset button if it exists to trigger x-table logic
+                const resetBtn = document.getElementById('reset-filter-btn');
+                if (resetBtn) resetBtn.click();
             }
         }
+
+        /**
+         * ==========================================
+         * MODAL & UTILITIES
+         * ==========================================
+         */
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                if (modalId === 'modalMasuk') loadKategori('masuk_id_kategori_display');
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        // Helper untuk sync select display ke hidden input
+        function syncSelectToHidden(sourceId, targetId) {
+            const source = document.getElementById(sourceId);
+            const target = document.getElementById(targetId);
+            if (source && target) target.value = source.value;
+        }
+
+        /**
+         * ==========================================
+         * EVENT LISTENERS
+         * ==========================================
+         */
+        function initEventListeners() {
+
+            // Listener Perubahan Dropdown (Delegation)
+            document.addEventListener('change', function (e) {
+                if (e.target.id === 'masuk_id_kategori_display') {
+                    syncSelectToHidden('masuk_id_kategori_display', 'masuk_id_kategori');
+                }
+                if (e.target.id === 'edit_id_kategori_display') {
+                    syncSelectToHidden('edit_id_kategori_display', 'edit_id_kategori');
+                }
+            });
+
+            // Listener Filter Kategori (Load categories when filter is opened or on init)
+            const filterButton = document.getElementById('filter-button');
+            if (filterButton) {
+                filterButton.addEventListener('click', function() {
+                    loadKategori('filter_kategori', 'Semua');
+                });
+            }
+            // Also load once on init just in case
+            loadKategori('filter_kategori', 'Semua');
+
+            // Listener Modal Backdrop Click
+            ['modalMasuk', 'modalKeluar', 'modalEdit'].forEach(id => {
+                const modal = document.getElementById(id);
+                if (modal) {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) closeModal(id);
+                    });
+                }
+            });
+
+            // Listener Search Barang Keluar
+            const searchInput = document.getElementById('search_barang_keluar');
+            if (searchInput) searchInput.addEventListener('input', handleSearchInput);
+
+            // Listener Tutup Autocomplete saat klik luar
+            document.addEventListener('click', (e) => {
+                const container = document.getElementById('search_results_container');
+                const input = document.getElementById('search_barang_keluar');
+                if (container && input && !input.contains(e.target) && !container.contains(e.target)) {
+                    container.classList.add('hidden');
+                }
+            });
+
+            // Listener Edit Data (Livewire/External Trigger)
+            window.addEventListener('edit-data', async function (e) {
+                const rawData = e.detail.row || e.detail;
+                const data = rawData.data ? rawData.data : rawData;
+
+                openModal('modalEdit');
+
+                // Isi Form
+                document.getElementById('edit_id_barang').value = data.id_barang || '';
+                document.getElementById('edit_nama_barang').value = data.nama_barang || '';
+                document.getElementById('edit_jumlah_pack').value = data.jumlah_pack || 0;
+                document.getElementById('edit_nama_pack').value = data.nama_pack || '';
+                document.getElementById('edit_jumlah_pcs').value = data.jumlah_pcs || 0;
+
+                // Load & Set Kategori
+                await loadKategori('edit_id_kategori_display');
+                if (data.id_kategori) {
+                    document.getElementById('edit_id_kategori_display').value = data.id_kategori;
+                    document.getElementById('edit_id_kategori').value = data.id_kategori;
+                }
+            });
+        }
+
+        // Expose functions to global scope (untuk onclick di HTML button)
+        window.tambahKategori = tambahKategori;
+        window.hapusKategori = hapusKategori;
+        window.submitBarangMasuk = submitBarangMasuk;
+        window.submitBarangEdit = submitBarangEdit;
+        window.submitBarangKeluar = submitBarangKeluar;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
     </script>
 @endsection
