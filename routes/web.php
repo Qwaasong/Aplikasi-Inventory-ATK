@@ -10,11 +10,23 @@ use App\Http\Controllers\LaporanController;
 |--------------------------------------------------------------------------
 */
 
+// web.php
+
 Route::get('/', function () {
+    if (Auth::check()) {
+        // Jika sudah login, arahkan ke dashboard masing-masing
+        return match (Auth::user()->role) {
+            'admin' => redirect()->route('admin.dashboard'),
+            'staff' => redirect()->route('staff.barang'),
+            'supervisor' => redirect()->route('supervisor.dashboard'),
+            default => redirect()->route('login'),
+        };
+    }
+    // Jika belum login, tampilkan halaman login
     return redirect()->route('login');
 });
 
-// PERBAIKAN: Tambahkan rute GET /login dengan nama 'login'
+// Pastikan rute login tetap seperti ini
 Route::get('/login', [LoginController::class, 'showLoginForm'])
     ->middleware('guest')
     ->name('login');

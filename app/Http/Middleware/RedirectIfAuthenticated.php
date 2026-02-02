@@ -27,7 +27,7 @@ class RedirectIfAuthenticated
                     'admin' => redirect()->route('admin.dashboard'),
                     'staff' => redirect()->route('staff.barang'),
                     'supervisor' => redirect()->route('supervisor.dashboard'),
-                    default => redirect('/'),
+                    default => redirect('/login'),
                 };
             }
         }
