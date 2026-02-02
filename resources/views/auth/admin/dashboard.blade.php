@@ -800,7 +800,8 @@
 
                 // Gunakan helper route() dari Laravel agar URL dinamis dan sesuai prefix role
                 // Pastikan route 'supervisor.laporan.export' juga sudah didefinisikan jika user adalah supervisor
-                let baseUrl = "{{ Auth::user()->role === 'ADMIN' ? route('admin.laporan.export') : route('supervisor.laporan.export') }}";
+                // Perbaikan: Cek role dengan lowercase/uppercase agar aman
+                let baseUrl = "{{ in_array(strtolower(Auth::user()->role), ['admin', 'administrator']) ? route('admin.laporan.export') : route('supervisor.laporan.export') }}";
 
                 let url = `${baseUrl}?type=${type}&file_name=${fileName}`;
 
