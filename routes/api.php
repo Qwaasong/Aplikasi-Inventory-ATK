@@ -12,14 +12,6 @@ use App\Http\Controllers\LaporanController;
 Route::prefix('dashboard')->group(function () {
     // Dashboard stats
     Route::get('/stats', [DashboardController::class, 'index']);
-    
-    // Export rekap barang (Excel)
-    Route::get('/export/rekap', [DashboardController::class, 'exportRekap']);
-    
-    // Preview data sebelum export
-    Route::get('/export/preview', [DashboardController::class, 'previewExportData']);
-    // routes/api.php
-Route::get('/dashboard/export/rekap', [LaporanController::class, 'export']);
 });
 
 // Barang (ATK) API Routes

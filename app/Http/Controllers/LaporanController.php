@@ -3,116 +3,89 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Exports\RekapBarangExport;
-use App\Exports\RekapCustomExport;  // IMPORT INI!
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LaporanInventarisBarangExport;
+use App\Exports\RiwayatMutasiStokExport;
+use App\Exports\RekapKategoriExport;
+use App\Exports\UserListExport;
 
 class LaporanController extends Controller
 {
     public function export(Request $request)
     {
-        \Log::info('Export Request Data:', $request->all());
-        
-        // Cek jika request adalah AJAX (untuk debug)
-        if ($request->ajax()) {
-            \Log::info('AJAX Request detected');
-        }
-        
-        // LOGIC: Deteksi jenis export berdasarkan parameter
-        if ($request->has('start_date') && $request->has('end_date')) {
-            // 1. EXPORT CUSTOM DATE RANGE
-            \Log::info('Processing Custom Range Export');
-            return $this->handleCustomExport($request);
-            
-        } elseif ($request->has('tahun')) {
-            // 2. EXPORT BULANAN/TAHUNAN  
-            \Log::info('Processing Period Export');
-            return $this->handlePeriodExport($request);
-            
-        } else {
-            // 3. PARAMETER TIDAK LENGKAP
-            \Log::error('Invalid export parameters', $request->all());
-            
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Parameter tidak valid',
-                    'received' => $request->all()
-                ], 400);
-            }
-            
-            return back()->withErrors(['error' => 'Parameter tidak valid']);
-        }
-    }
-    
-    private function handleCustomExport(Request $request)
-    {
+        // 1. Validasi Input
         $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'type' => 'required|in:inventaris,mutasi,kategori,user',
+            'file_name' => 'nullable|string',
         ]);
-        
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-        
-        // Nama file
-        $fileName = 'rekap-barang-' . $startDate . '-sd-' . $endDate . '.xlsx';
-        if ($request->has('file_name') && !empty($request->file_name)) {
-            $fileName = $request->file_name;
-            if (!str_ends_with($fileName, '.xlsx')) {
-                $fileName .= '.xlsx';
-            }
+
+        $type = $request->type;
+        $fileName = $request->file_name ?? 'laporan-export';
+
+        // Pastikan ekstensi .xlsx ada
+        if (!str_ends_with($fileName, '.xlsx')) {
+            $fileName .= '.xlsx';
         }
-        
-        \Log::info('Custom Export - File: ' . $fileName);
-        
-        return Excel::download(
-            new RekapCustomExport($startDate, $endDate),
-            $fileName
-        );
-    }
-    
-    private function handlePeriodExport(Request $request)
-    {
-        $request->validate([
-            'tahun' => 'required|numeric|min:2020|max:2030',
-            'bulan' => 'nullable|numeric|min:1|max:12',
-        ]);
-        
-        $tahun = $request->tahun;
-        $bulan = $request->bulan;
-        
-        // Nama file
-        if ($request->has('file_name') && !empty($request->file_name)) {
-            $fileName = $request->file_name;
-            if (!str_ends_with($fileName, '.xlsx')) {
-                $fileName .= '.xlsx';
-            }
-        } else {
-            $bulanNama = $bulan ? date('F', mktime(0, 0, 0, $bulan, 1)) : '';
-            $fileName = 'rekap-barang-' . 
-                       ($bulan ? strtolower($bulanNama) . '-' : '') . 
-                       $tahun . '.xlsx';
+
+        // 2. Switch Case Berdasarkan Tipe Laporan
+        switch ($type) {
+            case 'inventaris':
+                return Excel::download(new LaporanInventarisBarangExport, $fileName);
+
+            case 'kategori':
+                return Excel::download(new RekapKategoriExport, $fileName);
+
+            case 'user':
+                return Excel::download(new UserListExport, $fileName);
+
+            case 'mutasi':
+                return $this->handleMutasiExport($request, $fileName);
+
+            default:
+                return back()->withErrors(['error' => 'Tipe laporan tidak dikenali']);
         }
-        
-        \Log::info('Period Export - Tahun: ' . $tahun . ', Bulan: ' . ($bulan ?? 'null'));
-        
-        return Excel::download(
-            new RekapBarangExport($tahun, $bulan),
-            $fileName
-        );
     }
-    
-    /**
-     * Untuk debugging: Tampilkan parameter yang diterima
-     */
-    public function debugExport(Request $request)
+
+    private function handleMutasiExport(Request $request, $fileName)
     {
-        return response()->json([
-            'parameters' => $request->all(),
-            'headers' => $request->headers->all(),
-            'is_ajax' => $request->ajax(),
-            'server' => $_SERVER
-        ]);
+        // Logika khusus untuk filter tanggal pada Mutasi
+        $startDate = null;
+        $endDate = null;
+
+        if ($request->period === 'custom') {
+            $request->validate([
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+            $startDate = $request->start_date;
+            $endDate = $request->end_date;
+
+        } elseif ($request->period === 'bulanan') {
+            $request->validate([
+                'tahun' => 'required|numeric',
+                'bulan' => 'nullable|numeric',
+            ]);
+
+            $tahun = $request->tahun;
+            $bulan = $request->bulan;
+
+            if ($bulan) {
+                // Filter 1 Bulan penuh
+                $startDate = "{$tahun}-{$bulan}-01";
+                $endDate = date("Y-m-t", strtotime($startDate));
+            } else {
+                // Filter 1 Tahun penuh (jika bulan kosong dipilih 'Semua Bulan')
+                $startDate = "{$tahun}-01-01";
+                $endDate = "{$tahun}-12-31";
+            }
+
+        } elseif ($request->period === 'tahunan') {
+            // Sama seperti tahunan di atas
+            $tahun = $request->tahun ?? date('Y');
+            $startDate = "{$tahun}-01-01";
+            $endDate = "{$tahun}-12-31";
+        }
+
+        return Excel::download(new RiwayatMutasiStokExport($startDate, $endDate), $fileName);
     }
 }

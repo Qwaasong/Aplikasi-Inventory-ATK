@@ -149,9 +149,7 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-        <<<<<<< Updated upstream
         /* --- MOBILE ADAPTATION --- */
-        =======
 
         /* Style untuk Tombol Export */
         .export-btn {
@@ -358,7 +356,7 @@
         /* "Kalau layar kurang dari 991px (Tablet/HP), abaikan aturan atas, pakai aturan ini" */
         /* --------------------------------------------------------- */
 
-         @media (max-width: 991px) {
+        @media (max-width: 991px) {
             body {
                 overflow-y: auto !important;
                 height: auto !important;
@@ -425,8 +423,8 @@
             <div class="filter">
                 <select id="range"
                     class="appearance-none w-full rounded-md border border-gray-300 bg-white
-                                                                                                text-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 
-                                                                                                dark:border-gray-600 dark:text-white">
+                                                                                                        text-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 
+                                                                                                        dark:border-gray-600 dark:text-white">
                     <option value="minggu">Mingguan</option>
                     <option value="bulan">Bulanan</option>
                     <option value="tahun">Tahunan</option>
@@ -462,6 +460,16 @@
 
             <div class="modal-body">
                 <div class="form-group">
+                    <label class="form-label">Jenis Laporan</label>
+                    <select class="form-control" id="exportType">
+                        <option value="inventaris">Laporan Inventaris Barang (Master)</option>
+                        <option value="mutasi">Laporan Riwayat Mutasi Stok</option>
+                        <option value="kategori">Rekapitulasi Per Kategori</option>
+                        <option value="user">Daftar Pengguna</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="periodGroup" style="display: none;">
                     <label class="form-label">Pilih Periode</label>
                     <select class="form-control" id="exportPeriod">
                         <option value="bulanan">Bulanan</option>
@@ -753,6 +761,70 @@
                 if (val === 'tahun') val = 'tahunan';
                 loadDashboardData(val);
             });
+
+            // --- EXPORT LOGIC ---
+
+            // 1. Tampilkan Modal
+            document.getElementById('exportButton').addEventListener('click', function () {
+                document.getElementById('exportModal').classList.add('active');
+            });
+
+            // 2. Tutup Modal
+            document.getElementById('closeModal').addEventListener('click', function () {
+                document.getElementById('exportModal').classList.remove('active');
+            });
+
+            document.getElementById('cancelExport').addEventListener('click', function () {
+                document.getElementById('exportModal').classList.remove('active');
+            });
+
+            // 3. Listener Jenis Laporan (Show/Hide Periode)
+            document.getElementById('exportType').addEventListener('change', function () {
+                togglePeriodForms();
+            });
+
+            // 4. Listener Periode (Show/Hide Bulan/Tahun/Custom)
+            document.getElementById('exportPeriod').addEventListener('change', function () {
+                togglePeriodForms();
+            });
+
+            // 5. Initial State
+            populateYears();
+            togglePeriodForms();
+
+            // 6. Tombol Download
+            document.getElementById('confirmExport').addEventListener('click', function () {
+                const type = document.getElementById('exportType').value;
+                const period = document.getElementById('exportPeriod').value;
+                const fileName = document.getElementById('fileName').value;
+
+                // Gunakan helper route() dari Laravel agar URL dinamis dan sesuai prefix role
+                // Pastikan route 'supervisor.laporan.export' juga sudah didefinisikan jika user adalah supervisor
+                let baseUrl = "{{ Auth::user()->role === 'ADMIN' ? route('admin.laporan.export') : route('supervisor.laporan.export') }}";
+
+                let url = `${baseUrl}?type=${type}&file_name=${fileName}`;
+
+                if (type === 'mutasi') {
+                    // Tambahkan parameter periode hanya jika tipe mutasi
+                    url += `&period=${period}`;
+
+                    if (period === 'custom') {
+                        const start = document.getElementById('startDate').value;
+                        const end = document.getElementById('endDate').value;
+                        if (!start || !end) {
+                            alert("Harap isi tanggal mulai dan akhir");
+                            return;
+                        }
+                        url += `&start_date=${start}&end_date=${end}`;
+                    } else {
+                        const year = document.getElementById('exportYear').value;
+                        const month = document.getElementById('exportMonth').value;
+                        url += `&tahun=${year}&bulan=${month}`;
+                    }
+                }
+
+                window.location.href = url;
+            });
         });
         // Fungsi untuk mengisi tahun di dropdown
         function populateYears() {
@@ -773,34 +845,48 @@
             }
         }
 
-        // Fungsi untuk toggle tampilan form berdasarkan periode
+        // Fungsi untuk toggle tampilan form berdasarkan tipe & periode
         function togglePeriodForms() {
-            const period = document.getElementById('exportPeriod').value;
+            const type = document.getElementById('exportType').value;
+            const periodGroup = document.getElementById('periodGroup');
             const monthYearGroup = document.getElementById('monthYearGroup');
             const customDateGroup = document.getElementById('customDateGroup');
 
-            if (period === 'custom') {
-                monthYearGroup.style.display = 'none';
-                customDateGroup.style.display = 'block';
+            // 1. Cek Tipe Laporan
+            if (type === 'mutasi') {
+                periodGroup.style.display = 'block';
 
-                // Set tanggal default untuk custom range (bulan ini)
-                const today = new Date();
-                const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-                const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                // 2. Cek Periode (hanya jika mutasi)
+                const period = document.getElementById('exportPeriod').value;
 
-                document.getElementById('startDate').value = firstDay.toISOString().split('T')[0];
-                document.getElementById('endDate').value = lastDay.toISOString().split('T')[0];
-            } else {
-                monthYearGroup.style.display = 'block';
-                customDateGroup.style.display = 'none';
+                if (period === 'custom') {
+                    monthYearGroup.style.display = 'none';
+                    customDateGroup.style.display = 'block';
 
-                // Set bulan saat ini sebagai default jika periode bulanan
-                if (period === 'bulanan') {
-                    const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
-                    document.getElementById('exportMonth').value = currentMonth;
+                    // Set tanggal default untuk custom range (bulan ini)
+                    const today = new Date();
+                    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+                    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+                    const startDateInput = document.getElementById('startDate');
+                    const endDateInput = document.getElementById('endDate');
+
+                    if (!startDateInput.value) {
+                        startDateInput.value = firstDay.toISOString().split('T')[0];
+                    }
+                    if (!endDateInput.value) {
+                        endDateInput.value = lastDay.toISOString().split('T')[0];
+                    }
                 } else {
-                    document.getElementById('exportMonth').value = '';
+                    monthYearGroup.style.display = 'block';
+                    customDateGroup.style.display = 'none';
                 }
+
+            } else {
+                // Jika bukan mutasi, sembunyikan semua filter tanggal
+                periodGroup.style.display = 'none';
+                monthYearGroup.style.display = 'none';
+                customDateGroup.style.display = 'none';
             }
         }
 

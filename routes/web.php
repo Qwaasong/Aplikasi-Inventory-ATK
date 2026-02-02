@@ -11,14 +11,6 @@ use App\Http\Controllers\LaporanController;
 */
 
 Route::get('/', function () {
-    if (Auth::check()) {
-        return match (Auth::user()->role) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'staff' => redirect()->route('staff.barang'),
-            'supervisor' => redirect()->route('supervisor.dashboard'),
-            default => redirect()->route('login'),
-        };
-    }
     return redirect()->route('login');
 });
 
@@ -81,7 +73,5 @@ Route::middleware(['auth', 'role:supervisor'])->prefix('supervisor')->name('supe
         return view('auth.supervisor.dashboard');
     })->name('dashboard');
 
-    Route::get('/laporan', function () {
-        return view('auth.kepsek.laporan');
-    })->name('laporan');
+    Route::get('/laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
 });
