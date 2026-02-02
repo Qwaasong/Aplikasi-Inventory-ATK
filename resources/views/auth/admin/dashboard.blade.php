@@ -118,10 +118,13 @@
         }
 
         .header-bar {
-            max-width: 1020px;
-            margin: 30px;
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 21px;
             display: flex;
             align-items: center;
+            justify-content: flex-start;
+            gap: 0 auto;
         }
 
         .filter {
@@ -166,6 +169,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-left: auto;
+            align-self: center;
         }
 
         .export-btn:hover {
@@ -375,9 +379,21 @@
 
             .header-bar {
                 margin: 20px;
+                display: flex;
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .filter {
+                margin: 0;
+                width: 30%;
+            }
+
+            .export-btn {
+                width: 100%;
+                justify-content: center;
+                margin-left: 0;
             }
 
             .dashboard-charts {
@@ -423,8 +439,8 @@
             <div class="filter">
                 <select id="range"
                     class="appearance-none w-full rounded-md border border-gray-300 bg-white
-                                                                                                        text-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 
-                                                                                                        dark:border-gray-600 dark:text-white">
+                                                                                                                text-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 
+                                                                                                                dark:border-gray-600 dark:text-white">
                     <option value="minggu">Mingguan</option>
                     <option value="bulan">Bulanan</option>
                     <option value="tahun">Tahunan</option>
@@ -446,10 +462,12 @@
                 <div id="chartDistribusi"></div>
             </div>
         </div>
+
+
     </body>
 
     {{-- =================
-    EXPORT Modal
+    EXPORT Modal Tampilan
     ================== --}}
     <div class="modal-overlay" id="exportModal">
         <div class="modal-content">
