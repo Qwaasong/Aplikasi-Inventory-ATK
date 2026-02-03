@@ -270,23 +270,23 @@
         </div>
 
 
-        <hr class="my-6 border-gray-200">
+        <hr class="my-6 border-black dark:border-white">
 
         <!-- Tabel Data Menggunakan Component -->
         <x-table :data-table="[
-                        'Nama Barang' => 'nama_barang',
-                        'Kategori' => 'kategori.nama_kategori',
-                        'Nama Pack' => 'nama_pack',
-                        'Jumlah Pack' => 'jumlah_pack',
-                        'Pcs per pack' => 'jumlah_pcs',
-                        'Total Pcs' => 'total_pcs',
-                    ]" data-url="{{ route('api.barang.index') }}" primary-key="id_barang">
+                                'Nama Barang' => 'nama_barang',
+                                'Kategori' => 'kategori.nama_kategori',
+                                'Nama Pack' => 'nama_pack',
+                                'Jumlah Pack' => 'jumlah_pack',
+                                'Pcs per pack' => 'jumlah_pcs',
+                                'Total Pcs' => 'total_pcs',
+                            ]" data-url="{{ route('api.barang.index') }}" primary-key="id_barang">
 
             {{-- ================= FILTER ================= --}}
             <x-slot:filter>
                 <div class="flex items-center space-x-4">
                     <button id="filter-button"
-                        class="p-3 sm:p-2 text-gray-500 border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none">
+                        class="relative p-3 sm:p-2 text-gray-500 border border-gray-500 rounded-lg hover:bg-gray-200 dark:border-gray-500 dark:hover:bg-gray-700 focus:outline-none transition-all duration-300 overflow-hidden">
                         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -295,21 +295,21 @@
                     </button>
 
                     <div id="filter-dropdown"
-                        class="hidden absolute mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-20 top-full">
+                        class="hidden absolute mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-20 top-full">
                         <form id="filter-form" class="p-6 space-y-4">
 
                             <div>
                                 <label for="filter_kategori"
-                                    class="block text-sm font-medium text-gray-700">Kategori</label>
-                                <select id="filter_kategori" name="filter[kategori]"    
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-200">Kategori</label>
+                                <select id="filter_kategori" name="filter[kategori]"
+                                    class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                     <option value="">Semua</option>
                                 </select>
                             </div>
 
                             <div class="flex justify-end space-x-2 pt-4">
                                 <button type="button" id="reset-filter-btn"
-                                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
+                                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600">
                                     Reset
                                 </button>
                                 <button type="submit"
@@ -849,7 +849,7 @@
             // Listener Filter Kategori (Load categories when filter is opened or on init)
             const filterButton = document.getElementById('filter-button');
             if (filterButton) {
-                filterButton.addEventListener('click', function() {
+                filterButton.addEventListener('click', function () {
                     loadKategori('filter_kategori', 'Semua');
                 });
             }

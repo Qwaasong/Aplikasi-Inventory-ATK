@@ -1048,9 +1048,9 @@
                 // Tutup modal
                 closeModal();
 
-            } catch (error) {
-                console.error('Export error:', error);
-                alert('Gagal mengunduh data: ' + error.message);
+            //} catch (error) {
+            //    console.error('Export error:', error);
+            //    alert('Gagal mengunduh data: ' + error.message);
             } finally {
                 // setLoading(false);
             }

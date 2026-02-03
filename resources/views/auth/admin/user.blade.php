@@ -180,14 +180,15 @@
                 <h2 class="text-3xl font-bold text-gray-800 dark:text-white m-0">User</h2>
                 <div class="hidden md:flex gap-2">
                     <button onclick="openModal('modalTambahUser')"
-                        class="bg-[#1e5bb5] hover:bg-blue-800 text-white px-4 py-2 rounded text-sm font-semibold transition shadow-sm">
+                        class="bg-[var(--accent-primary)] hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm
+                        font-semibold transition shadow-sm">
                         Tambah User <i class="fa-solid fa-user-plus"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <hr class="my-6 border-gray-200">
+        <hr class="my-6 border-black dark:border-white">
 
         <x-table :data-table="['Nama Lengkap' => 'nama_user', 'Username' => 'username', 'Role' => 'role']"
             data-url="{{ route('api.user.index') }}" primary_key="id_user">

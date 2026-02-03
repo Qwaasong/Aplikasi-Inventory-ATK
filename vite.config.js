@@ -9,6 +9,13 @@ export default defineConfig({
         }),
     ],
 
+    server: {
+        host: "0.0.0.0", // Tambahkan ini agar Vite bisa diakses lewat IP
+        hmt: {
+            host: '192.168.0.109'
+        }
+    },
+
     // server: {
     //     host: '192.168.10.250',
     //     port: 5173,
