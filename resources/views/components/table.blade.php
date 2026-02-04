@@ -13,7 +13,7 @@
         <div
             class="relative z-0 {{ isset($filter) && $filter != '' ? 'flex-1 sm:flex-none sm:w-64' : 'w-full sm:w-64' }}">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-g  ray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -143,8 +143,9 @@
                 <button
                     data-page="${pageNum}"
                     class="pagination-link flex items-center justify-center min-w-[32px] h-8 mx-0.5 text-sm font-medium rounded-lg transition-all 
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-[var(--nav-hover-bg)]'}"
+                    ${isActive 
+                        ? 'bg-blue-600 text-white shadow-sm'
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-[var(--nav-hover-bg)]'}"
                 >
                     ${pageNum}
                 </button>
@@ -487,14 +488,14 @@
             }
         });
 
-        // 6. Implementasi Tombol Aksi (Delete Example)
+        // 6. Implementasi Tombol Aksi (Delete dengan SweetAlert)
         $(document).on('click', '.delete-btn', function (e) {
             e.preventDefault();
             const itemId = $(this).data('id');
             console.log('Delete clicked for item ID:', itemId);
 
             // Ambil URL dari atribut tombol jika ada, kalau tidak gunakan entityBaseUrl sebagai fallback
-            const entityUrl = $(this).data('url') || entityBaseUrl; // Mengambil URL entitas dari tombol
+            const entityUrl = $(this).data('url') || entityBaseUrl;
             const apiUrl = entityUrl.replace(
                 /^(https?:\/\/[^/]+)(\/.*)?$/,
                 (_, host, path = '') => `${host}/api${path}`
@@ -503,30 +504,74 @@
             console.log('Entity URL:', entityUrl);
             console.log('API URL:', apiUrl);
 
-            if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
-                $.ajax({
-                    url: `${apiUrl}/${itemId}`, // Menggunakan URL dinamis
-                    type: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-                        console.log('Delete success:', response);
-                        $(`#row-${itemId}`).remove();
-                        $(`#card-${itemId}`).remove();
-                        alert('Item berhasil dihapus!');
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Delete error:', {
-                            xhr,
-                            status,
-                            error
-                        });
-                        console.error('Response JSON:', xhr.responseJSON);
-                        alert('Gagal menghapus item! ' + (xhr.responseJSON?.message || error || ''));
-                    }
-                });
-            }
+            // Gunakan SweetAlert untuk konfirmasi
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#2563eb',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    popup: 'dark:bg-gray-800 dark:text-gray-200'
+                },
+                buttonsStyling: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `${apiUrl}/${itemId}`,
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (response) {
+                            console.log('Delete success:', response);
+                            
+                            // Hapus baris tabel dan card dengan efek fade out
+                            $(`#row-${itemId}`).fadeOut(400, function() { 
+                                $(this).remove(); 
+                            });
+                            $(`#card-${itemId}`).fadeOut(400, function() { 
+                                $(this).remove(); 
+                            });
+                            
+                            // Tampilkan notifikasi sukses dengan SweetAlert
+                            Swal.fire({
+                                title: 'Terhapus!',
+                                text: 'Item berhasil dihapus.',
+                                icon: 'success',
+                                confirmButtonColor: '#2563eb',
+                                customClass: {
+                                    popup: 'dark:bg-gray-800 dark:text-gray-200'
+                                },
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Delete error:', {
+                                xhr,
+                                status,
+                                error
+                            });
+                            console.error('Response JSON:', xhr.responseJSON);
+                            
+                            // Tampilkan notifikasi error dengan SweetAlert
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: 'Gagal menghapus item: ' + (xhr.responseJSON?.message || error || ''),
+                                icon: 'error',
+                                confirmButtonColor: '#2563eb',
+                                customClass: {
+                                    popup: 'dark:bg-gray-800 dark:text-gray-200'
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         });
 
         // Tambahkan Implementasi Tombol Edit untuk Modal
@@ -549,7 +594,16 @@
                     }));
                 },
                 error: function () {
-                    alert('Gagal memuat data untuk edit.');
+                    // Gunakan SweetAlert untuk error
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Gagal memuat data untuk edit.',
+                        icon: 'error',
+                        confirmButtonColor: '#2563eb',
+                        customClass: {
+                            popup: 'dark:bg-gray-800 dark:text-gray-200'
+                        }
+                    });
                 }
             });
         }
@@ -561,9 +615,7 @@
         let originalParent = null; // Untuk menyimpan parent asli dari dropdown yang di-teleport
 
         // Fungsi untuk menutup semua dropdown yang terbuka
-
         function closeAllDropdowns() {
-            // console.log('Closing all dropdowns');
             if (currentlyOpenMenu && originalParent) {
                 currentlyOpenMenu.classList.add('hidden');
                 currentlyOpenMenu.style = '';
@@ -580,10 +632,8 @@
         }
 
         // Fungsi untuk menangani klik pada tombol filter
-
         function handleFilterButtonClick(event) {
             event.stopPropagation();
-            // console.log('Filter button clicked');
             if (!filterButton || !filterDropdown) return;
             const isHidden = filterDropdown.classList.contains('hidden');
             closeAllDropdowns();
@@ -592,7 +642,6 @@
                 currentlyOpenMenu = filterDropdown;
             } else {
                 filterDropdown.classList.add('hidden');
-                // currentlyOpenMenu = filterDropdown;
                 closeAllDropdowns();
             }
         }
@@ -632,7 +681,6 @@
             currentlyOpenMenu = dropdown;
         }
 
-
         // Fungsi untuk memasang event listener ke semua tombol menu
         function attachMenuDropdownListeners() {
             const menuButtons = document.querySelectorAll('.menu-button');
@@ -666,13 +714,11 @@
         const handleScrollWithThrottle = throttle(() => {
             // HANYA jalankan logika penutupan jika ada menu atau filter yang terbuka
             if (currentlyOpenMenu || (filterDropdown && !filterDropdown.classList.contains('hidden'))) {
-                // console.log('Scroll detected (throttled), closing open dropdowns...');
                 closeAllDropdowns();
             }
         }, 150); // Jalankan maksimal sekali setiap 150ms
 
         // Event listener untuk menutup dropdown saat halaman di-scroll atau di-resize
-        // Menggunakan capture: true agar mendeteksi scroll pada elemen internal (seperti container tabel)
         window.addEventListener('scroll', handleScrollWithThrottle, true);
         window.addEventListener('resize', handleScrollWithThrottle);
 
@@ -722,7 +768,6 @@
             fetchData(currentPage, currentSearch, currentFilters);
             closeAllDropdowns(); // Tutup dropdown
         });
-
 
         // Muat data awal saat halaman pertama dimuat
         fetchData(currentPage, currentSearch, currentFilters);

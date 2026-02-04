@@ -5,6 +5,8 @@
 @section('content')
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tambahkan SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         /* ... CSS Anda tetap sama ... */
         .modal-bg {
@@ -305,6 +307,8 @@
 @endsection
 
 @section('script')
+    <!-- Tambahkan SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/js/fab.js') }}"></script>
     <script>
         // --- Modal Logic ---
@@ -322,6 +326,49 @@
             if (e.target == document.getElementById('modalEdit')) closeModal('modalEdit');
         }
 
+        // Fungsi untuk menampilkan loading SweetAlert
+        function showLoading(title = 'Memproses...') {
+            return Swal.fire({
+                title: title,
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'dark:bg-gray-800 dark:text-gray-200'
+                }
+            });
+        }
+
+        // Fungsi untuk menampilkan SweetAlert sukses
+        function showSuccess(title, text, timer = 2000) {
+            return Swal.fire({
+                title: title,
+                text: text,
+                icon: 'success',
+                confirmButtonColor: '#2563eb',
+                customClass: {
+                    popup: 'dark:bg-gray-800 dark:text-gray-200'
+                },
+                timer: timer,
+                showConfirmButton: timer === 0
+            });
+        }
+
+        // Fungsi untuk menampilkan SweetAlert error
+        function showError(title, text) {
+            return Swal.fire({
+                title: title,
+                text: text,
+                icon: 'error',
+                confirmButtonColor: '#2563eb',
+                customClass: {
+                    popup: 'dark:bg-gray-800 dark:text-gray-200'
+                }
+            });
+        }
+
         // --- Submit Logic (DIPERBAIKI) ---
         async function submitTambahUser(e) {
             e.preventDefault();
@@ -329,12 +376,21 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
+            // Validasi password minimal 6 karakter
+            if (data.password.length < 6) {
+                showError('Validasi Gagal', 'Password minimal 6 karakter');
+                return;
+            }
+
+            // Tampilkan loading
+            const loadingAlert = showLoading('Menambahkan user...');
+
             try {
                 const response = await fetch("{{ route('api.user.store') }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json', // <--- Wajib agar Laravel kirim JSON
+                        'Accept': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify(data)
@@ -343,22 +399,33 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert('Sukses: ' + result.message);
-                    window.location.reload();
+                    loadingAlert.close();
+                    showSuccess('Berhasil!', result.message || 'User berhasil ditambahkan').then(() => {
+                        closeModal('modalTambahUser');
+                        form.reset();
+                        // Refresh data di tabel tanpa reload seluruh halaman
+                        if (typeof window.fetchData === 'function') {
+                            window.fetchData();
+                        } else {
+                            window.location.reload();
+                        }
+                    });
                 } else if (response.status === 422) {
-                    // Tampilkan pesan error validasi (termasuk soal password < 6 karakter)
+                    loadingAlert.close();
+                    // Tampilkan pesan error validasi
                     let errorMessages = "";
                     for (const field in result.errors) {
                         errorMessages += result.errors[field].join("\n") + "\n";
                     }
-                    alert("Terjadi Kesalahan:\n" + errorMessages);
+                    showError("Validasi Gagal", errorMessages);
                 } else {
-                    alert('Gagal: ' + (result.message || 'Terjadi kesalahan sistem.'));
+                    loadingAlert.close();
+                    showError('Gagal!', result.message || 'Terjadi kesalahan sistem.');
                 }
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('Tidak dapat terhubung ke server.');
+                showError('Koneksi Error', 'Tidak dapat terhubung ke server.');
             }
         }
 
@@ -385,13 +452,22 @@
 
             const id = document.getElementById('edit_id_user').value;
             if (!id) {
-                alert('ID User tidak ditemukan!');
+                showError('Error', 'ID User tidak ditemukan!');
                 return;
             }
 
             const form = document.getElementById('formEditUser');
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
+
+            // Validasi password jika diisi
+            if (data.password && data.password.length < 6) {
+                showError('Validasi Gagal', 'Password minimal 6 karakter');
+                return;
+            }
+
+            // Tampilkan loading
+            const loadingAlert = showLoading('Memperbarui data user...');
 
             try {
                 const response = await fetch(`/api/user/${id}`, {
@@ -407,20 +483,37 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert('Data User berhasil diperbarui!');
-                    closeModal('modalEdit');
-                    window.location.reload();
+                    loadingAlert.close();
+                    showSuccess('Berhasil!', result.message || 'Data User berhasil diperbarui!').then(() => {
+                        closeModal('modalEdit');
+                        // Refresh data di tabel tanpa reload seluruh halaman
+                        if (typeof window.fetchData === 'function') {
+                            window.fetchData();
+                        } else {
+                            window.location.reload();
+                        }
+                    });
                 } else {
+                    loadingAlert.close();
                     let msg = result.message || 'Gagal update data';
                     if (result.errors) {
                         msg = Object.values(result.errors).flat().join('\n');
                     }
-                    alert(msg);
+                    showError('Gagal!', msg);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan sistem saat memperbarui data.');
+                showError('Koneksi Error', 'Terjadi kesalahan sistem saat memperbarui data.');
             }
         }
+
+        // Fungsi untuk refresh data tabel (jika ada)
+        window.fetchData = function() {
+            // Jika menggunakan component table dengan jQuery, panggul fungsi fetchData dari table
+            if (typeof window.currentPage !== 'undefined') {
+                // Trigger fetch data pada component table
+                $('.pagination-link[data-page="' + window.currentPage + '"]').trigger('click');
+            }
+        };
     </script>
 @endsection

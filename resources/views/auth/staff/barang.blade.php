@@ -197,6 +197,41 @@
             #fabMain[aria-expanded="true"] #iconX {
                 transform: rotate(135deg) !important;
             }
+
+            /* Custom SweetAlert2 Styling agar selaras dengan tema */
+            .swal2-popup {
+                border-radius: 12px !important;
+                font-family: 'Inter', sans-serif !important;
+                background: var(--bg-modal, #fff) !important;
+                color: var(--text-main, #111) !important;
+                border: 1px solid var(--border-primary, #e5e7eb) !important;
+            }
+            .swal2-title {
+                font-size: 1.25rem !important;
+                font-weight: 600 !important;
+                color: var(--text-main, #111) !important;
+            }
+            .swal2-confirm {
+                background-color: #2563eb !important;
+                border-radius: 8px !important;
+                padding: 8px 20px !important;
+                font-size: 0.875rem !important;
+            }
+            .swal2-cancel {
+                border-radius: 8px !important;
+                padding: 8px 20px !important;
+                font-size: 0.875rem !important;
+            }
+            .swal2-input {
+                border-radius: 8px !important;
+                border: 1px solid var(--border-input, #d1d5db) !important;
+                font-size: 0.9rem !important;
+                box-shadow: none !important;
+            }
+            .swal2-input:focus {
+                border-color: #2563eb !important;
+                box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+            }
         </style>
 
 
@@ -396,7 +431,6 @@
                             <button type="submit" class="btn-modal-action text-blue-500 border-blue-400 hover:bg-blue-50">
                                 Simpan Data
                             </button>
-                            <!-- Opsi 'Simpan Dan Buat Lagi' bisa ditambahkan nanti jika diperlukan logika khusus -->
                         </div>
                     </div>
                 </form>
@@ -408,8 +442,7 @@
             class="fixed inset-0 bg-black bg-opacity-30 hidden justify-center items-center z-50 p-4 transition-opacity duration-300">
             <div class="modal-bg rounded-lg shadow-lg w-full max-w-2xl relative">
                 <div class="flex justify-between items-start p-6 pb-2">
-                    <button onclick="closeModal('modalKeluar')" {{-- text-gray-800 dark:text-gray-300 text-gray-800
-                        hover:text-red-600 --}}
+                    <button onclick="closeModal('modalKeluar')"
                         class="absolute top-4 right-4 text-gray-800 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 text-3xl font-light transition-colors">
                         &times;
                     </button>
@@ -447,8 +480,6 @@
                     </div>
                 </form>
             </div>
-        </div>
-        </div>
         </div>
 
         <!-- ================= MODAL 3: EDIT BARANG ================= -->
@@ -503,7 +534,7 @@
 
                             {{-- Nama Pack Edit --}}
                             <div>
-                                <label class="block text-xs mb-1">Nama Pack</label>
+                                <label class="block text-xs text-gray-500 mb-1">Nama Pack</label>
                                 <input type="text" name="nama_pack" id="edit_nama_pack"
                                     placeholder="Satuan Pack (Contoh: Dus, Box, Karton)"
                                     class="input-field placeholder-gray-500">
@@ -530,28 +561,81 @@
 
 @section('script')
     <script src="{{ asset('assets/js/fab.js') }}"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         /**
          * ==========================================
          * CONFIG & STATE MANAGEMENT
          * ==========================================
-         * Kumpulkan semua Route Laravel di sini agar kode logic di bawah bersih
          */
         const APP_CONFIG = {
             routes: {
                 kategoriIndex: "{{ route('api.kategori.index') }}",
                 kategoriStore: "{{ route('api.kategori.store') }}",
-                kategoriDelete: "{{ url('api/kategori') }}", // Base URL untuk delete
+                kategoriDelete: "{{ url('api/kategori') }}",
                 barangIndex: "{{ route('api.barang.index') }}",
                 barangStore: "{{ route('api.barang.store') }}",
                 barangKeluar: "{{ route('api.barang.keluar') }}",
-                barangUpdate: "{{ url('api/barang') }}", // Base URL untuk update
+                barangUpdate: "{{ url('api/barang') }}",
             },
             csrfToken: '{{ csrf_token() }}'
         };
 
-        // Variabel global untuk state
         let debounceTimer;
+
+        /**
+         * ==========================================
+         * SWEETALERT WRAPPERS
+         * ==========================================
+         */
+        const Alert = {
+            success: (title, text) => {
+                return Swal.fire({
+                    icon: 'success',
+                    title: title,
+                    text: text,
+                    confirmButtonColor: '#2563eb'
+                });
+            },
+            error: (title, text) => {
+                return Swal.fire({
+                    icon: 'error',
+                    title: title,
+                    text: text,
+                    confirmButtonColor: '#2563eb'
+                });
+            },
+            confirm: (title, text) => {
+                return Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2563eb',
+                    cancelButtonColor: '#ef4444',
+                    confirmButtonText: 'Ya, Lanjutkan!',
+                    cancelButtonText: 'Batal'
+                });
+            },
+            prompt: (title, placeholder) => {
+                return Swal.fire({
+                    title: title,
+                    input: 'text',
+                    inputPlaceholder: placeholder,
+                    showCancelButton: true,
+                    confirmButtonColor: '#2563eb',
+                    cancelButtonColor: '#ef4444',
+                    confirmButtonText: 'Simpan',
+                    cancelButtonText: 'Batal',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Input tidak boleh kosong!'
+                        }
+                    }
+                });
+            }
+        };
 
         /**
          * ==========================================
@@ -559,7 +643,6 @@
          * ==========================================
          */
         document.addEventListener('DOMContentLoaded', function () {
-            // Inisialisasi event listener global
             initEventListeners();
         });
 
@@ -591,7 +674,7 @@
         }
 
         async function tambahKategori() {
-            const namaBaru = prompt('Masukkan Nama Kategori Baru:');
+            const { value: namaBaru } = await Alert.prompt('Tambah Kategori', 'Masukkan Nama Kategori Baru');
             if (!namaBaru) return;
 
             try {
@@ -606,14 +689,14 @@
 
                 const result = await response.json();
                 if (result.success) {
-                    alert(`Kategori "${namaBaru}" Berhasil Ditambahkan`);
+                    Alert.success('Berhasil', `Kategori "${namaBaru}" Berhasil Ditambahkan`);
                     await refreshAllKategoriDropdowns();
                 } else {
-                    alert('Gagal: ' + (result.message || 'Terjadi kesalahan'));
+                    Alert.error('Gagal', result.message || 'Terjadi kesalahan');
                 }
             } catch (error) {
                 console.error('Error tambah kategori:', error);
-                alert('Sistem Sedang Bermasalah Coba Lagi Nanti');
+                Alert.error('Error', 'Sistem Sedang Bermasalah Coba Lagi Nanti');
             }
         }
 
@@ -622,12 +705,14 @@
             const idTerpilih = select.value;
 
             if (!idTerpilih) {
-                alert('Pilih Kategori Yang Ingin Dihapus Terlebih Dahulu');
+                Alert.error('Peringatan', 'Pilih Kategori Yang Ingin Dihapus Terlebih Dahulu');
                 return;
             }
 
             const teksTerpilih = select.options[select.selectedIndex].text;
-            if (!confirm(`Peringatan..!! Apakah Anda Yakin Menghapus ${teksTerpilih}?`)) return;
+            const confirm = await Alert.confirm('Peringatan..!!', `Apakah Anda Yakin Menghapus ${teksTerpilih}?`);
+            
+            if (!confirm.isConfirmed) return;
 
             try {
                 const response = await fetch(`${APP_CONFIG.routes.kategoriDelete}/${idTerpilih}`, {
@@ -640,12 +725,13 @@
 
                 const result = await response.json();
                 if (result.success) {
-                    alert('Kategori Berhasil Dihapus');
-                    select.value = ""; // Reset pilihan
+                    Alert.success('Berhasil', 'Kategori Berhasil Dihapus');
+                    select.value = ""; 
                     await refreshAllKategoriDropdowns();
                 }
             } catch (error) {
                 console.error('Error hapus kategori:', error);
+                Alert.error('Error', 'Gagal menghapus kategori');
             }
         }
 
@@ -661,8 +747,6 @@
          */
         async function submitBarangMasuk(e) {
             e.preventDefault();
-
-            // Sinkronisasi manual sebelum submit
             syncSelectToHidden('masuk_id_kategori_display', 'masuk_id_kategori');
 
             const form = e.target;
@@ -670,15 +754,18 @@
             const data = Object.fromEntries(formData.entries());
 
             await handleFormSubmit(APP_CONFIG.routes.barangStore, 'POST', data, () => {
-                alert('Barang Berhasil Ditambahkan');
-                location.reload();
+                Alert.success('Berhasil', 'Barang Berhasil Ditambahkan').then(() => {
+                    location.reload();
+                });
             });
         }
 
         async function submitBarangEdit(e) {
             e.preventDefault();
+            syncSelectToHidden('edit_id_kategori_display', 'edit_id_kategori');
+            
             const id = document.getElementById('edit_id_barang').value;
-            if (!id) return alert('ID Barang tidak ditemukan!');
+            if (!id) return Alert.error('Error', 'ID Barang tidak ditemukan!');
 
             const form = document.getElementById('formBarangEdit');
             const formData = new FormData(form);
@@ -686,13 +773,13 @@
             const url = `${APP_CONFIG.routes.barangUpdate}/${id}`;
 
             await handleFormSubmit(url, 'PUT', data, () => {
-                alert('Data berhasil diperbarui!');
-                closeModal('modalEdit');
-                window.location.reload();
+                Alert.success('Berhasil', 'Data berhasil diperbarui!').then(() => {
+                    closeModal('modalEdit');
+                    window.location.reload();
+                });
             });
         }
 
-        // Fungsi Helper Generik untuk Submit Form
         async function handleFormSubmit(url, method, data, onSuccess) {
             try {
                 const response = await fetch(url, {
@@ -709,11 +796,11 @@
                 if (response.ok && result.success) {
                     onSuccess(result);
                 } else {
-                    alert('Gagal: ' + (result.message || 'Cek inputan Anda'));
+                    Alert.error('Gagal', result.message || 'Cek inputan Anda');
                 }
             } catch (error) {
                 console.error('Error submit:', error);
-                alert('Terjadi kesalahan sistem.');
+                Alert.error('Error', 'Terjadi kesalahan sistem.');
             }
         }
 
@@ -750,7 +837,7 @@
                     resultsContainer.classList.remove('hidden');
                     result.data.data.forEach(item => {
                         const div = document.createElement('div');
-                        div.classList.add('search-item'); // Pastikan ada CSS untuk class ini
+                        div.classList.add('search-item');
                         div.textContent = `${item.nama_barang} (Stok: ${item.jumlah_pcs})`;
                         div.style.cursor = 'pointer';
                         div.style.padding = '8px';
@@ -776,28 +863,16 @@
             const id_barang = document.getElementById('id_barang_keluar').value;
             const jumlah_keluar = parseInt(document.getElementById('jumlah_pcs_keluar').value);
 
-            if (!id_barang) return alert('Silakan cari dan pilih barang terlebih dahulu.');
-            if (!jumlah_keluar || jumlah_keluar <= 0) return alert('Jumlah tidak valid.');
+            if (!id_barang) return Alert.error('Peringatan', 'Silakan cari dan pilih barang terlebih dahulu.');
+            if (!jumlah_keluar || jumlah_keluar <= 0) return Alert.error('Peringatan', 'Jumlah tidak valid.');
 
             await handleFormSubmit(APP_CONFIG.routes.barangKeluar, 'POST', { id_barang, jumlah_pcs_keluar: jumlah_keluar }, () => {
-                alert('Stok berhasil dikurangi.');
-                closeModal('modalKeluar');
-                document.getElementById('formBarangKeluar').reset();
-                window.location.reload();
+                Alert.success('Berhasil', 'Stok berhasil dikurangi.').then(() => {
+                    closeModal('modalKeluar');
+                    document.getElementById('formBarangKeluar').reset();
+                    window.location.reload();
+                });
             });
-        }
-
-        /**
-         * Reset filter kembali ke default
-         */
-        function resetFilter() {
-            const filterForm = document.getElementById('filter-form');
-            if (filterForm) {
-                filterForm.reset();
-                // Trigger click on reset button if it exists to trigger x-table logic
-                const resetBtn = document.getElementById('reset-filter-btn');
-                if (resetBtn) resetBtn.click();
-            }
         }
 
         /**
@@ -822,7 +897,6 @@
             }
         }
 
-        // Helper untuk sync select display ke hidden input
         function syncSelectToHidden(sourceId, targetId) {
             const source = document.getElementById(sourceId);
             const target = document.getElementById(targetId);
@@ -835,8 +909,6 @@
          * ==========================================
          */
         function initEventListeners() {
-
-            // Listener Perubahan Dropdown (Delegation)
             document.addEventListener('change', function (e) {
                 if (e.target.id === 'masuk_id_kategori_display') {
                     syncSelectToHidden('masuk_id_kategori_display', 'masuk_id_kategori');
@@ -846,17 +918,14 @@
                 }
             });
 
-            // Listener Filter Kategori (Load categories when filter is opened or on init)
             const filterButton = document.getElementById('filter-button');
             if (filterButton) {
                 filterButton.addEventListener('click', function () {
                     loadKategori('filter_kategori', 'Semua');
                 });
             }
-            // Also load once on init just in case
             loadKategori('filter_kategori', 'Semua');
 
-            // Listener Modal Backdrop Click
             ['modalMasuk', 'modalKeluar', 'modalEdit'].forEach(id => {
                 const modal = document.getElementById(id);
                 if (modal) {
@@ -866,11 +935,9 @@
                 }
             });
 
-            // Listener Search Barang Keluar
             const searchInput = document.getElementById('search_barang_keluar');
             if (searchInput) searchInput.addEventListener('input', handleSearchInput);
 
-            // Listener Tutup Autocomplete saat klik luar
             document.addEventListener('click', (e) => {
                 const container = document.getElementById('search_results_container');
                 const input = document.getElementById('search_barang_keluar');
@@ -879,21 +946,18 @@
                 }
             });
 
-            // Listener Edit Data (Livewire/External Trigger)
             window.addEventListener('edit-data', async function (e) {
                 const rawData = e.detail.row || e.detail;
                 const data = rawData.data ? rawData.data : rawData;
 
                 openModal('modalEdit');
 
-                // Isi Form
                 document.getElementById('edit_id_barang').value = data.id_barang || '';
                 document.getElementById('edit_nama_barang').value = data.nama_barang || '';
                 document.getElementById('edit_jumlah_pack').value = data.jumlah_pack || 0;
                 document.getElementById('edit_nama_pack').value = data.nama_pack || '';
                 document.getElementById('edit_jumlah_pcs').value = data.jumlah_pcs || 0;
 
-                // Load & Set Kategori
                 await loadKategori('edit_id_kategori_display');
                 if (data.id_kategori) {
                     document.getElementById('edit_id_kategori_display').value = data.id_kategori;
@@ -902,7 +966,6 @@
             });
         }
 
-        // Expose functions to global scope (untuk onclick di HTML button)
         window.tambahKategori = tambahKategori;
         window.hapusKategori = hapusKategori;
         window.submitBarangMasuk = submitBarangMasuk;
