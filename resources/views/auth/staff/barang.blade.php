@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Admin | Barang')
+@section('title', 'Staff | Barang')
 
 @section('content')
     <main class="px-8 py-6">
@@ -203,7 +203,7 @@
         <!-- Header Konten -->
         <div class="flex flex-col space-y-4">
             <div class="dark:text-white flex items-center text-sm text-gray-500">
-                <span class="text-gray-500 dark:text-gray-500">Admin</span>
+                <span class="text-gray-500 dark:text-gray-500">Staff</span>
                 <svg class="h-4 w-4 mx-1 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
                         d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
